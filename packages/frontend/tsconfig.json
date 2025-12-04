@@ -1,0 +1,28 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"composite": true,
+		"isolatedModules": true,
+		"removeComments": true,
+		"sourceMap": true,
+		"jsx": "react-jsx",
+		"baseUrl": "src",
+		"lib": ["DOM", "DOM.Iterable", "ES2023"],
+		"plugins": [
+			{
+				"name": "@styled/typescript-styled-plugin",
+				"lint": {
+					"duplicateProperties": "error",
+					"zeroUnits": "warning",
+					"ieHack": "error",
+					"important": "warning"
+				}
+			}
+		],
+		"paths": {
+			"@asset-management/common": ["../common"],
+			"@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
+		}
+	},
+	"include": ["src", "vite.config.ts"]
+}

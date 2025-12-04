@@ -1,0 +1,16 @@
+{
+	"name": "@asset-management/common",
+	"version": "1.0.0",
+	"description": "Asset Management Common",
+	"type": "module",
+	"main": "./src/index.ts",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kennarddh/asset-management.git"
+	},
+	"author": "kennarddh",
+	"bugs": {
+		"url": "https://github.com/kennarddh/asset-management/issues"
+	},
+	"homepage": "https://github.com/kennarddh/asset-management#readme"
+}

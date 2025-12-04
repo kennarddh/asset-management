@@ -1,0 +1,50 @@
+model Product {
+    id                     BigInt @id @default(autoincrement())
+    name                   String
+    description            String
+    quantity               Int
+    maximumLendingDuration Int
+
+    requiresApproval Boolean @default(false)
+
+    status String @db.VarChar(50)
+
+    categoryId BigInt
+    category   ProductCategory @relation(fields: [categoryId], references: [id])
+
+    lendingRequests LendingRequest[]
+    galleries       ProductGallery[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("products")
+}
+
+model ProductGallery {
+    id  BigInt @id @default(autoincrement())
+    url String
+
+    isThumbnail Boolean @default(false)
+
+    productId BigInt
+    product   Product @relation(fields: [productId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("product_galleries")
+}
+
+model ProductCategory {
+    id          BigInt @id @default(autoincrement())
+    name        String
+    description String
+
+    products Product[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("product_categories")
+}

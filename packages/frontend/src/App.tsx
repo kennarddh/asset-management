@@ -1,0 +1,73 @@
+import { FC, Suspense, useMemo } from 'react'
+
+import { RouterProvider, createBrowserRouter } from 'react-router'
+
+import { ThemeProvider, createTheme } from '@mui/material'
+
+import AuthorizationOutlet from 'Outlets/AuthorizationOutlet'
+import DashboardLayout from 'Outlets/DashboardLayout'
+import MainLayout from 'Outlets/MainLayout'
+import { useTranslation } from 'react-i18next'
+
+import MUILocaleMap, { DefaultMUILocale } from 'Constants/MUILocaleMap'
+
+import ErrorPage from 'Pages/ErrorPage'
+import LoadingPage from 'Pages/LoadingPage'
+
+const router = createBrowserRouter([
+	{
+		element: <MainLayout />,
+		hydrateFallbackElement: <LoadingPage />,
+		errorElement: <ErrorPage />,
+		children: [
+			{
+				path: '/',
+				element: <AuthorizationOutlet />,
+				children: [
+					{
+						path: '/',
+						element: <DashboardLayout />,
+						children: [
+							{
+								index: true,
+								lazy: () => import('Pages/Home'),
+							},
+						],
+					},
+				],
+			},
+			{
+				path: 'login',
+				element: <AuthorizationOutlet forNonLoggedIn />,
+				children: [{ index: true, lazy: () => import('Pages/Login') }],
+			},
+			{
+				path: 'register',
+				element: <AuthorizationOutlet forNonLoggedIn />,
+				children: [{ index: true, lazy: () => import('Pages/Register') }],
+			},
+		],
+	},
+])
+
+const App: FC = () => {
+	const { i18n } = useTranslation()
+
+	const theme = useMemo(() => {
+		const currentMUILocale = Object.keys(MUILocaleMap).includes(i18n.language)
+			? MUILocaleMap[i18n.language as keyof typeof MUILocaleMap]
+			: DefaultMUILocale
+
+		return createTheme({}, currentMUILocale.dataGrid, currentMUILocale.material)
+	}, [i18n.language])
+
+	return (
+		<Suspense fallback={<LoadingPage />}>
+			<ThemeProvider theme={theme} noSsr>
+				<RouterProvider router={router} />
+			</ThemeProvider>
+		</Suspense>
+	)
+}
+
+export default App

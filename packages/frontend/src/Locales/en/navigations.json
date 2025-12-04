@@ -1,0 +1,10 @@
+{
+	"brand": "Asset Management",
+	"menu": {
+		"open": "Open menu"
+	},
+	"links": {
+		"home": "Home",
+		"profile": "Profile"
+	}
+}

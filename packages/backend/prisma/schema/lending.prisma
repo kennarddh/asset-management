@@ -1,0 +1,26 @@
+model LendingRequest {
+    id          BigInt  @id @default(autoincrement())
+    description String
+    reason      String?
+    status      String  @db.VarChar(50)
+    quantity    Int
+
+    userId BigInt
+    user   User   @relation(fields: [userId], references: [id])
+
+    productId BigInt
+    product   Product @relation(fields: [productId], references: [id])
+
+    requestedAt DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    dueAt       DateTime
+    startAt     DateTime
+    approvedAt  DateTime?
+    rejectedAt  DateTime?
+    returnedAt  DateTime?
+    canceledAt  DateTime?
+    lentAt      DateTime?
+
+    @@index([status])
+    @@map("lending_requests")
+}

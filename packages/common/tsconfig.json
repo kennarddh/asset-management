@@ -1,0 +1,9 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"composite": true,
+		"baseUrl": "src",
+		"lib": ["ES2023"]
+	},
+	"include": ["src"]
+}

@@ -1,0 +1,15 @@
+{
+	"noData": "No data.",
+	"notFound": {
+		"title": "Page Not Found",
+		"text": "The page you are looking for does not exist."
+	},
+	"unknown": {
+		"title": "Unknown Error",
+		"text": "We are having a problem. Please try again later."
+	},
+	"network": {
+		"title": "Network Error",
+		"text": "We could not connect to the server. Please check your internet connection. If the problem persists, please try again later."
+	}
+}

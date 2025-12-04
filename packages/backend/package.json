@@ -1,0 +1,48 @@
+{
+	"name": "@asset-management/backend",
+	"version": "1.0.0",
+	"description": "Backend for Asset Management",
+	"main": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"start": "cross-env NODE_ENV=development tsx watch --env-file=.env ./src/index.ts",
+		"build": "npm run clean:build && tsx ./scripts/build.ts",
+		"prod": "cross-env NODE_ENV=production node --env-file=.env ./build/index.js",
+		"clean": "concurrently \"npm run clean:build\" \"npm run clean:logs\"",
+		"clean:build": "rimraf ./build",
+		"clean:logs": "rimraf ./Logs"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kennarddh/asset-management.git"
+	},
+	"bugs": {
+		"url": "https://github.com/kennarddh/asset-management/issues"
+	},
+	"homepage": "https://github.com/kennarddh/asset-management#readme",
+	"author": "kennarddh",
+	"dependencies": {
+		"@celosiajs/core": "^0.0.1-alpha.39",
+		"@celosiajs/logging": "^0.0.1-alpha.26",
+		"@prisma/adapter-pg": "^7.0.1",
+		"@prisma/client": "^7.0.1",
+		"@asset-management/common": "^1.0.0",
+		"argon2": "^0.44.0",
+		"cors": "^2.8.5",
+		"helmet": "^8.1.0",
+		"jsonwebtoken": "^9.0.2",
+		"mailersend": "^2.6.0",
+		"mergician": "^2.0.2",
+		"rate-limiter-flexible": "^9.0.0",
+		"winston": "^3.18.3",
+		"winston-daily-rotate-file": "^5.0.0",
+		"zod": "^3.25.1"
+	},
+	"devDependencies": {
+		"@types/cors": "^2.8.19",
+		"@types/jsonwebtoken": "^9.0.10",
+		"dotenv": "^17.2.3",
+		"esbuild": "^0.27.0",
+		"prisma": "^7.0.1"
+	}
+}
