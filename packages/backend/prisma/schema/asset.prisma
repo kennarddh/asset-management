@@ -1,4 +1,4 @@
-model Product {
+model Asset {
     id                     BigInt @id @default(autoincrement())
     name                   String
     description            String
@@ -10,41 +10,41 @@ model Product {
     status String @db.VarChar(50)
 
     categoryId BigInt
-    category   ProductCategory @relation(fields: [categoryId], references: [id])
+    category   AssetCategory @relation(fields: [categoryId], references: [id])
 
     lendingRequests LendingRequest[]
-    galleries       ProductGallery[]
+    galleries       AssetGallery[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@map("products")
+    @@map("assets")
 }
 
-model ProductGallery {
+model AssetGallery {
     id  BigInt @id @default(autoincrement())
     url String
 
     isThumbnail Boolean @default(false)
 
-    productId BigInt
-    product   Product @relation(fields: [productId], references: [id])
+    assetId BigInt
+    asset   Asset @relation(fields: [assetId], references: [id])
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@map("product_galleries")
+    @@map("asset_galleries")
 }
 
-model ProductCategory {
+model AssetCategory {
     id          BigInt @id @default(autoincrement())
     name        String
     description String
 
-    products Product[]
+    assets Asset[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@map("product_categories")
+    @@map("asset_categories")
 }
