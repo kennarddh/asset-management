@@ -8,8 +8,11 @@ import VerifyJWT from 'Middlewares/VerifyJWT'
 import HasRole from 'Services/AccessControl/ResourceAccessPolicies/HasRole'
 
 import { CreateAsset, FindAssetById, FindManyAssets, UpdateAsset } from '../Controllers/Asset'
+import AssetCategoryRouter from './AssetCategory'
 
 const AssetRouter = new CelosiaRouter({ strict: true })
+
+AssetRouter.useRouters('/category/', AssetCategoryRouter)
 
 AssetRouter.get('/', [new VerifyJWT(false)], new FindManyAssets())
 AssetRouter.post(
