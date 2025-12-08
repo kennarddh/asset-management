@@ -4,7 +4,7 @@ import { User } from 'Services/UserService'
 
 import ResourceAccessPolicy from '../ResourceAccessPolicy'
 
-class HasPermission extends ResourceAccessPolicy<undefined> {
+class HasRole extends ResourceAccessPolicy<undefined> {
 	constructor(private role: UserRole) {
 		super()
 	}
@@ -14,4 +14,4 @@ class HasPermission extends ResourceAccessPolicy<undefined> {
 	}
 }
 
-export default HasPermission
+export default HasRole

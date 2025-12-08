@@ -14,7 +14,7 @@ class UserResourceContextGetter extends ResourceContextGetter<User> {
 
 		const user = await userService.findById(userId)
 
-		if (user === null) throw new ResourceNotFoundError('User not found')
+		if (user === null) throw new ResourceNotFoundError('user')
 
 		return user
 	}

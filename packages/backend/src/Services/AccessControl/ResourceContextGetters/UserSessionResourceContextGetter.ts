@@ -14,7 +14,7 @@ class UserSessionResourceContextGetter extends ResourceContextGetter<UserSession
 
 		const userSession = await userSessionService.findById(userSessionId)
 
-		if (userSession === null) throw new ResourceNotFoundError('User session not found')
+		if (userSession === null) throw new ResourceNotFoundError('userSession')
 
 		return userSession
 	}

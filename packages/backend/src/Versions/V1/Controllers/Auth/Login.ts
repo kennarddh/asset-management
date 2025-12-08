@@ -36,6 +36,10 @@ class Login extends Controller {
 				secure: this.configurationService.configurations.nodeEnv === 'production',
 				httpOnly: true,
 				sameSite: 'lax',
+				expires: new Date(
+					Date.now() +
+						this.configurationService.configurations.tokens.refresh.expire * 1000,
+				),
 			})
 
 			return response.status(200).json({

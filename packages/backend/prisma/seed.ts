@@ -1,6 +1,6 @@
 import argon2 from 'argon2'
 
-import { ProductStatus, UserRole } from '@asset-management/common'
+import { AssetStatus, UserRole } from '@asset-management/common'
 import { PrismaPg } from '@prisma/adapter-pg'
 import fs from 'fs/promises'
 
@@ -53,7 +53,7 @@ const main = async () => {
 		},
 	})
 
-	await prisma.productCategory.createMany({
+	await prisma.assetCategory.createMany({
 		data: [
 			{ id: 1, name: 'Electronics', description: 'Electronic devices and gadgets.' },
 			{ id: 2, name: 'Furniture', description: 'Office and home furniture.' },
@@ -62,13 +62,13 @@ const main = async () => {
 		],
 	})
 
-	await prisma.product.create({
+	await prisma.asset.create({
 		data: {
 			name: 'Digital Camera',
 			description: 'A high-quality digital camera for photography enthusiasts.',
 			quantity: 5,
 			maximumLendingDuration: 14 * 24 * 60 * 60,
-			status: ProductStatus.Available,
+			status: AssetStatus.Available,
 			categoryId: 1,
 			requiresApproval: true,
 			galleries: {
@@ -88,13 +88,13 @@ const main = async () => {
 		},
 	})
 
-	await prisma.product.create({
+	await prisma.asset.create({
 		data: {
 			name: 'Projector',
 			description: 'A portable projector suitable for presentations and movie nights.',
 			quantity: 3,
 			maximumLendingDuration: 7 * 24 * 60 * 60,
-			status: ProductStatus.Available,
+			status: AssetStatus.Available,
 			categoryId: 1,
 			requiresApproval: true,
 			galleries: {
@@ -110,13 +110,13 @@ const main = async () => {
 		},
 	})
 
-	await prisma.product.create({
+	await prisma.asset.create({
 		data: {
 			name: 'Conference Room',
 			description: 'A fully equipped conference room for meetings and workshops.',
 			quantity: 1,
 			maximumLendingDuration: 1 * 24 * 60 * 60,
-			status: ProductStatus.Available,
+			status: AssetStatus.Available,
 			categoryId: 4,
 			requiresApproval: true,
 			galleries: {
@@ -136,13 +136,13 @@ const main = async () => {
 		},
 	})
 
-	await prisma.product.create({
+	await prisma.asset.create({
 		data: {
 			name: 'Office Chair',
 			description: 'Ergonomic office chair for comfortable seating during work hours.',
 			quantity: 10,
 			maximumLendingDuration: 30 * 24 * 60 * 60,
-			status: ProductStatus.Available,
+			status: AssetStatus.Available,
 			categoryId: 2,
 			requiresApproval: true,
 			galleries: {
@@ -158,13 +158,13 @@ const main = async () => {
 		},
 	})
 
-	await prisma.product.create({
+	await prisma.asset.create({
 		data: {
 			name: 'Mountain Bike',
 			description: 'A durable mountain bike suitable for off-road adventures.',
 			quantity: 4,
 			maximumLendingDuration: 21 * 24 * 60 * 60,
-			status: ProductStatus.Available,
+			status: AssetStatus.Available,
 			categoryId: 3,
 			requiresApproval: true,
 			galleries: {
@@ -180,13 +180,13 @@ const main = async () => {
 		},
 	})
 
-	await prisma.product.create({
+	await prisma.asset.create({
 		data: {
 			name: 'Sound System',
 			description: 'High-quality sound system for events and parties.',
 			quantity: 2,
 			maximumLendingDuration: 5 * 24 * 60 * 60,
-			status: ProductStatus.Available,
+			status: AssetStatus.Available,
 			categoryId: 1,
 			requiresApproval: true,
 			galleries: {

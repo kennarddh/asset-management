@@ -2,6 +2,8 @@ import { CelosiaRequest, DI, Injectable, Service, ServiceError } from '@celosiaj
 
 import UserService from 'Services/UserService'
 
+import { ResourceNotFoundError } from 'Errors'
+
 import ResourceAccessPolicy from './ResourceAccessPolicy'
 import { OptionalResourceContextGetter } from './ResourceContextGetter'
 
@@ -41,6 +43,8 @@ class AccessControlService extends Service {
 				if (!isAllowed) return false
 			}
 		} catch (error) {
+			if (error instanceof ResourceNotFoundError) return false
+
 			this.logger.error('Error in resource access policy.', error)
 
 			throw new ServiceError()

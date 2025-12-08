@@ -10,6 +10,10 @@ export enum ApiErrorResource {
 	AccessToken = 'AccessToken',
 	User = 'User',
 	UserSession = 'UserSession',
+	Asset = 'Asset',
+	AssetCategory = 'AssetCategory',
+	LendingRequest = 'LendingRequest',
+	Location = 'Location',
 	Username = 'Username',
 }
 
@@ -41,7 +45,23 @@ export enum UserSortField {
 	CreatedAt = 'createdAt',
 }
 
-export enum ProductStatus {
+export enum AssetSortField {
+	Name = 'name',
+	Description = 'description',
+	Quantity = 'quantity',
+	MaximumLendingDuration = 'maximumLendingDuration',
+	RequiresApproval = 'requiresApproval',
+	Status = 'status',
+	CreatedAt = 'createdAt',
+}
+
+export enum AssetCategorySortField {
+	Name = 'name',
+	Description = 'description',
+	CreatedAt = 'createdAt',
+}
+
+export enum AssetStatus {
 	Available = 'Available',
 	Delisted = 'Delisted',
 }
