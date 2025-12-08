@@ -24,6 +24,7 @@ export interface User {
 	name: string
 	username: string
 	password: string
+	role: UserRole
 	createdAt: Date
 	updatedAt: Date
 }
@@ -69,6 +70,7 @@ class UserService extends Service {
 			name: data.name,
 			username: data.username,
 			password: data.password,
+			role: data.role as UserRole,
 			createdAt: data.createdAt,
 			updatedAt: data.updatedAt,
 		}
@@ -102,6 +104,7 @@ class UserService extends Service {
 			name: true,
 			username: true,
 			password: true,
+			role: true,
 			createdAt: true,
 			updatedAt: true,
 		} satisfies Prisma.UserSelect

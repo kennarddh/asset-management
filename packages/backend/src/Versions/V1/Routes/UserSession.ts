@@ -1,6 +1,12 @@
 import { CelosiaRouter } from '@celosiajs/core'
 
+import HandleAccess from 'Middlewares/HandleAccess'
 import VerifyJWT from 'Middlewares/VerifyJWT'
+
+import IsSameUser from 'Services/AccessControl/ResourceAccessPolicies/IsSameUser'
+import IsSameUserBySession from 'Services/AccessControl/ResourceAccessPolicies/IsSameUserBySession'
+import UserResourceContextGetter from 'Services/AccessControl/ResourceContextGetters/EmployeeResourceContextGetter'
+import UserSessionResourceContextGetter from 'Services/AccessControl/ResourceContextGetters/UserSessionResourceContextGetter'
 
 import {
 	FindManyUserSessions,
@@ -11,11 +17,25 @@ import {
 
 const UserSessionRouter = new CelosiaRouter({ strict: true })
 
-UserSessionRouter.get('/session/:id', [new VerifyJWT(false)], new FindUserSessionById())
-UserSessionRouter.delete('/session/:id', [new VerifyJWT(false)], new RevokeUserSession())
+UserSessionRouter.get(
+	'/session/:id',
+	[
+		new VerifyJWT(false),
+		new HandleAccess([new IsSameUserBySession()], new UserSessionResourceContextGetter()),
+	],
+	new FindUserSessionById(),
+)
+UserSessionRouter.delete(
+	'/session/:id',
+	[
+		new VerifyJWT(false),
+		new HandleAccess([new IsSameUserBySession()], new UserSessionResourceContextGetter()),
+	],
+	new RevokeUserSession(),
+)
 UserSessionRouter.delete(
 	'/:id/session/',
-	[new VerifyJWT(false)],
+	[new VerifyJWT(false), new HandleAccess([new IsSameUser()], new UserResourceContextGetter())],
 	new RevokeAllUserSessionsByUserId(),
 )
 UserSessionRouter.get('/session', [new VerifyJWT(false)], new FindManyUserSessions())
