@@ -1,5 +1,7 @@
 import { DI, Injectable, Service } from '@celosiajs/core'
 
+import { UserRole } from '@asset-management/common'
+
 import UnitOfWork from 'Repositories/UnitOfWork/UnitOfWork'
 
 import ConfigurationService from 'Services/ConfigurationService/ConfigurationService'
@@ -90,6 +92,7 @@ class AuthService extends Service {
 			name,
 			username,
 			password,
+			role: UserRole.Member,
 		})
 
 		return { user }

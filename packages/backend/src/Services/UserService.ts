@@ -1,6 +1,6 @@
 import { DI, Injectable, Service } from '@celosiajs/core'
 
-import { SortOrder, UserSortField } from '@asset-management/common'
+import { SortOrder, UserRole, UserSortField } from '@asset-management/common'
 
 import { DeepPartialAndUndefined } from 'Types/Types'
 
@@ -32,6 +32,7 @@ export interface UserCreateData {
 	name: string
 	username: string
 	password: string
+	role: UserRole
 }
 
 export interface UserUpdateData {
