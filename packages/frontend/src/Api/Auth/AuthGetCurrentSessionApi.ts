@@ -1,3 +1,5 @@
+import { UserRole } from '@asset-management/common'
+
 import CallApi from 'Api/CallApi'
 import { ApiFunction } from 'Api/Types'
 
@@ -7,6 +9,7 @@ interface AuthGetCurrentSessionResponse {
 		id: string
 		name: string
 		username: string
+		role: string
 	}
 	ipAddress: string
 	createdAt: number
@@ -20,6 +23,7 @@ export interface AuthGetCurrentSessionOutput {
 		id: string
 		name: string
 		username: string
+		role: UserRole
 	}
 	ipAddress: string
 	createdAt: Date
@@ -38,6 +42,7 @@ const AuthGetCurrentSessionApi: ApiFunction<AuthGetCurrentSessionOutput> = async
 			id: outputData.user.id,
 			name: outputData.user.name,
 			username: outputData.user.username,
+			role: outputData.user.role as UserRole,
 		},
 		ipAddress: outputData.ipAddress,
 		createdAt: new Date(outputData.createdAt),

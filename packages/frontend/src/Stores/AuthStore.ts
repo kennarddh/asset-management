@@ -1,3 +1,4 @@
+import { UserRole } from '@asset-management/common'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
@@ -9,6 +10,7 @@ export interface AuthState {
 		id: string
 		name: string
 		username: string
+		role: UserRole
 	} | null
 	isLoading: boolean
 	hasChecked: boolean

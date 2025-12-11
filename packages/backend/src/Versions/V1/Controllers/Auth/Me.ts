@@ -31,6 +31,7 @@ class Me extends Controller {
 					id: user.id.toString(),
 					username: user.username,
 					name: user.name,
+					role: user.role,
 					createdAt: user.createdAt.getTime(),
 					updatedAt: user.updatedAt.getTime(),
 				},

@@ -82,6 +82,7 @@ class AuthService extends Service {
 					id: user.id,
 					name: user.name,
 					username: user.username,
+					role: user.role,
 				},
 			}
 		})
@@ -187,6 +188,7 @@ class AuthService extends Service {
 					id: user.id,
 					name: user.name,
 					username: user.username,
+					role: user.role,
 				},
 			}
 		})

@@ -50,6 +50,7 @@ class Login extends Controller {
 						id: user.id.toString(),
 						name: user.name,
 						username: user.username,
+						role: user.role,
 					},
 				},
 			})

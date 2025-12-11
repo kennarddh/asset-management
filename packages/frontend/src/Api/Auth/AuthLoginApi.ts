@@ -1,3 +1,5 @@
+import { UserRole } from '@asset-management/common'
+
 import CallApi from 'Api/CallApi'
 import { ApiFunction } from 'Api/Types'
 
@@ -7,6 +9,7 @@ interface AuthLoginResponse {
 		id: string
 		name: string
 		username: string
+		role: string
 	}
 }
 
@@ -21,6 +24,7 @@ export interface AuthLoginOutput {
 		id: string
 		name: string
 		username: string
+		role: UserRole
 	}
 }
 
@@ -38,6 +42,7 @@ const AuthLoginApi: ApiFunction<AuthLoginOutput, AuthLoginData> = async data => 
 			id: outputData.user.id,
 			name: outputData.user.name,
 			username: outputData.user.username,
+			role: outputData.user.role as UserRole,
 		},
 	}
 }

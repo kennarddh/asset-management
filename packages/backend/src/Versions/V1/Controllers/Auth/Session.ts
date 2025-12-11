@@ -29,6 +29,7 @@ class Session extends Controller {
 						id: user.id.toString(),
 						name: user.name,
 						username: user.username,
+						role: user.role,
 					},
 					ipAddress: userSession.ipAddress,
 					createdAt: userSession.createdAt.getTime(),
