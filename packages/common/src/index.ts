@@ -12,7 +12,7 @@ export enum ApiErrorResource {
 	UserSession = 'UserSession',
 	Asset = 'Asset',
 	AssetCategory = 'AssetCategory',
-	LendingRequest = 'LendingRequest',
+	Order = 'Order',
 	Location = 'Location',
 	Username = 'Username',
 }
@@ -66,7 +66,7 @@ export enum AssetStatus {
 	Delisted = 'Delisted',
 }
 
-export enum LendingRequestStatus {
+export enum OrderStatus {
 	Pending = 'Pending',
 	Approved = 'Approved',
 	Rejected = 'Rejected',
@@ -74,6 +74,8 @@ export enum LendingRequestStatus {
 	Active = 'Active',
 	Completed = 'Completed',
 	Overdue = 'Overdue',
+	Returned = 'Returned',
+	ReturnedLate = 'ReturnedLate',
 }
 
 export enum AssetType {

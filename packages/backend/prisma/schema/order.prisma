@@ -1,4 +1,4 @@
-model LendingRequest {
+model Order {
     id          BigInt  @id @default(autoincrement())
     description String
     reason      String?
@@ -9,18 +9,17 @@ model LendingRequest {
     user   User   @relation(fields: [userId], references: [id])
 
     assetId BigInt
-    asset   Asset @relation(fields: [assetId], references: [id])
+    asset   Asset  @relation(fields: [assetId], references: [id])
 
     requestedAt DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
-    dueAt       DateTime
+    finishAt    DateTime
     startAt     DateTime
     approvedAt  DateTime?
     rejectedAt  DateTime?
     returnedAt  DateTime?
     canceledAt  DateTime?
-    lentAt      DateTime?
 
     @@index([status])
-    @@map("lending_requests")
+    @@map("orders")
 }

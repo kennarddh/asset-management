@@ -5,8 +5,8 @@ model User {
     password String
     role     String @db.VarChar(50)
 
-    userSessions    UserSession[]
-    lendingRequests LendingRequest[]
+    userSessions UserSession[]
+    orders       Order[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
