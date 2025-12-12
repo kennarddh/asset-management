@@ -1,3 +1,8 @@
 export { default as CreateOrder } from './CreateOrder'
 export { default as FindManyOrders } from './FindManyOrders'
+export { default as FindManySelfOrders } from './FindManySelfOrders'
 export { default as FindOrderById } from './FindOrderById'
+export { default as ApproveOrder } from './ApproveOrder'
+export { default as RejectOrder } from './RejectOrder'
+export { default as CancelOrder } from './CancelOrder'
+export { default as ReturnOrder } from './ReturnOrder'
