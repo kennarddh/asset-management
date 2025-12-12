@@ -234,11 +234,11 @@ class OrderService extends Service {
 					id: order.id.toString(),
 					description: order.description,
 					reason: order.reason,
-					status: order.status as OrderStatus,
+					status: order.status,
 					quantity: order.quantity,
-					user: { id: order.user.id, name: order.user.name },
-					asset: { id: order.asset.id, name: order.asset.name },
-					requestedAt: order.requestedAt,
+					user: { id: order.user.id.toString(), name: order.user.name },
+					asset: { id: order.asset.id.toString(), name: order.asset.name },
+					requestedAt: order.requestedAt.getTime(),
 					updatedAt: order.updatedAt.getTime(),
 					finishAt: order.finishAt.getTime(),
 					startAt: order.startAt.getTime(),
@@ -252,6 +252,9 @@ class OrderService extends Service {
 	}
 
 	async create(data: OrderCreateData) {
+		// TODO: Send notification to admin
+		// TODO: Schedule auto cancel if not approved/rejected/cancelled by startAt
+
 		return await this.unitOfWork.execute(async transaction => {
 			return await transaction.getRepository(OrderRepository).create({
 				data: {

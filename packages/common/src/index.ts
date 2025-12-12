@@ -27,6 +27,7 @@ export enum ApiErrorKind {
 	Taken = 'Taken',
 	CannotBeArray = 'CannotBeArray',
 	InternalServerError = 'InternalServerError',
+	Processed = 'Processed',
 }
 
 export interface ApiOtherError {
