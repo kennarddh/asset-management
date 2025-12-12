@@ -11,23 +11,23 @@ import EnvironmentConfigurationProvider from './Providers/EnvironmentConfigurati
 export const ApplicationConfigurationSchema = z.object({
 	nodeEnv: z.string(),
 	host: z.string(),
-	port: z.number(),
+	port: z.int(),
 	databaseUrl: z.string(),
 	tokens: z.object({
 		access: z.object({
 			secret: z.string(),
-			expire: z.number(),
-			clockTolerance: z.number(),
+			expire: z.int(),
+			clockTolerance: z.int(),
 		}),
 		refresh: z.object({
 			secret: z.string(),
-			clockTolerance: z.number(),
-			expire: z.number(),
+			clockTolerance: z.int(),
+			expire: z.int(),
 		}),
 	}),
 	rateLimiter: z.object({
-		max: z.number(),
-		window: z.number(),
+		max: z.int(),
+		window: z.int(),
 	}),
 	passwordHash: z.object({
 		secret: z.string(),
@@ -39,8 +39,8 @@ export const ApplicationConfigurationSchema = z.object({
 	}),
 	baseUrl: z.string(),
 	pagination: z.object({
-		defaultLimit: z.number(),
-		defaultMaxLimit: z.number(),
+		defaultLimit: z.int(),
+		defaultMaxLimit: z.int(),
 	}),
 })
 

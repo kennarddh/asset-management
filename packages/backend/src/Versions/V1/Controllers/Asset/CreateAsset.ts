@@ -55,8 +55,8 @@ class CreateAsset extends Controller {
 		return z.object({
 			name: z.string().trim().min(1).max(100),
 			description: z.string().trim(),
-			quantity: z.number().min(1),
-			maximumLendingDuration: z.number().min(1),
+			quantity: z.int().min(1),
+			maximumLendingDuration: z.int().min(1),
 			requiresApproval: z.boolean(),
 			status: z.enum(AssetStatus),
 			categoryId: z.coerce.bigint().min(1n),

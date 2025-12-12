@@ -67,8 +67,8 @@ class UpdateAsset extends Controller {
 		return z.object({
 			name: z.string().trim().min(1).max(100).optional(),
 			description: z.string().trim().optional(),
-			quantity: z.number().min(1).optional(),
-			maximumLendingDuration: z.number().min(1).optional(),
+			quantity: z.int().min(1).optional(),
+			maximumLendingDuration: z.int().min(1).optional(),
 			requiresApproval: z.boolean().optional(),
 			status: z.enum(AssetStatus).optional(),
 			categoryId: z.coerce.bigint().min(1n).optional(),
