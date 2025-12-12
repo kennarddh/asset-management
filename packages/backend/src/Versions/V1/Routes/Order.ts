@@ -29,7 +29,7 @@ OrderRouter.get(
 	new FindManyOrders(),
 )
 OrderRouter.get(
-	'/',
+	'/self',
 	[new VerifyJWT(false), new HandleAccess([new HasRole(UserRole.Member)])],
 	new FindManySelfOrders(),
 )
