@@ -61,6 +61,20 @@ export enum AssetCategorySortField {
 	CreatedAt = 'createdAt',
 }
 
+export enum OrderSortField {
+	Description = 'description',
+	Status = 'status',
+	Quantity = 'Quantity',
+	RequestedAt = 'requestedAt',
+	UpdatedAt = 'updatedAt',
+	FinishAt = 'finishAt',
+	StartAt = 'startAt',
+	ApprovedAt = 'approvedAt',
+	RejectedAt = 'rejectedAt',
+	ReturnedAt = 'returnedAt',
+	CanceledAt = 'canceledAt',
+}
+
 export enum AssetStatus {
 	Available = 'Available',
 	Delisted = 'Delisted',
