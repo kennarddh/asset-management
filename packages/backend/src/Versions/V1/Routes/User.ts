@@ -8,7 +8,7 @@ import VerifyJWT from 'Middlewares/VerifyJWT'
 import HasRole from 'Services/AccessControl/ResourceAccessPolicies/HasRole'
 import IsSameUser from 'Services/AccessControl/ResourceAccessPolicies/IsSameUser'
 import { Or } from 'Services/AccessControl/ResourceAccessPoliciesBoolean'
-import UserResourceContextGetter from 'Services/AccessControl/ResourceContextGetters/EmployeeResourceContextGetter'
+import UserResourceContextGetter from 'Services/AccessControl/ResourceContextGetters/UserResourceContextGetter'
 
 import { FindManyUsers, FindUserById, UpdateUser } from '../Controllers/User'
 import UserSessionRouter from './UserSession'

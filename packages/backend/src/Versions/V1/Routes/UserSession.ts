@@ -8,7 +8,7 @@ import VerifyJWT from 'Middlewares/VerifyJWT'
 import HasRole from 'Services/AccessControl/ResourceAccessPolicies/HasRole'
 import IsSameUser from 'Services/AccessControl/ResourceAccessPolicies/IsSameUser'
 import IsSameUserBySession from 'Services/AccessControl/ResourceAccessPolicies/IsSameUserBySession'
-import UserResourceContextGetter from 'Services/AccessControl/ResourceContextGetters/EmployeeResourceContextGetter'
+import UserResourceContextGetter from 'Services/AccessControl/ResourceContextGetters/UserResourceContextGetter'
 import UserSessionResourceContextGetter from 'Services/AccessControl/ResourceContextGetters/UserSessionResourceContextGetter'
 
 import {
