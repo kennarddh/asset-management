@@ -3,6 +3,9 @@
 - Individual asset tracking
 - Image and video upload with object storage
 - Web push notification
+- Implement finite state machine for order's status transition instead of scattered logic in many methods.
+- Refactor controller error handling by making error handling centralized and remove the need of putting standard error log of internal server error try catch in every controller.
+- Refactor seed script to use password hash service.
 
 POST /order -> Member
 
