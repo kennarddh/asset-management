@@ -13,6 +13,7 @@ import { InvalidStateError, ResourceNotFoundError } from 'Errors'
 
 import { Prisma } from 'PrismaGenerated/client'
 
+import AssetService from './AssetService'
 import ConfigurationService from './ConfigurationService/ConfigurationService'
 import { FindManyOptions } from './Types'
 
@@ -81,6 +82,7 @@ class OrderService extends Service {
 	constructor(
 		private unitOfWork = DI.get(UnitOfWork),
 		private configurationService = DI.get(ConfigurationService),
+		private assetService = DI.get(AssetService),
 	) {
 		super('OrderService')
 	}
@@ -255,7 +257,26 @@ class OrderService extends Service {
 		// TODO: Send notification to admin
 		// TODO: Schedule auto cancel if not approved/rejected/cancelled by startAt
 
+		const nowTime = new Date().getTime()
+
+		if (data.startAt.getTime() <= nowTime)
+			throw new InvalidStateError('create', 'invalidStartAt')
+
+		if (data.finishAt.getTime() <= nowTime)
+			throw new InvalidStateError('create', 'invalidFinishAt')
+
+		const duration = data.finishAt.getTime() - data.startAt.getTime()
+
+		if (duration <= 0) throw new InvalidStateError('create', 'invalidDuration')
+
 		return await this.unitOfWork.execute(async transaction => {
+			const asset = await this.assetService.findById(data.assetId)
+
+			if (asset === null) throw new ResourceNotFoundError('asset')
+
+			if (duration >= asset.maximumLendingDuration * 1000)
+				throw new InvalidStateError('create', 'invalidDuration')
+
 			return await transaction.getRepository(OrderRepository).create({
 				data: {
 					...data,
@@ -281,11 +302,16 @@ class OrderService extends Service {
 
 			if (order === null) throw new ResourceNotFoundError('order')
 
+			const now = new Date()
+
 			// TODO: Refactor error JSON format
+			if (order.startAt.getTime() <= now.getTime())
+				throw new InvalidStateError('approve', 'processed')
+
 			if (order.status !== OrderStatus.Pending)
 				throw new InvalidStateError('approve', 'processed')
 
-			await this.update(id, { status: OrderStatus.Approved, approvedAt: new Date(), reason })
+			await this.update(id, { status: OrderStatus.Approved, approvedAt: now, reason })
 
 			// TODO: Send notification to member
 			// TODO: Schedule at finishAt to update status to Overdue
@@ -299,11 +325,16 @@ class OrderService extends Service {
 
 			if (order === null) throw new ResourceNotFoundError('order')
 
+			const now = new Date()
+
 			// TODO: Refactor error JSON format
+			if (order.startAt.getTime() <= now.getTime())
+				throw new InvalidStateError('reject', 'processed')
+
 			if (order.status !== OrderStatus.Pending)
 				throw new InvalidStateError('reject', 'processed')
 
-			await this.update(id, { status: OrderStatus.Rejected, rejectedAt: new Date(), reason })
+			await this.update(id, { status: OrderStatus.Rejected, rejectedAt: now, reason })
 
 			// TODO: Send notification to member
 		})

@@ -15,6 +15,8 @@ export enum ApiErrorResource {
 	Order = 'Order',
 	Location = 'Location',
 	Username = 'Username',
+	Duration = 'Duration',
+	DateTime = 'DateTime',
 }
 
 export enum ApiErrorKind {

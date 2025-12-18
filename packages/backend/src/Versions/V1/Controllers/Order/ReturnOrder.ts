@@ -38,7 +38,7 @@ class ReturnOrder extends Controller {
 				})
 			} else if (
 				error instanceof InvalidStateError &&
-				error.operation === 'cancel' &&
+				error.operation === 'return' &&
 				error.state === 'processed'
 			) {
 				return response.status(409).json({

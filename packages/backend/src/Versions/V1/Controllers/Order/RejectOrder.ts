@@ -17,7 +17,8 @@ class RejectOrder extends Controller {
 		request: ControllerRequest<RejectOrder>,
 		response: CelosiaResponse,
 	) {
-		const { id, reason } = request.params
+		const { id } = request.params
+		const { reason } = request.body
 
 		try {
 			await this.orderService.reject(id, reason)
@@ -38,7 +39,7 @@ class RejectOrder extends Controller {
 				})
 			} else if (
 				error instanceof InvalidStateError &&
-				error.operation === 'cancel' &&
+				error.operation === 'reject' &&
 				error.state === 'processed'
 			) {
 				return response.status(409).json({
@@ -63,6 +64,11 @@ class RejectOrder extends Controller {
 	public override get params() {
 		return z.object({
 			id: z.coerce.bigint().min(1n),
+		})
+	}
+
+	public override get body() {
+		return z.object({
 			reason: z.string().trim(),
 		})
 	}
