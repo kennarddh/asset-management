@@ -83,6 +83,13 @@ class EnvironmentConfigurationProvider extends ConfigurationProvider<
 				defaultLimit: parseInt(process.env.PAGINATION_DEFAULT_LIMIT, 10),
 				defaultMaxLimit: parseInt(process.env.PAGINATION_DEFAULT_MAX_LIMIT, 10),
 			},
+			redis: {
+				host: process.env.REDIS_HOST,
+				port: parseInt(process.env.REDIS_PORT, 10),
+				username: process.env.REDIS_USERNAME,
+				password: await this.loadValueOrFile('REDIS_PASSWORD', 'REDIS_PASSWORD_FILE'),
+				db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : undefined,
+			},
 		}
 	}
 }

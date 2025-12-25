@@ -42,6 +42,13 @@ export const ApplicationConfigurationSchema = z.object({
 		defaultLimit: z.int(),
 		defaultMaxLimit: z.int(),
 	}),
+	redis: z.object({
+		host: z.string(),
+		port: z.number(),
+		username: z.string(),
+		password: z.string(),
+		db: z.number().default(0),
+	}),
 })
 
 export type ApplicationConfiguration = z.infer<typeof ApplicationConfigurationSchema>

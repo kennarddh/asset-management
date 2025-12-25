@@ -2,6 +2,8 @@ import { CelosiaInstance, DI } from '@celosiajs/core'
 
 import Logger from 'Utils/Logger/Logger'
 
+import RedisRepository from 'Repositories/RedisRepository'
+
 import ConfigurationService from 'Services/ConfigurationService/ConfigurationService'
 
 Logger.info('Starting server.', {
@@ -38,7 +40,7 @@ const { default: OnShutdown } = await import('Utils/OnShutdown/OnShutdown')
 
 Logger.info('Lazy imports completed.')
 
-await Promise.all([DI.get(DatabaseRepository).connect()])
+await Promise.all([DI.get(DatabaseRepository).connect(), DI.get(RedisRepository).connect()])
 
 Logger.info('Setup completed.')
 

@@ -21,8 +21,25 @@ services:
         ports:
             - 5432:5432
 
+    redis:
+        image: redis:8.4.0-alpine
+        volumes:
+            - ./infrastructure/redis/conf:/usr/local/etc/redis
+            - redis-data:/data
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 1s
+            timeout: 3s
+            retries: 30
+            start_period: 5s
+        networks:
+            - app
+        ports:
+            - 6379:6379
+
 volumes:
     database:
+    redis-data:
 
 networks:
     app:

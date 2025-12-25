@@ -32,6 +32,13 @@ export interface ProcessEnvVariables {
 
 	PAGINATION_DEFAULT_LIMIT: string
 	PAGINATION_DEFAULT_MAX_LIMIT: string
+
+	REDIS_HOST: string
+	REDIS_PORT: string
+	REDIS_USERNAME: string
+	REDIS_PASSWORD?: string
+	REDIS_PASSWORD_FILE?: string
+	REDIS_DB?: string
 }
 
 declare global {
