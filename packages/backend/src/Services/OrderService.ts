@@ -15,6 +15,7 @@ import { Prisma } from 'PrismaGenerated/client'
 
 import AssetService from './AssetService'
 import ConfigurationService from './ConfigurationService/ConfigurationService'
+import SchedulerService, { OrderJobData } from './SchedulerService'
 import { FindManyOptions } from './Types'
 
 export interface Order {
@@ -83,6 +84,7 @@ class OrderService extends Service {
 		private unitOfWork = DI.get(UnitOfWork),
 		private configurationService = DI.get(ConfigurationService),
 		private assetService = DI.get(AssetService),
+		private schedulerService = DI.get(SchedulerService),
 	) {
 		super('OrderService')
 	}
@@ -255,7 +257,6 @@ class OrderService extends Service {
 
 	async create(data: OrderCreateData) {
 		// TODO: Send notification to admin
-		// TODO: Schedule auto cancel if not approved/rejected/cancelled by startAt
 
 		const nowTime = new Date().getTime()
 
@@ -277,12 +278,20 @@ class OrderService extends Service {
 			if (duration >= asset.maximumLendingDuration * 1000)
 				throw new InvalidStateError('create', 'invalidDuration')
 
-			return await transaction.getRepository(OrderRepository).create({
+			const order = await transaction.getRepository(OrderRepository).create({
 				data: {
 					...data,
 					status: OrderStatus.Active,
 				},
 			})
+
+			await this.schedulerService.addJob(
+				'order-auto-cancel',
+				{ orderId: order.id.toString(), targetStatus: OrderStatus.Cancelled },
+				data.startAt.getTime() - nowTime,
+			)
+
+			return order
 		})
 	}
 
@@ -314,8 +323,18 @@ class OrderService extends Service {
 			await this.update(id, { status: OrderStatus.Approved, approvedAt: now, reason })
 
 			// TODO: Send notification to member
-			// TODO: Schedule at finishAt to update status to Overdue
-			// TODO: Schedule at startAt to update status to Active
+
+			await this.schedulerService.addJob(
+				'order-start',
+				{ orderId: id.toString(), targetStatus: OrderStatus.Active },
+				order.startAt.getTime() - now.getTime(),
+			)
+
+			await this.schedulerService.addJob(
+				'order-finish',
+				{ orderId: id.toString(), targetStatus: OrderStatus.Overdue },
+				order.finishAt.getTime() - now.getTime(),
+			)
 		})
 	}
 
@@ -378,6 +397,56 @@ class OrderService extends Service {
 			})
 
 			// TODO: Send notification to member
+		})
+	}
+
+	async processScheduledJob(jobName: string, data: OrderJobData) {
+		await this.unitOfWork.execute(async () => {
+			const order = await this.findById(BigInt(data.orderId))
+
+			if (order === null) {
+				this.logger.warn(`Order with ID ${data.orderId} not found for job ${jobName}`)
+
+				throw new ResourceNotFoundError('order')
+			}
+
+			if (jobName === 'order-auto-cancel') {
+				if (
+					order.status !== OrderStatus.Pending &&
+					order.status !== OrderStatus.Approved &&
+					order.status !== OrderStatus.Rejected
+				) {
+					this.logger.debug(
+						`Order with ID ${data.orderId} is in status ${order.status}, skipping auto-cancel.`,
+					)
+
+					return
+				}
+
+				await this.cancel(BigInt(data.orderId))
+			} else if (jobName === 'order-start') {
+				if (order.status !== OrderStatus.Approved) {
+					this.logger.debug(
+						`Order with ID ${data.orderId} is in status ${order.status}, skipping start.`,
+					)
+
+					return
+				}
+
+				await this.update(BigInt(data.orderId), { status: OrderStatus.Active })
+			} else if (jobName === 'order-finish') {
+				if (order.status !== OrderStatus.Active) {
+					this.logger.debug(
+						`Order with ID ${data.orderId} is in status ${order.status}, skipping finish.`,
+					)
+
+					return
+				}
+
+				await this.update(BigInt(data.orderId), { status: OrderStatus.Overdue })
+			} else {
+				this.logger.warn(`Unknown job name: ${jobName}`)
+			}
 		})
 	}
 }

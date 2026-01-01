@@ -5,8 +5,11 @@ import Instance from 'App'
 import Logger from 'Utils/Logger/Logger'
 
 import DatabaseRepository from 'Repositories/DatabaseRepository'
+import RedisRepository from 'Repositories/RedisRepository'
 
 import ConfigurationService from 'Services/ConfigurationService/ConfigurationService'
+import ScheduleWorkerService from 'Services/ScheduleWorkerService'
+import SchedulerService from 'Services/SchedulerService'
 
 const OnShutdown = async (signal: string | undefined, exitCode = 0) => {
 	const configurationService = DI.get(ConfigurationService)
@@ -39,6 +42,30 @@ const OnShutdown = async (signal: string | undefined, exitCode = 0) => {
 		Logger.info('Database connection closed.')
 	} catch (error) {
 		Logger.error('Failed to close database connection.', error)
+	}
+
+	try {
+		await DI.get(SchedulerService).disconnect()
+
+		Logger.info('SchedulerService disconnected.')
+	} catch (error) {
+		Logger.error('Failed to disconnect SchedulerService.', error)
+	}
+
+	try {
+		await DI.get(ScheduleWorkerService).disconnect()
+
+		Logger.info('ScheduleWorkerService disconnected.')
+	} catch (error) {
+		Logger.error('Failed to disconnect ScheduleWorkerService.', error)
+	}
+
+	try {
+		await DI.get(RedisRepository).disconnect()
+
+		Logger.info('Redis connection closed.')
+	} catch (error) {
+		Logger.error('Failed to close Redis connection.', error)
 	}
 
 	Logger.info('Exiting.')

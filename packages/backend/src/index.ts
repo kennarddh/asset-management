@@ -5,6 +5,8 @@ import Logger from 'Utils/Logger/Logger'
 import RedisRepository from 'Repositories/RedisRepository'
 
 import ConfigurationService from 'Services/ConfigurationService/ConfigurationService'
+import ScheduleWorkerService from 'Services/ScheduleWorkerService'
+import SchedulerService from 'Services/SchedulerService'
 
 Logger.info('Starting server.', {
 	pid: process.pid,
@@ -40,7 +42,12 @@ const { default: OnShutdown } = await import('Utils/OnShutdown/OnShutdown')
 
 Logger.info('Lazy imports completed.')
 
-await Promise.all([DI.get(DatabaseRepository).connect(), DI.get(RedisRepository).connect()])
+await Promise.all([
+	DI.get(DatabaseRepository).connect(),
+	DI.get(RedisRepository).connect(),
+	DI.get(ScheduleWorkerService).connect(),
+	DI.get(SchedulerService).connect(),
+])
 
 Logger.info('Setup completed.')
 
