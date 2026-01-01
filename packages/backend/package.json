@@ -25,7 +25,7 @@
 		"@asset-management/common": "^1.0.0",
 		"@celosiajs/core": "^0.0.1-alpha.39",
 		"@celosiajs/logging": "^0.0.1-alpha.26",
-		"@prisma/adapter-pg": "^7.0.1",
+		"@prisma/adapter-pg": "^7.2.0",
 		"@prisma/client": "^7.0.1",
 		"argon2": "^0.44.0",
 		"bullmq": "^5.66.2",
