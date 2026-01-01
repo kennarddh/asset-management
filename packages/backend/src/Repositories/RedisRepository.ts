@@ -18,10 +18,15 @@ class RedisRepository extends Repository {
 			password: configurationService.configurations.redis.password,
 			db: configurationService.configurations.redis.db,
 			lazyConnect: true,
+			maxRetriesPerRequest: null,
 		})
 
 		this._redis.on('error', error => {
 			this.logger.error('Error.', error)
+		})
+
+		this._redis.on('wait', () => {
+			this.logger.info('Waiting for connection.')
 		})
 
 		this._redis.on('connect', () => {
@@ -53,6 +58,17 @@ class RedisRepository extends Repository {
 		this.logger.info('Init.')
 
 		try {
+			if (
+				this.redis.status === 'ready' ||
+				this.redis.status === 'reconnecting' ||
+				this.redis.status === 'connecting' ||
+				this.redis.status === 'connect'
+			) {
+				this.logger.info('Already connected.')
+
+				return
+			}
+
 			await this.redis.connect()
 
 			const isReady = await this.isReady()
