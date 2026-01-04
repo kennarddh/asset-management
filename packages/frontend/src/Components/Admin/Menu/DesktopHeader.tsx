@@ -6,11 +6,11 @@ import { AppBar, Box, Stack, Toolbar, Typography } from '@mui/material'
 
 import { useTranslation } from 'react-i18next'
 
+import MenuButton from '../../MenuButton'
 import LanguageSelector from './LanguageSelector'
-import MenuButton from './MenuButton'
 
 const DesktopHeader: FC = () => {
-	const { t } = useTranslation('navigations')
+	const { t } = useTranslation('admin_navigations')
 
 	return (
 		<AppBar
@@ -30,7 +30,7 @@ const DesktopHeader: FC = () => {
 				<Stack direction='row' sx={{ width: '100%', justifyContent: 'space-between' }}>
 					<Stack spacing={2} direction='row'>
 						<Typography variant='h5' component='h1' sx={{ color: 'text.primary' }}>
-							{t('navigations:brand')}
+							{t('admin_navigations:brand')}
 						</Typography>
 					</Stack>
 					<Box sx={{ display: 'flex', gap: 1, flexDirection: 'row' }}>

@@ -11,5 +11,9 @@
 	"network": {
 		"title": "Network Error",
 		"text": "We could not connect to the server. Please check your internet connection. If the problem persists, please try again later."
+	},
+	"accessDenied": {
+		"title": "Access Denied",
+		"text": "You do not have permission to access this resource."
 	}
 }

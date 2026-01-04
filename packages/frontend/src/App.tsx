@@ -4,9 +4,12 @@ import { RouterProvider, createBrowserRouter } from 'react-router'
 
 import { ThemeProvider, createTheme } from '@mui/material'
 
+import { UserRole } from '@asset-management/common'
+import AdminDashboardLayout from 'Outlets/AdminDashboardLayout'
 import AuthorizationOutlet from 'Outlets/AuthorizationOutlet'
-import DashboardLayout from 'Outlets/DashboardLayout'
+import HasRoleOutlet from 'Outlets/HasRoleOutlet'
 import MainLayout from 'Outlets/MainLayout'
+import MemberLayout from 'Outlets/MemberLayout'
 import { useTranslation } from 'react-i18next'
 
 import MUILocaleMap, { DefaultMUILocale } from 'Constants/MUILocaleMap'
@@ -25,12 +28,34 @@ const router = createBrowserRouter([
 				element: <AuthorizationOutlet />,
 				children: [
 					{
-						path: '/',
-						element: <DashboardLayout />,
+						path: '',
+						element: <HasRoleOutlet role={UserRole.Member} />,
 						children: [
 							{
-								index: true,
-								lazy: () => import('Pages/Home'),
+								path: '',
+								element: <MemberLayout />,
+								children: [
+									{
+										index: true,
+										lazy: () => import('Pages/Member/Home'),
+									},
+								],
+							},
+						],
+					},
+					{
+						path: '/admin',
+						element: <HasRoleOutlet role={UserRole.Admin} />,
+						children: [
+							{
+								path: '',
+								element: <AdminDashboardLayout />,
+								children: [
+									{
+										index: true,
+										lazy: () => import('Pages/Admin/Home'),
+									},
+								],
 							},
 						],
 					},

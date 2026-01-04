@@ -4,9 +4,9 @@ import { Outlet } from 'react-router'
 
 import { Box } from '@mui/material'
 
-import Header from 'Components/Menu/Header'
+import Header from 'Components/Admin/Menu/Header'
 
-const DashboardLayout: FC = () => {
+const AdminDashboardLayout: FC = () => {
 	return (
 		<>
 			<Header />
@@ -25,4 +25,4 @@ const DashboardLayout: FC = () => {
 	)
 }
 
-export default DashboardLayout
+export default AdminDashboardLayout

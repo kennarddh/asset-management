@@ -17,7 +17,7 @@ import {
 	Typography,
 } from '@mui/material'
 
-import { ApiErrorKind } from '@asset-management/common'
+import { ApiErrorKind, UserRole } from '@asset-management/common'
 import { FormatParsingError, IsApiResponseError } from 'Api'
 import useAuthStore from 'Stores/AuthStore'
 import { useTranslation } from 'react-i18next'
@@ -52,7 +52,11 @@ const Login: FC = () => {
 
 					completeLogin(result.token, result.user)
 
-					await Navigate('/')
+					if (result.user.role === UserRole.Admin) {
+						await Navigate('/admin')
+					} else {
+						await Navigate('/')
+					}
 				} catch (error) {
 					if (IsApiResponseError(error)) {
 						if (error.apiErrorResponse.errors.parsing) {

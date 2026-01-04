@@ -22,8 +22,8 @@ import { IsApiResponseError } from 'Api'
 import useAuthStore from 'Stores/AuthStore'
 import { useTranslation } from 'react-i18next'
 
-import MenuButton from 'Components/Menu/MenuButton'
-import MenuContent from 'Components/Menu/MenuContent'
+import MenuContent from 'Components/Admin/Menu/MenuContent'
+import MenuButton from 'Components/MenuButton'
 
 import AuthLogoutApi from 'Api/Auth/AuthLogoutApi'
 

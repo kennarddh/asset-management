@@ -24,11 +24,11 @@ import { IsApiResponseError } from 'Api'
 import useAuthStore from 'Stores/AuthStore'
 import { useTranslation } from 'react-i18next'
 
+import MenuButton from 'Components/MenuButton'
+
 import AuthLogoutApi from 'Api/Auth/AuthLogoutApi'
 
-import MenuButton from './MenuButton'
-
-const OptionsMenu: FC = () => {
+const UserMenu: FC = () => {
 	const [AnchorElement, SetAnchorElement] = useState<HTMLElement | null>(null)
 	const [ErrorSnackbarText, SetErrorSnackbarText] = useState<string | null>(null)
 
@@ -36,7 +36,7 @@ const OptionsMenu: FC = () => {
 
 	const Navigate = useNavigate()
 
-	const { t } = useTranslation(['auth', 'navigations'])
+	const { t } = useTranslation(['auth', 'member_navigations'])
 
 	const OnClick = useCallback((event: MouseEvent<HTMLElement>) => {
 		SetAnchorElement(event.currentTarget)
@@ -77,7 +77,7 @@ const OptionsMenu: FC = () => {
 	return (
 		<>
 			<MenuButton
-				aria-label={t('navigations:menu.open')}
+				aria-label={t('member_navigations:menu.open')}
 				onClick={OnClick}
 				sx={{ borderColor: 'transparent' }}
 			>
@@ -103,7 +103,7 @@ const OptionsMenu: FC = () => {
 				}}
 			>
 				<MenuItem component={Link} to='/profile'>
-					<ListItemText>{t('navigations:links.profile')}</ListItemText>
+					<ListItemText>{t('member_navigations:links.profile')}</ListItemText>
 				</MenuItem>
 				<Divider />
 				<MenuItem
@@ -149,4 +149,4 @@ const OptionsMenu: FC = () => {
 	)
 }
 
-export default OptionsMenu
+export default UserMenu

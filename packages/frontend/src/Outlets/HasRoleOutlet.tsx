@@ -27,16 +27,20 @@ const HasRoleOutlet: FC<HasRoleOutletProps> = props => {
 	}, [Navigate])
 
 	const Home = useCallback(async () => {
-		await Navigate('/')
-	}, [Navigate])
+		if (userRole === UserRole.Admin) {
+			await Navigate('/admin')
+		} else {
+			await Navigate('/')
+		}
+	}, [Navigate, userRole])
 
 	if (userRole !== null && props.role == userRole) return <Outlet />
 
 	return (
 		<Box
 			sx={theme => ({
-				width: '100%',
-				height: '100%',
+				width: '100dvw',
+				height: '100dvh',
 				display: 'flex',
 				flexDirection: 'column',
 				alignItems: 'center',

@@ -17,13 +17,13 @@ export interface MenuListItem {
 const MenuContent: FC<{ onClickLink?: () => void }> = props => {
 	const Location = useLocation()
 
-	const { t } = useTranslation('navigations')
+	const { t } = useTranslation('admin_navigations')
 
 	const MenuListItems = useMemo<MenuListItem[]>(
 		() => [
 			{
-				text: t('navigations:links.home'),
-				to: '/',
+				text: t('admin_navigations:links.home'),
+				to: '/admin/',
 				icon: <HomeRoundedIcon />,
 			},
 		],

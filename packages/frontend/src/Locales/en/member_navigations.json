@@ -1,0 +1,12 @@
+{
+	"brand": "Asset Management",
+	"menu": {
+		"open": "Open menu"
+	},
+	"links": {
+		"home": "Home",
+		"assets": "Assets",
+		"myOrders": "My Orders",
+		"profile": "Profile"
+	}
+}

@@ -6,13 +6,13 @@ import { AppBar, Stack, Toolbar, Typography } from '@mui/material'
 
 import { useTranslation } from 'react-i18next'
 
-import MenuButton from 'Components/Menu/MenuButton'
-import MobileSideMenu from 'Components/Menu/MobileSideMenu'
+import MobileSideMenu from 'Components/Admin/Menu/MobileSideMenu'
+import MenuButton from 'Components/MenuButton'
 
 const MobileHeader: FC = () => {
 	const [Open, SetOpen] = useState(false)
 
-	const { t } = useTranslation('navigations')
+	const { t } = useTranslation('admin_navigations')
 
 	const ToggleDrawer = useCallback((newOpen: boolean) => {
 		SetOpen(newOpen)
@@ -47,7 +47,7 @@ const MobileHeader: FC = () => {
 					</MenuButton>
 					<Stack spacing={0}>
 						<Typography variant='h5' component='h1' sx={{ color: 'text.primary' }}>
-							{t('navigations:brand')}
+							{t('admin_navigations:brand')}
 						</Typography>
 					</Stack>
 				</Stack>
