@@ -6,8 +6,8 @@ import { AppBar, Box, Stack, Toolbar, Typography } from '@mui/material'
 
 import { useTranslation } from 'react-i18next'
 
-import MenuButton from '../../MenuButton'
-import LanguageSelector from './LanguageSelector'
+import LanguageSelector from '../../Menu/LanguageSelector'
+import MenuButton from '../../Menu/MenuButton'
 
 const DesktopHeader: FC = () => {
 	const { t } = useTranslation('admin_navigations')

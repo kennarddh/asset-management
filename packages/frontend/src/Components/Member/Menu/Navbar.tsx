@@ -19,6 +19,8 @@ import {
 import useAuthStore from 'Stores/AuthStore'
 import { useTranslation } from 'react-i18next'
 
+import LanguageSelector from 'Components/Menu/LanguageSelector'
+
 import UserMenu from './UserMenu'
 
 const MenuItems: FC = () => {
@@ -97,33 +99,36 @@ const Navbar: FC = () => {
 						>
 							<MenuItems />
 						</Stack>
-						<Box sx={{ display: { xs: 'block', lg: 'none' } }}>
-							<IconButton
-								sx={{ display: { md: 'block', lg: 'none' } }}
-								onClick={OnOpen}
+						<Stack direction='row' gap={2}>
+							<LanguageSelector />
+							<Box sx={{ display: { xs: 'block', lg: 'none' } }}>
+								<IconButton
+									sx={{ display: { md: 'block', lg: 'none' } }}
+									onClick={OnOpen}
+								>
+									<MenuIcon />
+								</IconButton>
+							</Box>
+							<Box
+								flexDirection='row'
+								alignItems='center'
+								sx={{ display: { xs: 'none', lg: 'flex' }, gap: 1 }}
 							>
-								<MenuIcon />
-							</IconButton>
-						</Box>
-						<Box
-							flexDirection='row'
-							alignItems='center'
-							sx={{ display: { xs: 'none', lg: 'flex' }, gap: 1 }}
-						>
-							<Avatar
-								sizes='small'
-								alt={user.name}
-								src='https://avatars.githubusercontent.com/u/19550456'
-								sx={{ width: 36, height: 36 }}
-							/>
-							<Typography
-								variant='body2'
-								sx={{ fontWeight: 500, lineHeight: '16px' }}
-							>
-								{user.name}
-							</Typography>
-							<UserMenu />
-						</Box>
+								<Avatar
+									sizes='small'
+									alt={user.name}
+									src='https://avatars.githubusercontent.com/u/19550456'
+									sx={{ width: 36, height: 36 }}
+								/>
+								<Typography
+									variant='body2'
+									sx={{ fontWeight: 500, lineHeight: '16px' }}
+								>
+									{user.name}
+								</Typography>
+								<UserMenu />
+							</Box>
+						</Stack>
 					</Stack>
 				</Container>
 			</Box>

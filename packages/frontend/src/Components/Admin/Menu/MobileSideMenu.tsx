@@ -23,11 +23,11 @@ import useAuthStore from 'Stores/AuthStore'
 import { useTranslation } from 'react-i18next'
 
 import MenuContent from 'Components/Admin/Menu/MenuContent'
-import MenuButton from 'Components/MenuButton'
+import MenuButton from 'Components/Menu/MenuButton'
 
 import AuthLogoutApi from 'Api/Auth/AuthLogoutApi'
 
-import LanguageSelector from './LanguageSelector'
+import LanguageSelector from '../../Menu/LanguageSelector'
 
 export interface MobileSideMenuProps {
 	open: boolean | undefined
