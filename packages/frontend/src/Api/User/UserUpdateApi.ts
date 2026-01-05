@@ -4,9 +4,6 @@ import { ApiFunction } from 'Api/Types'
 export interface UserUpdateData {
 	id: string
 	name?: string
-	email?: string
-	assignedLocationIds?: string[]
-	groupId?: string
 }
 
 const UserUpdateApi: ApiFunction<null, UserUpdateData> = async data => {

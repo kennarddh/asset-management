@@ -27,8 +27,8 @@ class CreateOrder extends Controller {
 				quantity,
 				userId: data.user.session.user.id,
 				assetId,
-				finishAt: new Date(finishAt * 1000), // Seconds to milliseconds
-				startAt: new Date(startAt * 1000), // Seconds to milliseconds
+				finishAt: new Date(finishAt),
+				startAt: new Date(startAt),
 			})
 
 			return response.status(200).json({

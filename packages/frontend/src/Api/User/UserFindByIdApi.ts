@@ -5,12 +5,6 @@ interface UserFindByIdResponse {
 	id: string
 	name: string
 	username: string
-	email: string
-	canBeDisabled: boolean
-	group: { id: string; name: string }
-	createdBy: { id: string; name: string } | null
-	assignedLocations: { id: string; name: string }[]
-	disabledAt: number | null
 	createdAt: number
 	updatedAt: number
 }
@@ -19,12 +13,6 @@ export interface UserFindByIdOutput {
 	id: string
 	name: string
 	username: string
-	email: string
-	canBeDisabled: boolean
-	group: { id: string; name: string }
-	createdBy: { id: string; name: string } | null
-	assignedLocations: { id: string; name: string }[]
-	disabledAt: Date | null
 	createdAt: Date
 	updatedAt: Date
 }
@@ -42,12 +30,6 @@ const UserFindByIdApi: ApiFunction<UserFindByIdOutput, UserFindByIdData> = async
 		id: outputData.id,
 		name: outputData.name,
 		username: outputData.username,
-		email: outputData.email,
-		canBeDisabled: outputData.canBeDisabled,
-		group: outputData.group,
-		createdBy: outputData.createdBy,
-		assignedLocations: outputData.assignedLocations,
-		disabledAt: outputData.disabledAt === null ? null : new Date(outputData.disabledAt),
 		createdAt: new Date(outputData.createdAt),
 		updatedAt: new Date(outputData.updatedAt),
 	}
