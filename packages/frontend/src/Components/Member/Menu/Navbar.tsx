@@ -103,7 +103,7 @@ const Navbar: FC = () => {
 							<LanguageSelector />
 							<Box sx={{ display: { xs: 'block', lg: 'none' } }}>
 								<IconButton
-									sx={{ display: { md: 'block', lg: 'none' } }}
+									sx={{ display: { md: 'flex', lg: 'none' } }}
 									onClick={OnOpen}
 								>
 									<MenuIcon />
