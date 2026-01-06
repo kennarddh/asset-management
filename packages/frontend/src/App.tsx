@@ -39,6 +39,10 @@ const router = createBrowserRouter([
 										index: true,
 										lazy: () => import('Pages/Member/Home'),
 									},
+									{
+										path: 'assets',
+										lazy: () => import('Pages/Member/Assets'),
+									},
 								],
 							},
 						],

@@ -193,7 +193,7 @@ const main = async () => {
 				createMany: {
 					data: [
 						{
-							url: '',
+							url: 'https://id.jbl.com/dw/image/v2/AAUJ_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw683bfebf/JBL_EON715_3-4_Extreme_1605x1605.png?sw=537&sfrm=png',
 							isThumbnail: true,
 						},
 					],

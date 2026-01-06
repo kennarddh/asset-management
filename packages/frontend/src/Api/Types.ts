@@ -32,21 +32,19 @@ export interface ApiSuccessResponse<ResponseData> {
 	data: ResponseData
 }
 
+export interface ApiPagination {
+	page: number
+	limit: number
+	total: number
+}
+
 export interface FindManyResponse<T> {
-	pagination: {
-		page: number
-		limit: number
-		total: number
-	}
+	pagination: ApiPagination
 	list: T[]
 }
 
 export interface FindManyOutput<T> {
-	pagination: {
-		page: number
-		limit: number
-		total: number
-	}
+	pagination: ApiPagination
 	list: T[]
 }
 
