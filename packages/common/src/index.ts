@@ -89,7 +89,6 @@ export enum OrderStatus {
 	Rejected = 'Rejected',
 	Cancelled = 'Cancelled',
 	Active = 'Active',
-	Completed = 'Completed',
 	Overdue = 'Overdue',
 	Returned = 'Returned',
 	ReturnedLate = 'ReturnedLate',

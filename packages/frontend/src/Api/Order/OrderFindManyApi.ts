@@ -10,7 +10,11 @@ type OrderFindManyResponse = FindManyResponse<{
 	status: string
 	quantity: number
 	user: { id: string; name: string }
-	asset: { id: string; name: string }
+	asset: {
+		id: string
+		name: string
+		galleries: { id: string; isThumbnail: boolean; url: string }[]
+	}
 	requestedAt: number
 	updatedAt: number
 	finishAt: number
@@ -28,7 +32,11 @@ export interface OrderFindManySingleOutput {
 	status: OrderStatus
 	quantity: number
 	user: { id: string; name: string }
-	asset: { id: string; name: string }
+	asset: {
+		id: string
+		name: string
+		galleries: { id: string; isThumbnail: boolean; url: string }[]
+	}
 	requestedAt: Date
 	updatedAt: Date
 	finishAt: Date

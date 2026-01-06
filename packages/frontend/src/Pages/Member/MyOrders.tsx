@@ -9,19 +9,35 @@ import {
 	CardActions,
 	CardContent,
 	CardMedia,
+	Chip,
 	Grid,
 	Pagination,
 	Stack,
 	Typography,
 } from '@mui/material'
 
+import { OrderStatus } from '@asset-management/common'
 import { useTranslation } from 'react-i18next'
 
-import AssetFindManyApi, { AssetFindManySingleOutput } from 'Api/Asset/AssetFindManyApi'
+import OrderFindManySelfApi, { OrderFindManySelfSingleOutput } from 'Api/Order/OrderFindManySelfApi'
 import { ApiPagination } from 'Api/Types'
 
-const Assets: FC = () => {
-	const [AssetsList, SetAssetsList] = useState<AssetFindManySingleOutput[]>([])
+const StatusToChipColor: Record<
+	OrderStatus,
+	'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
+> = {
+	[OrderStatus.Pending]: 'info',
+	[OrderStatus.Approved]: 'primary',
+	[OrderStatus.Rejected]: 'error',
+	[OrderStatus.Cancelled]: 'warning',
+	[OrderStatus.Active]: 'success',
+	[OrderStatus.Overdue]: 'error',
+	[OrderStatus.Returned]: 'success',
+	[OrderStatus.ReturnedLate]: 'warning',
+}
+
+const MyOrders: FC = () => {
+	const [SelfOrdersList, SetSelfOrdersList] = useState<OrderFindManySelfSingleOutput[]>([])
 	const [PaginationInfo, SetPaginationInfo] = useState<ApiPagination>({
 		page: 0,
 		limit: 10,
@@ -46,16 +62,16 @@ const Assets: FC = () => {
 	)
 
 	const RefreshData = useCallback(async () => {
-		const assets = await AssetFindManyApi({
+		const orders = await OrderFindManySelfApi({
 			pagination: { page: PaginationPage - 1, limit: 16 },
 		})
 
-		SetAssetsList(assets.list)
-		SetPaginationInfo(assets.pagination)
+		SetSelfOrdersList(orders.list)
+		SetPaginationInfo(orders.pagination)
 
-		if (PaginationPage >= assets.pagination.total / assets.pagination.limit) {
+		if (PaginationPage >= orders.pagination.total / orders.pagination.limit) {
 			SetSearchParams({
-				page: Math.ceil(assets.pagination.total / assets.pagination.limit).toString(),
+				page: Math.ceil(orders.pagination.total / orders.pagination.limit).toString(),
 			})
 		}
 	}, [PaginationPage, SetSearchParams])
@@ -74,17 +90,17 @@ const Assets: FC = () => {
 	return (
 		<Stack sx={{ p: 4 }} gap={5}>
 			<Grid container spacing={4}>
-				{AssetsList.map(asset => (
-					<Grid key={asset.id} size={{ xs: 6, sm: 4, md: 4, lg: 3 }}>
+				{SelfOrdersList.map(order => (
+					<Grid key={order.id} size={{ xs: 6, sm: 4, md: 4, lg: 3 }}>
 						<Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
 							<CardMedia
 								component='img'
-								image={asset.galleries[0]?.url ?? ''}
-								alt={asset.name}
+								image={order.asset.galleries[0]?.url ?? ''}
+								alt={order.asset.name}
 								sx={{ aspectRatio: '1/1' }}
 							/>
 							<CardContent sx={{ flexGrow: 1 }}>
-								<Stack>
+								<Stack gap={1}>
 									<Typography
 										variant='h5'
 										gutterBottom
@@ -96,24 +112,29 @@ const Assets: FC = () => {
 											overflow: 'hidden',
 										}}
 									>
-										{asset.name}
+										{order.id}: {order.asset.name}
+									</Typography>
+									<Chip
+										label={order.status}
+										color={StatusToChipColor[order.status]}
+									/>
+									<Typography
+										variant='body2'
+										color='textSecondary'
+										sx={{
+											display: '-webkit-box',
+											WebkitLineClamp: 4,
+											WebkitBoxOrient: 'vertical',
+											overflow: 'hidden',
+										}}
+									>
+										{order.description}
 									</Typography>
 								</Stack>
-								<Typography
-									variant='body2'
-									color='textSecondary'
-									sx={{
-										display: '-webkit-box',
-										WebkitLineClamp: 4,
-										WebkitBoxOrient: 'vertical',
-										overflow: 'hidden',
-									}}
-								>
-									{asset.description}
-								</Typography>
 							</CardContent>
 							<CardActions disableSpacing>
-								<Button size='small'>{t('common:order')}</Button>
+								<Button size='small'>{t('common:cancel')}</Button>
+								<Button size='small'>{t('common:details')}</Button>
 							</CardActions>
 						</Card>
 					</Grid>
@@ -131,6 +152,6 @@ const Assets: FC = () => {
 	)
 }
 
-export default Assets
+export default MyOrders
 
-export { Assets as Component }
+export { MyOrders as Component }

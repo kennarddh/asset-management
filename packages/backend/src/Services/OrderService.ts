@@ -25,7 +25,11 @@ export interface Order {
 	status: OrderStatus
 	quantity: number
 	user: { id: bigint; name: string }
-	asset: { id: bigint; name: string }
+	asset: {
+		id: bigint
+		name: string
+		galleries: { id: bigint; isThumbnail: boolean; url: string }[]
+	}
 	requestedAt: Date
 	updatedAt: Date
 	finishAt: Date
@@ -99,7 +103,7 @@ class OrderService extends Service {
 			status: data.status as OrderStatus,
 			quantity: data.quantity,
 			user: { id: data.user.id, name: data.user.name },
-			asset: { id: data.asset.id, name: data.asset.name },
+			asset: { id: data.asset.id, name: data.asset.name, galleries: data.asset.galleries },
 			requestedAt: data.requestedAt,
 			updatedAt: data.updatedAt,
 			finishAt: data.finishAt,
@@ -147,7 +151,13 @@ class OrderService extends Service {
 			status: true,
 			quantity: true,
 			user: { select: { id: true, name: true } },
-			asset: { select: { id: true, name: true } },
+			asset: {
+				select: {
+					id: true,
+					name: true,
+					galleries: { select: { id: true, isThumbnail: true, url: true } },
+				},
+			},
 			requestedAt: true,
 			updatedAt: true,
 			finishAt: true,
@@ -163,7 +173,11 @@ class OrderService extends Service {
 		return await this.unitOfWork.execute(async transaction => {
 			const result = await transaction.getRepository(OrderRepository).findUnique<{
 				user: { id: bigint; name: string }
-				asset: { id: bigint; name: string }
+				asset: {
+					id: bigint
+					name: string
+					galleries: { id: bigint; isThumbnail: boolean; url: string }[]
+				}
 			}>({
 				filter: { id },
 				select: this.dataSelect,
@@ -204,7 +218,11 @@ class OrderService extends Service {
 		return await this.unitOfWork.execute(async transaction =>
 			transaction.getRepository(OrderRepository).findMany<{
 				user: { id: bigint; name: string }
-				asset: { id: bigint; name: string }
+				asset: {
+					id: bigint
+					name: string
+					galleries: { id: bigint; isThumbnail: boolean; url: string }[]
+				}
 			}>(repositoryOptions),
 		)
 	}
@@ -241,7 +259,15 @@ class OrderService extends Service {
 					status: order.status,
 					quantity: order.quantity,
 					user: { id: order.user.id.toString(), name: order.user.name },
-					asset: { id: order.asset.id.toString(), name: order.asset.name },
+					asset: {
+						id: order.asset.id.toString(),
+						name: order.asset.name,
+						galleries: order.asset.galleries.map(gallery => ({
+							id: gallery.id.toString(),
+							isThumbnail: gallery.isThumbnail,
+							url: gallery.url,
+						})),
+					},
 					requestedAt: order.requestedAt.getTime(),
 					updatedAt: order.updatedAt.getTime(),
 					finishAt: order.finishAt.getTime(),

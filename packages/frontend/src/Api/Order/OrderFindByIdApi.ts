@@ -10,7 +10,12 @@ interface OrderFindByIdResponse {
 	status: string
 	quantity: number
 	user: { id: string; name: string }
-	asset: { id: string; name: string }
+	asset: {
+		id: string
+		name: string
+		galleries: { id: string; isThumbnail: boolean; url: string }[]
+	}
+
 	requestedAt: number
 	updatedAt: number
 	finishAt: number
@@ -28,7 +33,11 @@ export interface OrderFindByIdOutput {
 	status: OrderStatus
 	quantity: number
 	user: { id: string; name: string }
-	asset: { id: string; name: string }
+	asset: {
+		id: string
+		name: string
+		galleries: { id: string; isThumbnail: boolean; url: string }[]
+	}
 	requestedAt: Date
 	updatedAt: Date
 	finishAt: Date
