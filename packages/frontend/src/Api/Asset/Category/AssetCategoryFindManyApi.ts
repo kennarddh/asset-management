@@ -26,7 +26,10 @@ export interface AssetCategoryFindManyData extends FindManyData<AssetCategorySor
 	search?: string
 }
 
-const AssetCategoryFindManyApi: ApiFunction<AssetCategoryFindManyOutput, AssetCategoryFindManyData> = async data => {
+const AssetCategoryFindManyApi: ApiFunction<
+	AssetCategoryFindManyOutput,
+	AssetCategoryFindManyData
+> = async data => {
 	const result = await CallApi<AssetCategoryFindManyResponse>('/v1/asset/category', 'GET', true, {
 		params: {
 			pagination: data.pagination,
