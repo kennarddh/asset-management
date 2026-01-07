@@ -4,6 +4,8 @@ import detector from 'i18next-browser-languagedetector'
 import resourcesToBackend from 'i18next-resources-to-backend'
 import { initReactI18next } from 'react-i18next'
 
+import { FormatDuration } from 'Utils/FormatDuration'
+
 await i18n
 	.use(detector)
 	.use(initReactI18next)
@@ -25,5 +27,9 @@ await i18n
 		},
 		debug: import.meta.env.DEV,
 	})
+
+i18n.services.formatter?.add('duration', (value: number) => {
+	return FormatDuration(value)
+})
 
 export default i18n

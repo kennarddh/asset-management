@@ -2,10 +2,10 @@ import { ApiErrorKind, ApiOtherError } from '@asset-management/common'
 import { FormatParsingError, IsApiResponseError } from 'Api'
 import { t } from 'i18next'
 
-const HandleApiError = (
+const HandleApiError = async (
 	error: unknown,
-	handleOtherOtherError?: (error: ApiOtherError) => string | undefined,
-): string => {
+	handleOtherOtherError?: (error: ApiOtherError) => Promise<string | undefined>,
+): Promise<string> => {
 	if (IsApiResponseError(error)) {
 		if (error.apiErrorResponse.errors.parsing) {
 			const formattedParsingErrors = FormatParsingError(error.apiErrorResponse.errors.parsing)
@@ -36,7 +36,7 @@ const HandleApiError = (
 			}
 
 			if (handleOtherOtherError) {
-				const errorText = handleOtherOtherError(firstOtherError)
+				const errorText = await handleOtherOtherError(firstOtherError)
 
 				if (errorText !== undefined) return errorText
 			}

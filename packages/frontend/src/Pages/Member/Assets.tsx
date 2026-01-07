@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useSearchParams } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 
 import {
 	Box,
@@ -113,6 +113,9 @@ const Assets: FC = () => {
 								</Typography>
 							</CardContent>
 							<CardActions disableSpacing>
+								<Button size='small' component={Link} to={`/assets/${asset.id}`}>
+									{t('common:details')}
+								</Button>
 								<Button size='small'>{t('common:order')}</Button>
 							</CardActions>
 						</Card>

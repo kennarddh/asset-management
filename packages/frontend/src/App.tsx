@@ -41,7 +41,16 @@ const router = createBrowserRouter([
 									},
 									{
 										path: 'assets',
-										lazy: () => import('Pages/Member/Assets'),
+										children: [
+											{
+												index: true,
+												lazy: () => import('Pages/Member/Assets'),
+											},
+											{
+												path: ':id',
+												lazy: () => import('Pages/Member/AssetDetail'),
+											},
+										],
 									},
 									{
 										path: 'my-orders',
