@@ -2,6 +2,7 @@ import { FC } from 'react'
 
 import { Navigate, Outlet } from 'react-router'
 
+import { UserRole } from '@asset-management/common'
 import useAuthStore from 'Stores/AuthStore'
 
 export interface AuthorizationOutletProps {
@@ -18,7 +19,13 @@ const AuthorizationOutlet: FC<AuthorizationOutletProps> = props => {
 	if (isLoading || !hasChecked || error !== null) return null
 
 	if (props.forNonLoggedIn) {
-		if (isLoggedIn) return <Navigate to='/' />
+		if (isLoggedIn) {
+			if (user?.role === UserRole.Admin) {
+				return <Navigate to='/admin' />
+			} else {
+				return <Navigate to='/' />
+			}
+		}
 
 		return <Outlet />
 	}
