@@ -97,7 +97,7 @@ const MyOrders: FC = () => {
 								component='img'
 								image={order.asset.galleries[0]?.url ?? ''}
 								alt={order.asset.name}
-								sx={{ aspectRatio: '1/1' }}
+								sx={{ aspectRatio: '1/1', objectFit: 'contain' }}
 							/>
 							<CardContent sx={{ flexGrow: 1 }}>
 								<Stack gap={1}>
