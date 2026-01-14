@@ -264,8 +264,7 @@ const AssetDetail: FC = () => {
 											</Typography>
 										</Stack>
 										<Typography variant='h6'>
-											{/* TODO: Later change to .quantity - .commitedQuantity */}
-											{AssetData.quantity}
+											{AssetData.quantity - AssetData.quantityCommited}
 										</Typography>
 									</Paper>
 								</Grid>
