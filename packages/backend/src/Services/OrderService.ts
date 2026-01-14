@@ -28,7 +28,7 @@ export interface Order {
 	asset: {
 		id: bigint
 		name: string
-		galleries: { id: bigint; isThumbnail: boolean; url: string }[]
+		galleries: { id: bigint; url: string }[]
 	}
 	requestedAt: Date
 	updatedAt: Date
@@ -155,7 +155,7 @@ class OrderService extends Service {
 				select: {
 					id: true,
 					name: true,
-					galleries: { select: { id: true, isThumbnail: true, url: true } },
+					galleries: { select: { id: true, url: true } },
 				},
 			},
 			requestedAt: true,
@@ -176,7 +176,7 @@ class OrderService extends Service {
 				asset: {
 					id: bigint
 					name: string
-					galleries: { id: bigint; isThumbnail: boolean; url: string }[]
+					galleries: { id: bigint; url: string }[]
 				}
 			}>({
 				filter: { id },
@@ -221,7 +221,7 @@ class OrderService extends Service {
 				asset: {
 					id: bigint
 					name: string
-					galleries: { id: bigint; isThumbnail: boolean; url: string }[]
+					galleries: { id: bigint; url: string }[]
 				}
 			}>(repositoryOptions),
 		)
@@ -264,7 +264,6 @@ class OrderService extends Service {
 						name: order.asset.name,
 						galleries: order.asset.galleries.map(gallery => ({
 							id: gallery.id.toString(),
-							isThumbnail: gallery.isThumbnail,
 							url: gallery.url,
 						})),
 					},

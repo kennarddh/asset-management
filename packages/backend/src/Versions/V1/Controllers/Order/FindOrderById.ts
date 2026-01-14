@@ -47,7 +47,6 @@ class FindOrderById extends Controller {
 						name: order.asset.name,
 						galleries: order.asset.galleries.map(gallery => ({
 							id: gallery.id.toString(),
-							isThumbnail: gallery.isThumbnail,
 							url: gallery.url,
 						})),
 					},

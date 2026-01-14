@@ -13,7 +13,7 @@ interface OrderFindByIdResponse {
 	asset: {
 		id: string
 		name: string
-		galleries: { id: string; isThumbnail: boolean; url: string }[]
+		galleries: { id: string; url: string }[]
 	}
 
 	requestedAt: number
@@ -36,7 +36,7 @@ export interface OrderFindByIdOutput {
 	asset: {
 		id: string
 		name: string
-		galleries: { id: string; isThumbnail: boolean; url: string }[]
+		galleries: { id: string; url: string }[]
 	}
 	requestedAt: Date
 	updatedAt: Date

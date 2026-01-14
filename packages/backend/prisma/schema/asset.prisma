@@ -3,9 +3,12 @@ model Asset {
     name                   String
     description            String
     quantity               Int
+    quantityCommited       Int
+    quantityActive         Int
     maximumLendingDuration Int
+    minimumLendingDuration Int
 
-    requiresApproval Boolean @default(false)
+    requiresApproval Boolean @default(true)
 
     status String @db.VarChar(50)
 
@@ -24,8 +27,6 @@ model Asset {
 model AssetGallery {
     id  BigInt @id @default(autoincrement())
     url String
-
-    isThumbnail Boolean @default(false)
 
     assetId BigInt
     asset   Asset  @relation(fields: [assetId], references: [id])

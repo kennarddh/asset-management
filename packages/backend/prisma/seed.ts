@@ -76,11 +76,9 @@ const main = async () => {
 					data: [
 						{
 							url: 'https://id.canon/media/image/2019/07/08/8d0db401031e4decbdf0d82dce54c796_G7+X+mkIII+BK+Front.png',
-							isThumbnail: true,
 						},
 						{
 							url: 'https://id.canon/media/image/2018/08/23/9977987efab54910a9adaf41bdb95c3f_2.png',
-							isThumbnail: false,
 						},
 					],
 				},
@@ -102,7 +100,6 @@ const main = async () => {
 					data: [
 						{
 							url: 'https://images-cdn.ubuy.co.id/667f79fb498eb128a4199ebc-mini-projector-clokowe-2024-upgraded.jpg',
-							isThumbnail: true,
 						},
 					],
 				},
@@ -124,11 +121,9 @@ const main = async () => {
 					data: [
 						{
 							url: 'https://www.wework.com/ideas/wp-content/uploads/sites/4/2021/08/20201008-199WaterSt-2_fb.jpg?fit=1200%2C675',
-							isThumbnail: true,
 						},
 						{
 							url: 'https://lansonplace.com/mallofasia/wp-content/uploads/sites/10/Meeting-Room.jpg.optimal.jpg',
-							isThumbnail: false,
 						},
 					],
 				},
@@ -150,7 +145,6 @@ const main = async () => {
 					data: [
 						{
 							url: 'https://cellbell.in/cdn/shop/files/B08R5GR57J.MAIN.png?v=1734437270',
-							isThumbnail: true,
 						},
 					],
 				},
@@ -172,7 +166,6 @@ const main = async () => {
 					data: [
 						{
 							url: 'https://images-cdn.ubuy.co.id/633a9d52fc1a5c5bee3e14eb-schwinn-bonafide-mens-mountain-bike.jpg',
-							isThumbnail: true,
 						},
 					],
 				},
@@ -194,7 +187,6 @@ const main = async () => {
 					data: [
 						{
 							url: 'https://id.jbl.com/dw/image/v2/AAUJ_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw683bfebf/JBL_EON715_3-4_Extreme_1605x1605.png?sw=537&sfrm=png',
-							isThumbnail: true,
 						},
 					],
 				},

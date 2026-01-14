@@ -13,7 +13,7 @@ type OrderFindManyResponse = FindManyResponse<{
 	asset: {
 		id: string
 		name: string
-		galleries: { id: string; isThumbnail: boolean; url: string }[]
+		galleries: { id: string; url: string }[]
 	}
 	requestedAt: number
 	updatedAt: number
@@ -35,7 +35,7 @@ export interface OrderFindManySingleOutput {
 	asset: {
 		id: string
 		name: string
-		galleries: { id: string; isThumbnail: boolean; url: string }[]
+		galleries: { id: string; url: string }[]
 	}
 	requestedAt: Date
 	updatedAt: Date
