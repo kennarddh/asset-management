@@ -46,7 +46,7 @@ const MyOrders: FC = () => {
 
 	const [SearchParams, SetSearchParams] = useSearchParams()
 
-	const { t } = useTranslation()
+	const { t } = useTranslation(['member_myOrders'])
 
 	const PaginationPage = useMemo(() => {
 		const page = Number(SearchParams.get('page'))
@@ -141,12 +141,18 @@ const MyOrders: FC = () => {
 				))}
 			</Grid>
 			<Box display='flex' justifyContent='center'>
-				<Pagination
-					count={Math.ceil(PaginationInfo.total / PaginationInfo.limit)}
-					page={PaginationPage}
-					onChange={OnPaginationChange}
-					color='primary'
-				/>
+				{SelfOrdersList.length === 0 ? (
+					<Typography variant='h5' fontSize={18}>
+						{t('member_myOrders:noOrders')}
+					</Typography>
+				) : (
+					<Pagination
+						count={Math.ceil(PaginationInfo.total / PaginationInfo.limit)}
+						page={PaginationPage}
+						onChange={OnPaginationChange}
+						color='primary'
+					/>
+				)}
 			</Box>
 		</Stack>
 	)
