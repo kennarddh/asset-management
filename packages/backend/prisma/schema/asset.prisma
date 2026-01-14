@@ -3,8 +3,8 @@ model Asset {
     name                   String
     description            String
     quantity               Int
-    quantityCommited       Int
-    quantityActive         Int
+    quantityCommited       Int    @default(0)
+    quantityActive         Int    @default(0)
     maximumLendingDuration Int
     minimumLendingDuration Int
 

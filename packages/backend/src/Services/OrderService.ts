@@ -282,6 +282,7 @@ class OrderService extends Service {
 
 	async create(data: OrderCreateData) {
 		// TODO: Send notification to admin
+		// TODO: Check for requireApproval
 
 		const nowTime = new Date().getTime()
 
@@ -301,6 +302,9 @@ class OrderService extends Service {
 			if (asset === null) throw new ResourceNotFoundError('asset')
 
 			if (duration >= asset.maximumLendingDuration * 1000)
+				throw new InvalidStateError('create', 'invalidDuration')
+
+			if (duration < asset.minimumLendingDuration * 1000)
 				throw new InvalidStateError('create', 'invalidDuration')
 
 			const order = await transaction.getRepository(OrderRepository).create({
@@ -345,7 +349,11 @@ class OrderService extends Service {
 			if (order.status !== OrderStatus.Pending)
 				throw new InvalidStateError('approve', 'processed')
 
+			// TODO: Check for quantity availability at the booked timeframe
+
 			await this.update(id, { status: OrderStatus.Approved, approvedAt: now, reason })
+
+			await this.assetService.markQuantityCommited(order.asset.id, order.quantity)
 
 			// TODO: Send notification to member
 
@@ -400,6 +408,9 @@ class OrderService extends Service {
 			)
 				throw new InvalidStateError('cancel', 'processed')
 
+			if (order.status !== OrderStatus.Pending)
+				await this.assetService.markQuantityNotCommited(order.asset.id, order.quantity)
+
 			await this.update(id, { status: OrderStatus.Cancelled, canceledAt: new Date() })
 		})
 	}
@@ -415,6 +426,8 @@ class OrderService extends Service {
 				throw new InvalidStateError('return', 'processed')
 
 			const isLate = new Date().getTime() > order.finishAt.getTime()
+
+			await this.assetService.markQuantityInactive(order.asset.id, order.quantity)
 
 			await this.update(id, {
 				status: isLate ? OrderStatus.ReturnedLate : OrderStatus.Returned,
@@ -457,6 +470,8 @@ class OrderService extends Service {
 
 					return
 				}
+
+				await this.assetService.markQuantityActive(order.asset.id, order.quantity)
 
 				await this.update(BigInt(data.orderId), { status: OrderStatus.Active })
 			} else if (jobName === 'order-finish') {

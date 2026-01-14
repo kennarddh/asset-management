@@ -45,8 +45,11 @@ class FindAssetById extends Controller {
 					},
 					status: asset.status,
 					quantity: asset.quantity,
+					quantityCommited: asset.quantityCommited,
+					quantityActive: asset.quantityActive,
 					requiresApproval: asset.requiresApproval,
 					maximumLendingDuration: asset.maximumLendingDuration,
+					minimumLendingDuration: asset.minimumLendingDuration,
 					galleries: asset.galleries.map(gallery => ({
 						id: gallery.id.toString(),
 						url: gallery.url,

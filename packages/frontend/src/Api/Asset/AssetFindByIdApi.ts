@@ -9,7 +9,10 @@ interface AssetFindByIdResponse {
 	description: string
 	category: { id: string; name: string }
 	quantity: number
+	quantityCommited: number
+	quantityActive: number
 	maximumLendingDuration: number
+	minimumLendingDuration: number
 	requiresApproval: boolean
 	status: string
 	galleries: { id: string; url: string }[]
@@ -23,7 +26,10 @@ export interface AssetFindByIdOutput {
 	description: string
 	category: { id: string; name: string }
 	quantity: number
+	quantityCommited: number
+	quantityActive: number
 	maximumLendingDuration: number
+	minimumLendingDuration: number
 	requiresApproval: boolean
 	status: AssetStatus
 	galleries: { id: string; url: string }[]
@@ -46,7 +52,10 @@ const AssetFindByIdApi: ApiFunction<AssetFindByIdOutput, AssetFindByIdData> = as
 		description: outputData.description,
 		category: outputData.category,
 		quantity: outputData.quantity,
+		quantityActive: outputData.quantityActive,
+		quantityCommited: outputData.quantityCommited,
 		maximumLendingDuration: outputData.maximumLendingDuration,
+		minimumLendingDuration: outputData.minimumLendingDuration,
 		requiresApproval: outputData.requiresApproval,
 		status: outputData.status as AssetStatus,
 		galleries: outputData.galleries,

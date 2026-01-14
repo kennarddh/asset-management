@@ -9,7 +9,10 @@ type AssetFindManyResponse = FindManyResponse<{
 	description: string
 	category: { id: string; name: string }
 	quantity: number
+	quantityCommited: number
+	quantityActive: number
 	maximumLendingDuration: number
+	minimumLendingDuration: number
 	requiresApproval: boolean
 	status: string
 	galleries: { id: string; url: string }[]
@@ -23,7 +26,10 @@ export interface AssetFindManySingleOutput {
 	description: string
 	category: { id: string; name: string }
 	quantity: number
+	quantityCommited: number
+	quantityActive: number
 	maximumLendingDuration: number
+	minimumLendingDuration: number
 	requiresApproval: boolean
 	status: AssetStatus
 	galleries: { id: string; url: string }[]
@@ -60,7 +66,10 @@ const AssetFindManyApi: ApiFunction<AssetFindManyOutput, AssetFindManyData> = as
 			description: asset.description,
 			category: asset.category,
 			quantity: asset.quantity,
+			quantityActive: asset.quantityActive,
+			quantityCommited: asset.quantityCommited,
 			maximumLendingDuration: asset.maximumLendingDuration,
+			minimumLendingDuration: asset.minimumLendingDuration,
 			requiresApproval: asset.requiresApproval,
 			status: asset.status as AssetStatus,
 			galleries: asset.galleries,

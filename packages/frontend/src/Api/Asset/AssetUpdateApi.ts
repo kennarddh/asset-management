@@ -9,6 +9,7 @@ export interface AssetUpdateData {
 	description?: string
 	quantity?: number
 	maximumLendingDuration?: number
+	minimumLendingDuration?: number
 	requiresApproval?: boolean
 	status?: AssetStatus
 	categoryId?: string

@@ -12,6 +12,7 @@ export interface AssetCreateData {
 	description: string
 	quantity: number
 	maximumLendingDuration: number
+	minimumLendingDuration: number
 	requiresApproval: boolean
 	status: AssetStatus
 	categoryId: string

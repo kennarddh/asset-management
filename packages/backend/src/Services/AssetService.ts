@@ -22,7 +22,10 @@ export interface Asset {
 	name: string
 	description: string
 	quantity: number
+	quantityCommited: number
+	quantityActive: number
 	maximumLendingDuration: number
+	minimumLendingDuration: number
 	requiresApproval: boolean
 	status: AssetStatus
 	category: { id: bigint; name: string }
@@ -36,6 +39,7 @@ export interface AssetCreateData {
 	description: string
 	quantity: number
 	maximumLendingDuration: number
+	minimumLendingDuration: number
 	requiresApproval: boolean
 	status: AssetStatus
 	categoryId: bigint
@@ -47,6 +51,7 @@ export interface AssetUpdateData {
 	description: string
 	quantity: number
 	maximumLendingDuration: number
+	minimumLendingDuration: number
 	requiresApproval: boolean
 	status: AssetStatus
 	categoryId: bigint
@@ -85,7 +90,10 @@ class AssetService extends Service {
 			description: data.description,
 			category: { id: data.category.id, name: data.category.name },
 			quantity: data.quantity,
+			quantityCommited: data.quantityCommited,
+			quantityActive: data.quantityActive,
 			maximumLendingDuration: data.maximumLendingDuration,
+			minimumLendingDuration: data.maximumLendingDuration,
 			requiresApproval: data.requiresApproval,
 			status: data.status as AssetStatus,
 			galleries: data.galleries,
@@ -127,6 +135,8 @@ class AssetService extends Service {
 			description: true,
 			category: { select: { id: true, name: true } },
 			quantity: true,
+			quantityCommited: true,
+			quantityActive: true,
 			maximumLendingDuration: true,
 			requiresApproval: true,
 			status: true,
@@ -222,7 +232,10 @@ class AssetService extends Service {
 					description: asset.description,
 					category: { id: asset.category.id.toString(), name: asset.category.name },
 					quantity: asset.quantity,
+					quantityCommited: asset.quantityCommited,
+					quantityActive: asset.quantityActive,
 					maximumLendingDuration: asset.maximumLendingDuration,
+					minimumLendingDuration: asset.minimumLendingDuration,
 					requiresApproval: asset.requiresApproval,
 					status: asset.status as AssetStatus,
 					galleries: asset.galleries.map(gallery => ({
@@ -262,6 +275,8 @@ class AssetService extends Service {
 
 		const galleries = data.galleries
 
+		// TODO: Check for quantity validity before updating it. If it is lowered then there must be enough to fulfill all approved orders.
+
 		if (galleries !== undefined) {
 			const currentAssetData = await this.findById(id)
 
@@ -298,6 +313,51 @@ class AssetService extends Service {
 			await transaction
 				.getRepository(AssetRepository)
 				.update({ filter: { id }, data: updateData })
+		})
+	}
+
+	async markQuantityCommited(id: bigint, quantity: number) {
+		await this.unitOfWork.execute(async transaction => {
+			await transaction.getRepository(AssetRepository).update({
+				filter: { id },
+				data: {
+					quantityCommited: { increment: quantity },
+				},
+			})
+		})
+	}
+
+	async markQuantityNotCommited(id: bigint, quantity: number) {
+		await this.unitOfWork.execute(async transaction => {
+			await transaction.getRepository(AssetRepository).update({
+				filter: { id },
+				data: {
+					quantityCommited: { decrement: quantity },
+				},
+			})
+		})
+	}
+
+	async markQuantityActive(id: bigint, quantity: number) {
+		await this.unitOfWork.execute(async transaction => {
+			await transaction.getRepository(AssetRepository).update({
+				filter: { id },
+				data: {
+					quantityCommited: { decrement: quantity },
+					quantityActive: { increment: quantity },
+				},
+			})
+		})
+	}
+
+	async markQuantityInactive(id: bigint, quantity: number) {
+		await this.unitOfWork.execute(async transaction => {
+			await transaction.getRepository(AssetRepository).update({
+				filter: { id },
+				data: {
+					quantityActive: { decrement: quantity },
+				},
+			})
 		})
 	}
 }
