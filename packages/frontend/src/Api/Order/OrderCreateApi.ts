@@ -7,7 +7,6 @@ interface OrderCreateResponse {
 
 export interface OrderCreateData {
 	description: string
-	quantity: number
 	assetId: bigint
 	finishAt: Date
 	startAt: Date

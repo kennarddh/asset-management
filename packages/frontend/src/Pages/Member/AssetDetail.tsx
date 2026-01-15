@@ -253,21 +253,6 @@ const AssetDetail: FC = () => {
 										</Typography>
 									</Paper>
 								</Grid>
-								<Grid size={{ xs: 6 }}>
-									<Paper
-										variant='outlined'
-										sx={{ p: 2, bgcolor: 'background.default' }}
-									>
-										<Stack direction='row' spacing={1} alignItems='center'>
-											<Typography variant='body2' color='text.secondary'>
-												{t('member_assets:availableQuantity')}
-											</Typography>
-										</Stack>
-										<Typography variant='h6'>
-											{AssetData.quantity - AssetData.quantityCommited}
-										</Typography>
-									</Paper>
-								</Grid>
 							</Grid>
 
 							{AssetData.requiresApproval && (
@@ -305,10 +290,7 @@ const AssetDetail: FC = () => {
 									size='large'
 									startIcon={<ShoppingCartIcon />}
 									onClick={() => console.log(AssetData.id)}
-									disabled={
-										AssetData.status === AssetStatus.Delisted ||
-										AssetData.quantity < 1
-									}
+									disabled={AssetData.status === AssetStatus.Delisted}
 									sx={{
 										minWidth: '200px',
 										py: 1.5,

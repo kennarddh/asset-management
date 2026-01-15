@@ -20,7 +20,6 @@ class UpdateAsset extends Controller {
 		const {
 			name,
 			description,
-			quantity,
 			maximumLendingDuration,
 			minimumLendingDuration,
 			requiresApproval,
@@ -34,7 +33,6 @@ class UpdateAsset extends Controller {
 			await this.assetService.update(id, {
 				name,
 				description,
-				quantity,
 				maximumLendingDuration,
 				minimumLendingDuration,
 				requiresApproval,
@@ -69,7 +67,6 @@ class UpdateAsset extends Controller {
 		return z.object({
 			name: z.string().trim().min(1).max(100).optional(),
 			description: z.string().trim().optional(),
-			quantity: z.int().min(1).optional(),
 			maximumLendingDuration: z.int().min(1).optional(),
 			minimumLendingDuration: z.int().min(1),
 			requiresApproval: z.boolean().optional(),

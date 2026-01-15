@@ -66,7 +66,6 @@ const main = async () => {
 		data: {
 			name: 'Digital Camera',
 			description: 'A high-quality digital camera for photography enthusiasts.',
-			quantity: 5,
 			maximumLendingDuration: 14 * 24 * 60 * 60,
 			minimumLendingDuration: 60 * 60,
 			status: AssetStatus.Available,
@@ -91,7 +90,6 @@ const main = async () => {
 		data: {
 			name: 'Projector',
 			description: 'A portable projector suitable for presentations and movie nights.',
-			quantity: 3,
 			maximumLendingDuration: 7 * 24 * 60 * 60,
 			minimumLendingDuration: 60 * 60,
 			status: AssetStatus.Available,
@@ -113,7 +111,6 @@ const main = async () => {
 		data: {
 			name: 'Conference Room',
 			description: 'A fully equipped conference room for meetings and workshops.',
-			quantity: 1,
 			maximumLendingDuration: 1 * 24 * 60 * 60,
 			minimumLendingDuration: 60 * 60,
 			status: AssetStatus.Available,
@@ -138,7 +135,6 @@ const main = async () => {
 		data: {
 			name: 'Office Chair',
 			description: 'Ergonomic office chair for comfortable seating during work hours.',
-			quantity: 10,
 			maximumLendingDuration: 30 * 24 * 60 * 60,
 			minimumLendingDuration: 60 * 60,
 			status: AssetStatus.Available,
@@ -160,7 +156,6 @@ const main = async () => {
 		data: {
 			name: 'Mountain Bike',
 			description: 'A durable mountain bike suitable for off-road adventures.',
-			quantity: 4,
 			maximumLendingDuration: 21 * 24 * 60 * 60,
 			minimumLendingDuration: 24 * 60 * 60,
 			status: AssetStatus.Available,
@@ -182,7 +177,6 @@ const main = async () => {
 		data: {
 			name: 'Sound System',
 			description: 'High-quality sound system for events and parties.',
-			quantity: 2,
 			maximumLendingDuration: 5 * 24 * 60 * 60,
 			minimumLendingDuration: 6 * 60 * 60,
 			status: AssetStatus.Available,

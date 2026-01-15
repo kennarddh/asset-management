@@ -8,7 +8,6 @@ type OrderFindManyResponse = FindManyResponse<{
 	description: string
 	reason: string | null
 	status: string
-	quantity: number
 	user: { id: string; name: string }
 	asset: {
 		id: string
@@ -30,7 +29,6 @@ export interface OrderFindManySingleOutput {
 	description: string
 	reason: string | null
 	status: OrderStatus
-	quantity: number
 	user: { id: string; name: string }
 	asset: {
 		id: string
@@ -77,7 +75,6 @@ const OrderFindManyApi: ApiFunction<OrderFindManyOutput, OrderFindManyData> = as
 			description: order.description,
 			reason: order.reason,
 			status: order.status as OrderStatus,
-			quantity: order.quantity,
 			user: order.user,
 			asset: order.asset,
 			requestedAt: new Date(order.requestedAt),

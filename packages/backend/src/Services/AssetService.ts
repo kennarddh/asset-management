@@ -21,9 +21,6 @@ export interface Asset {
 	id: bigint
 	name: string
 	description: string
-	quantity: number
-	quantityCommited: number
-	quantityActive: number
 	maximumLendingDuration: number
 	minimumLendingDuration: number
 	requiresApproval: boolean
@@ -37,7 +34,6 @@ export interface Asset {
 export interface AssetCreateData {
 	name: string
 	description: string
-	quantity: number
 	maximumLendingDuration: number
 	minimumLendingDuration: number
 	requiresApproval: boolean
@@ -49,7 +45,6 @@ export interface AssetCreateData {
 export interface AssetUpdateData {
 	name: string
 	description: string
-	quantity: number
 	maximumLendingDuration: number
 	minimumLendingDuration: number
 	requiresApproval: boolean
@@ -89,9 +84,6 @@ class AssetService extends Service {
 			name: data.name,
 			description: data.description,
 			category: { id: data.category.id, name: data.category.name },
-			quantity: data.quantity,
-			quantityCommited: data.quantityCommited,
-			quantityActive: data.quantityActive,
 			maximumLendingDuration: data.maximumLendingDuration,
 			minimumLendingDuration: data.maximumLendingDuration,
 			requiresApproval: data.requiresApproval,
@@ -134,9 +126,6 @@ class AssetService extends Service {
 			name: true,
 			description: true,
 			category: { select: { id: true, name: true } },
-			quantity: true,
-			quantityCommited: true,
-			quantityActive: true,
 			maximumLendingDuration: true,
 			requiresApproval: true,
 			status: true,
@@ -231,9 +220,6 @@ class AssetService extends Service {
 					name: asset.name,
 					description: asset.description,
 					category: { id: asset.category.id.toString(), name: asset.category.name },
-					quantity: asset.quantity,
-					quantityCommited: asset.quantityCommited,
-					quantityActive: asset.quantityActive,
 					maximumLendingDuration: asset.maximumLendingDuration,
 					minimumLendingDuration: asset.minimumLendingDuration,
 					requiresApproval: asset.requiresApproval,
@@ -313,51 +299,6 @@ class AssetService extends Service {
 			await transaction
 				.getRepository(AssetRepository)
 				.update({ filter: { id }, data: updateData })
-		})
-	}
-
-	async markQuantityCommited(id: bigint, quantity: number) {
-		await this.unitOfWork.execute(async transaction => {
-			await transaction.getRepository(AssetRepository).update({
-				filter: { id },
-				data: {
-					quantityCommited: { increment: quantity },
-				},
-			})
-		})
-	}
-
-	async markQuantityNotCommited(id: bigint, quantity: number) {
-		await this.unitOfWork.execute(async transaction => {
-			await transaction.getRepository(AssetRepository).update({
-				filter: { id },
-				data: {
-					quantityCommited: { decrement: quantity },
-				},
-			})
-		})
-	}
-
-	async markQuantityActive(id: bigint, quantity: number) {
-		await this.unitOfWork.execute(async transaction => {
-			await transaction.getRepository(AssetRepository).update({
-				filter: { id },
-				data: {
-					quantityCommited: { decrement: quantity },
-					quantityActive: { increment: quantity },
-				},
-			})
-		})
-	}
-
-	async markQuantityInactive(id: bigint, quantity: number) {
-		await this.unitOfWork.execute(async transaction => {
-			await transaction.getRepository(AssetRepository).update({
-				filter: { id },
-				data: {
-					quantityActive: { decrement: quantity },
-				},
-			})
 		})
 	}
 }

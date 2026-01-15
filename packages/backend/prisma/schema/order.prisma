@@ -3,7 +3,6 @@ model Order {
     description String
     reason      String?
     status      String  @db.VarChar(50)
-    quantity    Int
 
     userId BigInt
     user   User   @relation(fields: [userId], references: [id])

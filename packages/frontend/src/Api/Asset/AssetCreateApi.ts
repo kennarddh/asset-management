@@ -10,7 +10,6 @@ interface AssetCreateResponse {
 export interface AssetCreateData {
 	name: string
 	description: string
-	quantity: number
 	maximumLendingDuration: number
 	minimumLendingDuration: number
 	requiresApproval: boolean

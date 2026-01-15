@@ -23,7 +23,6 @@ export interface Order {
 	description: string
 	reason: string | null
 	status: OrderStatus
-	quantity: number
 	user: { id: bigint; name: string }
 	asset: {
 		id: bigint
@@ -42,7 +41,6 @@ export interface Order {
 
 export interface OrderCreateData {
 	description: string
-	quantity: number
 	userId: bigint
 	assetId: bigint
 	finishAt: Date
@@ -60,7 +58,6 @@ export interface OrderUpdateData {
 
 export interface OrderRecordData {
 	description: string
-	quantity: number
 	userId: bigint
 	assetId: bigint
 	finishAt: Date
@@ -101,7 +98,6 @@ class OrderService extends Service {
 			description: data.description,
 			reason: data.reason,
 			status: data.status as OrderStatus,
-			quantity: data.quantity,
 			user: { id: data.user.id, name: data.user.name },
 			asset: { id: data.asset.id, name: data.asset.name, galleries: data.asset.galleries },
 			requestedAt: data.requestedAt,
@@ -149,7 +145,6 @@ class OrderService extends Service {
 			description: true,
 			reason: true,
 			status: true,
-			quantity: true,
 			user: { select: { id: true, name: true } },
 			asset: {
 				select: {
@@ -257,7 +252,6 @@ class OrderService extends Service {
 					description: order.description,
 					reason: order.reason,
 					status: order.status,
-					quantity: order.quantity,
 					user: { id: order.user.id.toString(), name: order.user.name },
 					asset: {
 						id: order.asset.id.toString(),
@@ -353,8 +347,6 @@ class OrderService extends Service {
 
 			await this.update(id, { status: OrderStatus.Approved, approvedAt: now, reason })
 
-			await this.assetService.markQuantityCommited(order.asset.id, order.quantity)
-
 			// TODO: Send notification to member
 
 			await this.schedulerService.addJob(
@@ -408,9 +400,6 @@ class OrderService extends Service {
 			)
 				throw new InvalidStateError('cancel', 'processed')
 
-			if (order.status !== OrderStatus.Pending)
-				await this.assetService.markQuantityNotCommited(order.asset.id, order.quantity)
-
 			await this.update(id, { status: OrderStatus.Cancelled, canceledAt: new Date() })
 		})
 	}
@@ -426,8 +415,6 @@ class OrderService extends Service {
 				throw new InvalidStateError('return', 'processed')
 
 			const isLate = new Date().getTime() > order.finishAt.getTime()
-
-			await this.assetService.markQuantityInactive(order.asset.id, order.quantity)
 
 			await this.update(id, {
 				status: isLate ? OrderStatus.ReturnedLate : OrderStatus.Returned,
@@ -470,8 +457,6 @@ class OrderService extends Service {
 
 					return
 				}
-
-				await this.assetService.markQuantityActive(order.asset.id, order.quantity)
 
 				await this.update(BigInt(data.orderId), { status: OrderStatus.Active })
 			} else if (jobName === 'order-finish') {

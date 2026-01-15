@@ -2,9 +2,6 @@ model Asset {
     id                     BigInt @id @default(autoincrement())
     name                   String
     description            String
-    quantity               Int
-    quantityCommited       Int    @default(0)
-    quantityActive         Int    @default(0)
     maximumLendingDuration Int
     minimumLendingDuration Int
 

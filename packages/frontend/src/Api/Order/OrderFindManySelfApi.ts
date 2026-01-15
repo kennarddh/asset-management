@@ -8,7 +8,6 @@ type OrderFindManySelfResponse = FindManyResponse<{
 	description: string
 	reason: string | null
 	status: string
-	quantity: number
 	user: { id: string; name: string }
 	asset: {
 		id: string
@@ -30,7 +29,6 @@ export interface OrderFindManySelfSingleOutput {
 	description: string
 	reason: string | null
 	status: OrderStatus
-	quantity: number
 	user: { id: string; name: string }
 	asset: {
 		id: string
@@ -78,7 +76,6 @@ const OrderFindManySelfApi: ApiFunction<
 			description: order.description,
 			reason: order.reason,
 			status: order.status as OrderStatus,
-			quantity: order.quantity,
 			user: order.user,
 			asset: order.asset,
 			requestedAt: new Date(order.requestedAt),

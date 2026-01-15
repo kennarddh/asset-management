@@ -8,7 +8,6 @@ interface OrderFindByIdResponse {
 	description: string
 	reason: string | null
 	status: string
-	quantity: number
 	user: { id: string; name: string }
 	asset: {
 		id: string
@@ -31,7 +30,6 @@ export interface OrderFindByIdOutput {
 	description: string
 	reason: string | null
 	status: OrderStatus
-	quantity: number
 	user: { id: string; name: string }
 	asset: {
 		id: string
@@ -62,7 +60,6 @@ const OrderFindByIdApi: ApiFunction<OrderFindByIdOutput, OrderFindByIdData> = as
 		description: outputData.description,
 		reason: outputData.reason,
 		status: outputData.status as OrderStatus,
-		quantity: outputData.quantity,
 		user: outputData.user,
 		asset: outputData.asset,
 		requestedAt: new Date(outputData.requestedAt),

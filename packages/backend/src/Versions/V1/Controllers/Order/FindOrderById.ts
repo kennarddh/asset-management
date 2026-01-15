@@ -40,7 +40,6 @@ class FindOrderById extends Controller {
 					description: order.description,
 					reason: order.reason,
 					status: order.status,
-					quantity: order.quantity,
 					user: { id: order.user.id.toString(), name: order.user.name },
 					asset: {
 						id: order.asset.id.toString(),

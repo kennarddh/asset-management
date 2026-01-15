@@ -51,8 +51,8 @@ export enum UserSortField {
 export enum AssetSortField {
 	Name = 'name',
 	Description = 'description',
-	Quantity = 'quantity',
 	MaximumLendingDuration = 'maximumLendingDuration',
+	MinimumLendingDuration = 'minimumLendingDuration',
 	RequiresApproval = 'requiresApproval',
 	Status = 'status',
 	CreatedAt = 'createdAt',
@@ -67,7 +67,6 @@ export enum AssetCategorySortField {
 export enum OrderSortField {
 	Description = 'description',
 	Status = 'status',
-	Quantity = 'Quantity',
 	RequestedAt = 'requestedAt',
 	UpdatedAt = 'updatedAt',
 	FinishAt = 'finishAt',

@@ -18,7 +18,6 @@ class CreateAsset extends Controller {
 		const {
 			name,
 			description,
-			quantity,
 			maximumLendingDuration,
 			minimumLendingDuration,
 			requiresApproval,
@@ -31,7 +30,6 @@ class CreateAsset extends Controller {
 			const asset = await this.assetService.create({
 				name,
 				description,
-				quantity,
 				maximumLendingDuration,
 				minimumLendingDuration,
 				requiresApproval,
@@ -57,7 +55,6 @@ class CreateAsset extends Controller {
 		return z.object({
 			name: z.string().trim().min(1).max(100),
 			description: z.string().trim(),
-			quantity: z.int().min(1),
 			maximumLendingDuration: z.int().min(1),
 			minimumLendingDuration: z.int().min(1),
 			requiresApproval: z.boolean(),
