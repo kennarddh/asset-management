@@ -17,7 +17,7 @@ export interface OrderCreateOutput {
 }
 
 const OrderCreateApi: ApiFunction<OrderCreateOutput, OrderCreateData> = async data => {
-	const result = await CallApi<OrderCreateResponse>('/v1/order', 'POST', false, {
+	const result = await CallApi<OrderCreateResponse>('/v1/order', 'POST', true, {
 		data,
 	})
 

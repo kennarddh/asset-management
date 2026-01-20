@@ -6,7 +6,7 @@ export interface OrderReturnData {
 }
 
 const OrderReturnApi: ApiFunction<null, OrderReturnData> = async data => {
-	await CallApi(`/v1/order/${data.id}/return`, 'POST', false)
+	await CallApi(`/v1/order/${data.id}/return`, 'POST', true)
 }
 
 export default OrderReturnApi

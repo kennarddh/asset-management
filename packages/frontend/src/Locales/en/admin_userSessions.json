@@ -1,6 +1,5 @@
 {
 	"employee": "User",
-	"location": "Location",
 	"ipAddress": "IP Address",
 	"createdAt": "Created At",
 	"expireAt": "Expire At",

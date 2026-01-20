@@ -2,6 +2,7 @@ import { FC, JSX, useMemo } from 'react'
 
 import { Link, useLocation } from 'react-router'
 
+import CategoryIcon from '@mui/icons-material/Category'
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded'
@@ -33,11 +34,15 @@ const MenuContent: FC<{ onClickLink?: () => void }> = props => {
 				to: '/admin/user',
 				icon: <PeopleRoundedIcon />,
 			},
-
 			{
 				text: t('admin_navigations:links.userSessions'),
 				to: '/admin/user/session',
 				icon: <HowToRegRoundedIcon />,
+			},
+			{
+				text: t('admin_navigations:links.assetCategories'),
+				to: '/admin/asset/category',
+				icon: <CategoryIcon />,
 			},
 		],
 		[t],

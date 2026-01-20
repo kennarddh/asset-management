@@ -7,7 +7,7 @@ export interface OrderApproveData {
 }
 
 const OrderApproveApi: ApiFunction<null, OrderApproveData> = async data => {
-	await CallApi(`/v1/order/${data.id}/approve`, 'POST', false, {
+	await CallApi(`/v1/order/${data.id}/approve`, 'POST', true, {
 		data: { reason: data.reason },
 	})
 }

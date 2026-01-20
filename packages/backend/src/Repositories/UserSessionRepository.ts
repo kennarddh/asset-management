@@ -103,7 +103,7 @@ class UserSessionRepository extends PrismaRepository {
 		} catch (error) {
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
 				if (error.code === 'P2025') {
-					throw new ResourceNotFoundError('location')
+					throw new ResourceNotFoundError('userSession')
 				}
 			}
 

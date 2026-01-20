@@ -23,7 +23,7 @@ export interface AssetCreateOutput {
 }
 
 const AssetCreateApi: ApiFunction<AssetCreateOutput, AssetCreateData> = async data => {
-	const result = await CallApi<AssetCreateResponse>('/v1/asset', 'POST', false, {
+	const result = await CallApi<AssetCreateResponse>('/v1/asset', 'POST', true, {
 		data,
 	})
 

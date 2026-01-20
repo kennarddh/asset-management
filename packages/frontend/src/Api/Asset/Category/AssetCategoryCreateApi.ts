@@ -18,7 +18,7 @@ const AssetCategoryCreateApi: ApiFunction<
 	AssetCategoryCreateOutput,
 	AssetCategoryCreateData
 > = async data => {
-	const result = await CallApi<AssetCategoryCreateResponse>('/v1/asset/category', 'POST', false, {
+	const result = await CallApi<AssetCategoryCreateResponse>('/v1/asset/category', 'POST', true, {
 		data,
 	})
 

@@ -6,7 +6,7 @@ export interface OrderCancelData {
 }
 
 const OrderCancelApi: ApiFunction<null, OrderCancelData> = async data => {
-	await CallApi(`/v1/order/${data.id}/cancel`, 'POST', false)
+	await CallApi(`/v1/order/${data.id}/cancel`, 'POST', true)
 }
 
 export default OrderCancelApi

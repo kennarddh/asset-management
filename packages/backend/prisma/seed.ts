@@ -55,10 +55,10 @@ const main = async () => {
 
 	await prisma.assetCategory.createMany({
 		data: [
-			{ id: 1, name: 'Electronics', description: 'Electronic devices and gadgets.' },
-			{ id: 2, name: 'Furniture', description: 'Office and home furniture.' },
-			{ id: 3, name: 'Vehicles', description: 'Cars, bikes, and other vehicles.' },
-			{ id: 4, name: 'Venue', description: 'Rooms and spaces for events.' },
+			{ name: 'Electronics', description: 'Electronic devices and gadgets.' },
+			{ name: 'Furniture', description: 'Office and home furniture.' },
+			{ name: 'Vehicles', description: 'Cars, bikes, and other vehicles.' },
+			{ name: 'Venue', description: 'Rooms and spaces for events.' },
 		],
 	})
 
