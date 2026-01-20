@@ -1,0 +1,20 @@
+{
+	"name": "Name",
+	"description": "Description",
+	"new": {
+		"title": "New Asset Category"
+	},
+	"edit": {
+		"title": "Edit Asset Category"
+	},
+	"list": {
+		"title": "Asset Categories"
+	},
+	"select": {
+		"button": "Select Asset Category",
+		"title": "Select Asset Category"
+	},
+	"errors": {
+		"notFound": "The asset category you are looking for does not exist."
+	}
+}

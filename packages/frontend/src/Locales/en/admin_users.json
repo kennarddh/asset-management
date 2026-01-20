@@ -1,0 +1,18 @@
+{
+	"name": "Name",
+	"username": "Username",
+	"password": "Password",
+	"edit": {
+		"title": "Edit User"
+	},
+	"list": {
+		"title": "Users"
+	},
+	"detail": {
+		"title": "User Detail"
+	},
+	"errors": {
+		"notFound": "The user you are looking for does not exist.",
+		"usernameTaken": "The username is already taken."
+	}
+}

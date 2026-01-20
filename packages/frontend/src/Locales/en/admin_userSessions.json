@@ -1,0 +1,21 @@
+{
+	"employee": "User",
+	"location": "Location",
+	"ipAddress": "IP Address",
+	"createdAt": "Created At",
+	"expireAt": "Expire At",
+	"lastRefreshAt": "Last Refresh At",
+	"loggedOutAt": "Logged Out At",
+	"revokedAt": "Revoked At",
+	"revokeSession": "Revoke session",
+	"list": {
+		"title": "User Sessions"
+	},
+	"detail": {
+		"title": "User Session Detail"
+	},
+	"errors": {
+		"notFound": "The user session you are looking for does not exist.",
+		"inactive": "The user session is inactive."
+	}
+}

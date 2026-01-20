@@ -72,6 +72,46 @@ const router = createBrowserRouter([
 										index: true,
 										lazy: () => import('Pages/Admin/Home'),
 									},
+									{
+										path: 'user',
+										children: [
+											{
+												index: true,
+												lazy: () => import('Pages/Admin/User/UserList'),
+											},
+											{
+												path: ':id',
+
+												children: [
+													{
+														index: true,
+														lazy: () =>
+															import('Pages/Admin/User/UserDetail'),
+													},
+													{
+														path: 'edit',
+														lazy: () =>
+															import('Pages/Admin/User/EditUser'),
+													},
+												],
+											},
+											{
+												path: 'session',
+												children: [
+													{
+														index: true,
+														lazy: () =>
+															import('Pages/Admin/UserSession/UserSessionList'),
+													},
+													{
+														path: ':id',
+														lazy: () =>
+															import('Pages/Admin/UserSession/UserSessionDetail'),
+													},
+												],
+											},
+										],
+									},
 								],
 							},
 						],

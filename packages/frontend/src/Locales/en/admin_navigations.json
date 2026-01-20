@@ -5,6 +5,8 @@
 	},
 	"links": {
 		"home": "Home",
-		"profile": "Profile"
+		"profile": "Profile",
+		"users": "Users",
+		"userSessions": "User Sessions"
 	}
 }

@@ -3,6 +3,8 @@ import { FC, JSX, useMemo } from 'react'
 import { Link, useLocation } from 'react-router'
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
+import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'
+import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded'
 
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material'
 
@@ -25,6 +27,17 @@ const MenuContent: FC<{ onClickLink?: () => void }> = props => {
 				text: t('admin_navigations:links.home'),
 				to: '/admin/',
 				icon: <HomeRoundedIcon />,
+			},
+			{
+				text: t('admin_navigations:links.users'),
+				to: '/admin/user',
+				icon: <PeopleRoundedIcon />,
+			},
+
+			{
+				text: t('admin_navigations:links.userSessions'),
+				to: '/admin/user/session',
+				icon: <HowToRegRoundedIcon />,
 			},
 		],
 		[t],

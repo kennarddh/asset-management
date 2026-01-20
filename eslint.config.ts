@@ -142,6 +142,7 @@ export default defineConfig(
 			'react/jsx-curly-brace-presence': 'warn',
 			'react/jsx-no-useless-fragment': 'warn',
 			'react/jsx-filename-extension': ['warn', { extensions: ['.ts', '.tsx'] }],
+			'react-hooks/refs': 'off',
 		},
 		settings: {
 			react: {

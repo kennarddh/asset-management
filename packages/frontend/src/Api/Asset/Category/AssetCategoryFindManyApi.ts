@@ -15,7 +15,6 @@ export interface AssetCategoryFindManySingleOutput {
 	id: string
 	name: string
 	description: string
-
 	createdAt: Date
 	updatedAt: Date
 }
