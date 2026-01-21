@@ -1,0 +1,35 @@
+{
+	"name": "Name",
+	"category": "Category",
+	"requiresApproval": "Requires Approval",
+	"status": "Status",
+	"description": "Description",
+	"maximumLendingDuration": "Maximum Lending Duration",
+	"minimumLendingDuration": "Minimum Lending Duration",
+	"new": {
+		"title": "New Asset"
+	},
+	"edit": {
+		"title": "Edit Asset"
+	},
+	"list": {
+		"title": "Asset Categories"
+	},
+	"detail": {
+		"title": "Asset Detail"
+	},
+	"select": {
+		"button": "Select Asset",
+		"title": "Select Asset"
+	},
+	"enums": {
+		"status": {
+			"Available": "Available",
+			"Delisted": "Delisted"
+		}
+	},
+	"errors": {
+		"notFound": "The asset you are looking for does not exist.",
+		"groupRequired": "Asset category is required."
+	}
+}

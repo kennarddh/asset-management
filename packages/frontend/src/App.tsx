@@ -115,6 +115,29 @@ const router = createBrowserRouter([
 										path: 'asset',
 										children: [
 											{
+												index: true,
+												lazy: () => import('Pages/Admin/Asset/AssetList'),
+											},
+											{
+												path: 'new',
+												lazy: () => import('Pages/Admin/Asset/NewAsset'),
+											},
+											{
+												path: ':id',
+												children: [
+													{
+														index: true,
+														lazy: () =>
+															import('Pages/Admin/Asset/AssetDetail'),
+													},
+													{
+														path: 'edit',
+														lazy: () =>
+															import('Pages/Admin/Asset/EditAsset'),
+													},
+												],
+											},
+											{
 												path: 'category',
 												children: [
 													{

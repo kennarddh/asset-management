@@ -7,6 +7,9 @@
 	"edit": {
 		"title": "Edit Asset Category"
 	},
+	"detail": {
+		"title": "Asset Category Detail"
+	},
 	"list": {
 		"title": "Asset Categories"
 	},

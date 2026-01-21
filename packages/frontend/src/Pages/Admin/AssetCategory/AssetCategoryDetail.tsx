@@ -38,7 +38,7 @@ const AssetCategoryDetail: FC = () => {
 	}, [Navigate, id])
 
 	return (
-		<PageContainer title={t('admin_assetCategories:edit.title')}>
+		<PageContainer title={t('admin_assetCategories:detail.title')}>
 			<Box
 				sx={{
 					display: 'flex',

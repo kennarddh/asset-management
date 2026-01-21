@@ -85,7 +85,7 @@ class AssetService extends Service {
 			description: data.description,
 			category: { id: data.category.id, name: data.category.name },
 			maximumLendingDuration: data.maximumLendingDuration,
-			minimumLendingDuration: data.maximumLendingDuration,
+			minimumLendingDuration: data.minimumLendingDuration,
 			requiresApproval: data.requiresApproval,
 			status: data.status as AssetStatus,
 			galleries: data.galleries,
@@ -127,6 +127,7 @@ class AssetService extends Service {
 			description: true,
 			category: { select: { id: true, name: true } },
 			maximumLendingDuration: true,
+			minimumLendingDuration: true,
 			requiresApproval: true,
 			status: true,
 			galleries: {
