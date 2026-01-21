@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 
 import EditIcon from '@mui/icons-material/Edit'
 import SearchIcon from '@mui/icons-material/Search'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 
 import { InputAdornment, TextField } from '@mui/material'
 import {
@@ -61,14 +62,20 @@ const AssetCategoryList: FC = () => {
 				field: 'actions',
 				type: 'actions',
 				width: 80,
-				getActions: params => (
+				getActions: params => [
+					<GridActionsCellItem
+						key='seeDetail'
+						icon={<VisibilityIcon />}
+						label={t('common:seeDetail')}
+						onClick={() => Navigate(params.row.id)}
+					/>,
 					<GridActionsCellItem
 						key='edit'
 						icon={<EditIcon />}
 						label={t('common:edit')}
 						onClick={() => Navigate(`${params.row.id}/edit`)}
-					/>
-				),
+					/>,
+				],
 			},
 		],
 		[Navigate, t],

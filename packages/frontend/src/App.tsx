@@ -81,7 +81,6 @@ const router = createBrowserRouter([
 											},
 											{
 												path: ':id',
-
 												children: [
 													{
 														index: true,
@@ -131,6 +130,11 @@ const router = createBrowserRouter([
 													{
 														path: ':id',
 														children: [
+															{
+																index: true,
+																lazy: () =>
+																	import('Pages/Admin/AssetCategory/AssetCategoryDetail'),
+															},
 															{
 																path: 'edit',
 																lazy: () =>
