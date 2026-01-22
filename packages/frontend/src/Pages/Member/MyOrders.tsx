@@ -26,7 +26,7 @@ import OrderCancelApi from 'Api/Order/OrderCancelApi'
 import OrderFindManySelfApi, { OrderFindManySelfSingleOutput } from 'Api/Order/OrderFindManySelfApi'
 import { ApiPagination } from 'Api/Types'
 
-const StatusToChipColor: Record<
+export const StatusToChipColor: Record<
 	OrderStatus,
 	'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
 > = {
@@ -160,7 +160,7 @@ const MyOrders: FC = () => {
 										{order.id}: {order.asset.name}
 									</Typography>
 									<Chip
-										label={order.status}
+										label={t(`member_myOrders:enums.status.${order.status}`)}
 										color={StatusToChipColor[order.status]}
 									/>
 									<Typography

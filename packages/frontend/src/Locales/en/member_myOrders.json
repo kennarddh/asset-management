@@ -1,5 +1,25 @@
 {
 	"noOrders": "You haven't made any orders.",
+	"requestedAt": "Requested At",
+	"updatedAt": "Updated At",
+	"finishAt": "Finish At",
+	"startAt": "Start At",
+	"approvedAt": "Approved At",
+	"rejectedAt": "Rejected At",
+	"returnedAt": "Returned At",
+	"canceledAt": "Canceled At",
+	"enums": {
+		"status": {
+			"Pending": "Pending",
+			"Approved": "Approved",
+			"Rejected": "Rejected",
+			"Canceled": "Canceled",
+			"Active": "Active",
+			"Overdue": "Overdue",
+			"Returned": "Returned",
+			"ReturnedLate": "Returned Late"
+		}
+	},
 	"errors": {
 		"notFound": "The order you are looking for does not exist.",
 		"processed": "Your order has already been processed."
