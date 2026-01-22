@@ -63,6 +63,7 @@ const OrderList: FC = () => {
 
 	const OnApprove = useCallback(
 		async (id: string) => {
+			// TODO: This cause navigation to same page, causing full reload. Investigate later.
 			const reason = await ShowPrompt({
 				title: t('admin_orders:prompts.reason.title'),
 				contentText: t('admin_orders:prompts.reason.contentText'),

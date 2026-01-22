@@ -40,7 +40,7 @@ export const PromptContext = createContext<PromptContextValue>({
 })
 
 const PromptProvider: FC<PromptProviderProps> = ({ children }) => {
-	const { t } = useTranslation('common')
+	const { t } = useTranslation()
 
 	const [PromptConfigInternal, SetPromptConfigInternal] = useState<PromptConfigInternal | null>(
 		null,
@@ -77,10 +77,7 @@ const PromptProvider: FC<PromptProviderProps> = ({ children }) => {
 					<DialogContentText>{PromptConfigInternal?.contentText}</DialogContentText>
 					<form onSubmit={() => HandleClose(Value)} id={Id}>
 						<TextField
-							// eslint-disable-next-line jsx-a11y/no-autofocus
-							autoFocus
 							required
-							margin='dense'
 							label={PromptConfigInternal?.inputLabel}
 							fullWidth
 							variant='standard'
