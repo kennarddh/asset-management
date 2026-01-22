@@ -31,5 +31,6 @@
 	"approve": "Approve",
 	"reject": "Reject",
 	"return": "Return",
-	"reason": "Reason"
+	"reason": "Reason",
+	"includeInactive": "Include Inactive"
 }

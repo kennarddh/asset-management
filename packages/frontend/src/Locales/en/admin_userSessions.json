@@ -1,5 +1,5 @@
 {
-	"employee": "User",
+	"user": "User",
 	"ipAddress": "IP Address",
 	"createdAt": "Created At",
 	"expireAt": "Expire At",
