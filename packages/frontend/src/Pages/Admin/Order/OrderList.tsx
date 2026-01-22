@@ -2,6 +2,9 @@ import { FC, useCallback, useMemo, useRef, useState } from 'react'
 
 import { useNavigate, useSearchParams } from 'react-router'
 
+import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn'
+import CancelIcon from '@mui/icons-material/Cancel'
+import CheckIcon from '@mui/icons-material/Check'
 import SearchIcon from '@mui/icons-material/Search'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 
@@ -19,6 +22,7 @@ import { useTranslation } from 'react-i18next'
 
 import ListPageTemplate, { ListPageTemplateHandle } from 'Components/Admin/ListPageTemplate'
 
+import CreateArrayConditional from 'Utils/CreateArrayConditional'
 import TransformGridGetRowsParams from 'Utils/TransformGridGetRowsParams'
 
 import useDebounce from 'Hooks/useDebounce'
@@ -48,6 +52,18 @@ const OrderList: FC = () => {
 	const OnFilterReset = useCallback(() => {
 		SetFilterSearch('')
 		SetFilterStatus('')
+	}, [])
+
+	const OnApprove = useCallback(async (id: string) => {
+		// TODO: Implement
+	}, [])
+
+	const OnReject = useCallback(async (id: string) => {
+		// TODO: Implement
+	}, [])
+
+	const OnReturn = useCallback(async (id: string) => {
+		// TODO: Implement
 	}, [])
 
 	const Columns = useMemo<GridColDef<OrderFindManySingleOutput>[]>(
@@ -113,17 +129,51 @@ const OrderList: FC = () => {
 				field: 'actions',
 				type: 'actions',
 				width: 80,
-				getActions: params => [
-					<GridActionsCellItem
-						key='seeDetail'
-						icon={<VisibilityIcon />}
-						label={t('common:seeDetail')}
-						onClick={() => Navigate(params.row.id)}
-					/>,
-				],
+				getActions: params =>
+					CreateArrayConditional(
+						[
+							true,
+							<GridActionsCellItem
+								key='seeDetail'
+								icon={<VisibilityIcon />}
+								label={t('common:seeDetail')}
+								onClick={() => Navigate(params.row.id)}
+							/>,
+						],
+						[
+							params.row.flags.canBeApproved,
+							<GridActionsCellItem
+								key='approve'
+								icon={<CheckIcon />}
+								label={t('common:approve')}
+								onClick={() => OnApprove(params.row.id)}
+								showInMenu
+							/>,
+						],
+						[
+							params.row.flags.canBeRejected,
+							<GridActionsCellItem
+								key='reject'
+								icon={<CancelIcon />}
+								label={t('common:reject')}
+								onClick={() => OnReject(params.row.id)}
+								showInMenu
+							/>,
+						],
+						[
+							params.row.flags.canBeReturned,
+							<GridActionsCellItem
+								key='return'
+								icon={<AssignmentReturnIcon />}
+								label={t('common:return')}
+								onClick={() => OnReturn(params.row.id)}
+								showInMenu
+							/>,
+						],
+					),
 			},
 		],
-		[Navigate, t],
+		[Navigate, OnApprove, OnReject, OnReturn, t],
 	)
 
 	const debouncedFilterSearch = useDebounce(FilterSearch, 500)

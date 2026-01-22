@@ -27,5 +27,8 @@
 	"description": "Description",
 	"lastUpdated": "Last Updated",
 	"minDuration": "Min Duration",
-	"maxDuration": "Max Duration"
+	"maxDuration": "Max Duration",
+	"approve": "Approve",
+	"reject": "Reject",
+	"return": "Return"
 }
