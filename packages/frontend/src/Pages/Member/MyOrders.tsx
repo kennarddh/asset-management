@@ -29,7 +29,7 @@ const StatusToChipColor: Record<
 	[OrderStatus.Pending]: 'info',
 	[OrderStatus.Approved]: 'primary',
 	[OrderStatus.Rejected]: 'error',
-	[OrderStatus.Cancelled]: 'warning',
+	[OrderStatus.Canceled]: 'warning',
 	[OrderStatus.Active]: 'success',
 	[OrderStatus.Overdue]: 'error',
 	[OrderStatus.Returned]: 'success',

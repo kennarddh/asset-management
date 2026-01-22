@@ -334,7 +334,7 @@ class OrderService extends Service {
 
 			await this.schedulerService.addJob(
 				'order-auto-cancel',
-				{ orderId: order.id.toString(), targetStatus: OrderStatus.Cancelled },
+				{ orderId: order.id.toString(), targetStatus: OrderStatus.Canceled },
 				data.startAt.getTime() - nowTime,
 			)
 
@@ -418,7 +418,7 @@ class OrderService extends Service {
 			if (!(order.status === OrderStatus.Approved || order.status === OrderStatus.Pending))
 				throw new InvalidStateError('cancel', 'processed')
 
-			await this.update(id, { status: OrderStatus.Cancelled, canceledAt: new Date() })
+			await this.update(id, { status: OrderStatus.Canceled, canceledAt: new Date() })
 		})
 	}
 
