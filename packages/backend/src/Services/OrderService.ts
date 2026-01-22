@@ -29,6 +29,11 @@ export interface Order {
 		name: string
 		galleries: { id: bigint; url: string }[]
 	}
+	flags: {
+		canBeApproved: boolean
+		canBeRejected: boolean
+		canBeReturned: boolean
+	}
 	requestedAt: Date
 	updatedAt: Date
 	finishAt: Date
@@ -93,13 +98,20 @@ class OrderService extends Service {
 	private transformData(
 		data: Prisma.OrderGetPayload<{ select: OrderService['dataSelect'] }>,
 	): Order {
+		const status = data.status as OrderStatus
+
 		return {
 			id: data.id,
 			description: data.description,
 			reason: data.reason,
-			status: data.status as OrderStatus,
+			status,
 			user: { id: data.user.id, name: data.user.name },
 			asset: { id: data.asset.id, name: data.asset.name, galleries: data.asset.galleries },
+			flags: {
+				canBeApproved: status === OrderStatus.Pending,
+				canBeRejected: status === OrderStatus.Pending,
+				canBeReturned: status === OrderStatus.Active,
+			},
 			requestedAt: data.requestedAt,
 			updatedAt: data.updatedAt,
 			finishAt: data.finishAt,
@@ -260,6 +272,11 @@ class OrderService extends Service {
 							id: gallery.id.toString(),
 							url: gallery.url,
 						})),
+					},
+					flags: {
+						canBeApproved: (order.status as OrderStatus) === OrderStatus.Pending,
+						canBeRejected: (order.status as OrderStatus) === OrderStatus.Pending,
+						canBeReturned: (order.status as OrderStatus) === OrderStatus.Active,
 					},
 					requestedAt: order.requestedAt.getTime(),
 					updatedAt: order.updatedAt.getTime(),

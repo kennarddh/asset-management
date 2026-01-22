@@ -14,7 +14,11 @@ interface OrderFindByIdResponse {
 		name: string
 		galleries: { id: string; url: string }[]
 	}
-
+	flags: {
+		canBeApproved: boolean
+		canBeRejected: boolean
+		canBeReturned: boolean
+	}
 	requestedAt: number
 	updatedAt: number
 	finishAt: number
@@ -35,6 +39,11 @@ export interface OrderFindByIdOutput {
 		id: string
 		name: string
 		galleries: { id: string; url: string }[]
+	}
+	flags: {
+		canBeApproved: boolean
+		canBeRejected: boolean
+		canBeReturned: boolean
 	}
 	requestedAt: Date
 	updatedAt: Date
@@ -62,6 +71,11 @@ const OrderFindByIdApi: ApiFunction<OrderFindByIdOutput, OrderFindByIdData> = as
 		status: outputData.status as OrderStatus,
 		user: outputData.user,
 		asset: outputData.asset,
+		flags: {
+			canBeApproved: outputData.flags.canBeApproved,
+			canBeRejected: outputData.flags.canBeRejected,
+			canBeReturned: outputData.flags.canBeReturned,
+		},
 		requestedAt: new Date(outputData.requestedAt),
 		updatedAt: new Date(outputData.updatedAt),
 		finishAt: new Date(outputData.finishAt),

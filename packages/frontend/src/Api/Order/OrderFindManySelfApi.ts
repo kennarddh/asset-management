@@ -14,6 +14,11 @@ type OrderFindManySelfResponse = FindManyResponse<{
 		name: string
 		galleries: { id: string; url: string }[]
 	}
+	flags: {
+		canBeApproved: boolean
+		canBeRejected: boolean
+		canBeReturned: boolean
+	}
 	requestedAt: number
 	updatedAt: number
 	finishAt: number
@@ -34,6 +39,11 @@ export interface OrderFindManySelfSingleOutput {
 		id: string
 		name: string
 		galleries: { id: string; url: string }[]
+	}
+	flags: {
+		canBeApproved: boolean
+		canBeRejected: boolean
+		canBeReturned: boolean
 	}
 	requestedAt: Date
 	updatedAt: Date
@@ -78,6 +88,11 @@ const OrderFindManySelfApi: ApiFunction<
 			status: order.status as OrderStatus,
 			user: order.user,
 			asset: order.asset,
+			flags: {
+				canBeApproved: order.flags.canBeApproved,
+				canBeRejected: order.flags.canBeRejected,
+				canBeReturned: order.flags.canBeReturned,
+			},
 			requestedAt: new Date(order.requestedAt),
 			updatedAt: new Date(order.updatedAt),
 			finishAt: new Date(order.finishAt),

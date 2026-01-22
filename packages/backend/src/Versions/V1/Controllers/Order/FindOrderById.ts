@@ -49,6 +49,11 @@ class FindOrderById extends Controller {
 							url: gallery.url,
 						})),
 					},
+					flags: {
+						canBeApproved: order.flags.canBeApproved,
+						canBeRejected: order.flags.canBeRejected,
+						canBeReturned: order.flags.canBeReturned,
+					},
 					requestedAt: order.requestedAt.getTime(),
 					updatedAt: order.updatedAt.getTime(),
 					finishAt: order.finishAt.getTime(),
