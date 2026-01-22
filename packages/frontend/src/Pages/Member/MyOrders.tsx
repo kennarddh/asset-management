@@ -1,8 +1,9 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useSearchParams } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 
 import {
+	Alert,
 	Box,
 	Button,
 	Card,
@@ -16,9 +17,12 @@ import {
 	Typography,
 } from '@mui/material'
 
-import { OrderStatus } from '@asset-management/common'
+import { ApiErrorKind, OrderStatus } from '@asset-management/common'
 import { useTranslation } from 'react-i18next'
 
+import HandleApiError from 'Utils/HandleApiError'
+
+import OrderCancelApi from 'Api/Order/OrderCancelApi'
 import OrderFindManySelfApi, { OrderFindManySelfSingleOutput } from 'Api/Order/OrderFindManySelfApi'
 import { ApiPagination } from 'Api/Types'
 
@@ -43,6 +47,8 @@ const MyOrders: FC = () => {
 		limit: 10,
 		total: 0,
 	})
+
+	const [ErrorText, SetErrorText] = useState<string | null>(null)
 
 	const [SearchParams, SetSearchParams] = useSearchParams()
 
@@ -76,6 +82,40 @@ const MyOrders: FC = () => {
 		}
 	}, [PaginationPage, SetSearchParams])
 
+	const OnCancel = useCallback(
+		async (id: string) => {
+			try {
+				await OrderCancelApi({ id })
+
+				SetSelfOrdersList(prevOrdersList =>
+					prevOrdersList.map(order =>
+						order.id === id
+							? {
+									...order,
+									status: OrderStatus.Canceled,
+									flags: {
+										...order.flags,
+										canBeCanceled: false,
+									},
+								}
+							: order,
+					),
+				)
+			} catch (error) {
+				const errorText = await HandleApiError(error, async error => {
+					if (error.kind === ApiErrorKind.NotFound) {
+						return t('member_myOrders:errors.notFound')
+					} else if (error.kind === ApiErrorKind.Processed) {
+						return t('member_myOrders:errors.processed')
+					}
+				})
+
+				SetErrorText(errorText)
+			}
+		},
+		[t],
+	)
+
 	useEffect(() => {
 		// eslint-disable-next-line react-hooks/set-state-in-effect
 		RefreshData().catch(console.error)
@@ -89,6 +129,11 @@ const MyOrders: FC = () => {
 
 	return (
 		<Stack sx={{ p: 4 }} gap={5}>
+			{ErrorText !== null ? (
+				<Alert severity='error' sx={{ width: '100%', whiteSpace: 'pre-line' }}>
+					{ErrorText}
+				</Alert>
+			) : null}
 			<Grid container spacing={4}>
 				{SelfOrdersList.map(order => (
 					<Grid key={order.id} size={{ xs: 6, sm: 4, md: 4, lg: 3 }}>
@@ -133,8 +178,16 @@ const MyOrders: FC = () => {
 								</Stack>
 							</CardContent>
 							<CardActions disableSpacing>
-								<Button size='small'>{t('common:cancel')}</Button>
-								<Button size='small'>{t('common:details')}</Button>
+								<Button size='small' component={Link} to={order.id}>
+									{t('common:details')}
+								</Button>
+								<Button
+									size='small'
+									disabled={!order.flags.canBeCanceled}
+									onClick={() => OnCancel(order.id)}
+								>
+									{t('common:cancel')}
+								</Button>
 							</CardActions>
 						</Card>
 					</Grid>
