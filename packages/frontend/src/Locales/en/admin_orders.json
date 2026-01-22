@@ -1,0 +1,43 @@
+{
+	"name": "Name",
+	"user": "User",
+	"status": "Status",
+	"description": "Description",
+	"asset": "Asset",
+	"reason": "Reason",
+	"requestedAt": "Requested At",
+	"updatedAt": "Updated At",
+	"finishAt": "Finish At",
+	"startAt": "Start At",
+	"approvedAt": "Approved At",
+	"rejectedAt": "Rejected At",
+	"returnedAt": "Returned At",
+	"canceledAt": "Canceled At",
+	"new": {
+		"title": "New Order"
+	},
+	"edit": {
+		"title": "Edit Order"
+	},
+	"list": {
+		"title": "Orders"
+	},
+	"detail": {
+		"title": "Order Detail"
+	},
+	"enums": {
+		"status": {
+			"Pending": "Pending",
+			"Approved": "Approved",
+			"Rejected": "Rejected",
+			"Cancelled": "Cancelled",
+			"Active": "Active",
+			"Overdue": "Overdue",
+			"Returned": "Returned",
+			"ReturnedLate": "Returned Late"
+		}
+	},
+	"errors": {
+		"notFound": "The order you are looking for does not exist."
+	}
+}

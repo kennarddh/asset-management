@@ -2,7 +2,6 @@ import { FC, useCallback, useMemo, useRef, useState } from 'react'
 
 import { useNavigate, useSearchParams } from 'react-router'
 
-import EditIcon from '@mui/icons-material/Edit'
 import SearchIcon from '@mui/icons-material/Search'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 
@@ -15,7 +14,7 @@ import {
 	GridGetRowsResponse,
 } from '@mui/x-data-grid'
 
-import { AssetSortField, AssetStatus } from '@asset-management/common'
+import { OrderSortField, OrderStatus } from '@asset-management/common'
 import { useTranslation } from 'react-i18next'
 
 import ListPageTemplate, { ListPageTemplateHandle } from 'Components/Admin/ListPageTemplate'
@@ -24,17 +23,17 @@ import TransformGridGetRowsParams from 'Utils/TransformGridGetRowsParams'
 
 import useDebounce from 'Hooks/useDebounce'
 
-import AssetFindManyApi, { AssetFindManySingleOutput } from 'Api/Asset/AssetFindManyApi'
+import OrderFindManyApi, { OrderFindManySingleOutput } from 'Api/Order/OrderFindManyApi'
 
-const AssetList: FC = () => {
+const OrderList: FC = () => {
 	const [SearchParams, SetSearchParams] = useSearchParams()
 
 	const [FilterSearch, SetFilterSearch] = useState(() => SearchParams.get('search') ?? '')
-	const [FilterStatus, SetFilterStatus] = useState<AssetStatus | ''>(() => {
+	const [FilterStatus, SetFilterStatus] = useState<OrderStatus | ''>(() => {
 		const statusParam = SearchParams.get('status')
 
-		if (statusParam && Object.values(AssetStatus).includes(statusParam as AssetStatus)) {
-			return statusParam as AssetStatus
+		if (statusParam && Object.values(OrderStatus).includes(statusParam as OrderStatus)) {
+			return statusParam as OrderStatus
 		}
 
 		return ''
@@ -44,48 +43,71 @@ const AssetList: FC = () => {
 
 	const Navigate = useNavigate()
 
-	const { t } = useTranslation('admin_assets')
+	const { t } = useTranslation('admin_orders')
 
 	const OnFilterReset = useCallback(() => {
 		SetFilterSearch('')
 		SetFilterStatus('')
 	}, [])
 
-	const Columns = useMemo<GridColDef<AssetFindManySingleOutput>[]>(
+	const Columns = useMemo<GridColDef<OrderFindManySingleOutput>[]>(
 		() => [
 			{
-				field: 'name',
-				headerName: t('admin_assets:name'),
-				width: 300,
+				field: 'user',
+				headerName: t('admin_orders:user'),
+				width: 150,
 				filterable: false,
+				sortable: false,
+				valueGetter: (_, row) => row.user.name,
 			},
 			{
-				field: 'category',
-				headerName: t('admin_assets:category'),
-				width: 200,
+				field: 'asset',
+				headerName: t('admin_orders:asset'),
+				width: 250,
 				filterable: false,
-				valueGetter: (_, row) => row.category.name,
-			},
-			{
-				field: 'requiresApproval',
-				headerName: t('admin_assets:requiresApproval'),
-				width: 100,
-				filterable: false,
-				valueGetter: (_, row) => (row.requiresApproval ? t('common:yes') : t('common:no')),
+				sortable: false,
+				valueGetter: (_, row) => row.asset.name,
 			},
 			{
 				field: 'status',
-				headerName: t('admin_assets:status'),
+				headerName: t('admin_orders:status'),
 				width: 100,
 				filterable: false,
-				valueGetter: (_, row) => t(`admin_assets:enums.status.${row.status}`),
+				valueGetter: (_, row) => t(`admin_orders:enums.status.${row.status}`),
 			},
 			{
 				field: 'description',
-				headerName: t('admin_assets:description'),
+				headerName: t('admin_orders:description'),
 				minWidth: 300,
-				flex: 1,
 				filterable: false,
+			},
+			{
+				field: 'reason',
+				headerName: t('admin_orders:reason'),
+				minWidth: 300,
+				filterable: false,
+			},
+			{
+				field: 'requestedAt',
+				headerName: t('admin_orders:requestedAt'),
+				filterable: false,
+				minWidth: 250,
+				valueFormatter: (value: Date) => t('common:dateTime', { date: value }),
+			},
+			{
+				field: 'startAt',
+				headerName: t('admin_orders:startAt'),
+				filterable: false,
+				minWidth: 250,
+				valueFormatter: (value: Date) => t('common:dateTime', { date: value }),
+			},
+			{
+				field: 'finishAt',
+				headerName: t('admin_orders:finishAt'),
+				filterable: false,
+				minWidth: 250,
+				flex: 1,
+				valueFormatter: (value: Date) => t('common:dateTime', { date: value }),
 			},
 			{
 				field: 'actions',
@@ -97,12 +119,6 @@ const AssetList: FC = () => {
 						icon={<VisibilityIcon />}
 						label={t('common:seeDetail')}
 						onClick={() => Navigate(params.row.id)}
-					/>,
-					<GridActionsCellItem
-						key='edit'
-						icon={<EditIcon />}
-						label={t('common:edit')}
-						onClick={() => Navigate(`${params.row.id}/edit`)}
 					/>,
 				],
 			},
@@ -129,11 +145,11 @@ const AssetList: FC = () => {
 		[debouncedFilterSearch, debouncedFilterStatus],
 	)
 
-	const AssetDataSource = useMemo<GridDataSource>(
+	const OrderDataSource = useMemo<GridDataSource>(
 		() => ({
 			getRows: async (params: GridGetRowsParams): Promise<GridGetRowsResponse> => {
-				const result = await AssetFindManyApi({
-					...TransformGridGetRowsParams<AssetSortField>(params),
+				const result = await OrderFindManyApi({
+					...TransformGridGetRowsParams<OrderSortField>(params),
 					search: debouncedFilterSearch,
 					...(debouncedFilterStatus === '' ? {} : { status: [debouncedFilterStatus] }),
 				})
@@ -149,11 +165,12 @@ const AssetList: FC = () => {
 	return (
 		<ListPageTemplate
 			ref={ListPageTemplateRef}
-			title={t('admin_assets:list.title')}
-			dataSource={AssetDataSource}
+			title={t('admin_orders:list.title')}
+			dataSource={OrderDataSource}
 			columns={Columns}
-			sortFieldEnum={AssetSortField}
+			sortFieldEnum={OrderSortField}
 			onFilterReset={OnFilterReset}
+			cannotBeCreated
 			filterSlot={
 				<>
 					<TextField
@@ -175,15 +192,15 @@ const AssetList: FC = () => {
 					/>
 					<TextField
 						select
-						label={t('admin_assets:status')}
+						label={t('admin_orders:status')}
 						value={FilterStatus}
-						onChange={event => SetFilterStatus(event.target.value as AssetStatus)}
+						onChange={event => SetFilterStatus(event.target.value as OrderStatus)}
 						sx={{ minWidth: 200 }}
 					>
 						<MenuItem value=''>{t('common:all')}</MenuItem>
-						{Object.entries(AssetStatus).map(([key, value]) => (
+						{Object.entries(OrderStatus).map(([key, value]) => (
 							<MenuItem key={key} value={value}>
-								{t(`admin_assets:enums.status.${value}`)}
+								{t(`admin_orders:enums.status.${value}`)}
 							</MenuItem>
 						))}
 					</TextField>
@@ -193,6 +210,6 @@ const AssetList: FC = () => {
 	)
 }
 
-export default AssetList
+export default OrderList
 
-export { AssetList as Component }
+export { OrderList as Component }

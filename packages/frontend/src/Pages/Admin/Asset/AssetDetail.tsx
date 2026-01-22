@@ -86,7 +86,7 @@ const AssetDetail: FC = () => {
 						onChange={event => SetName(event.target.value)}
 						label={t('admin_assets:name')}
 						variant='outlined'
-						required
+						slotProps={{ inputLabel: { shrink: true }, input: { readOnly: true } }}
 					/>
 				</FormControl>
 				<FormControl fullWidth>
@@ -95,17 +95,13 @@ const AssetDetail: FC = () => {
 						onChange={event => SetDescription(event.target.value)}
 						label={t('admin_assets:description')}
 						variant='outlined'
+						slotProps={{ inputLabel: { shrink: true }, input: { readOnly: true } }}
 						multiline
 					/>
 				</FormControl>
 				<FormControl fullWidth>
 					<FormControlLabel
-						control={
-							<Switch
-								checked={RequiresApproval}
-								onChange={(_, checked) => SetRequiresApproval(checked)}
-							/>
-						}
+						control={<Switch checked={RequiresApproval} readOnly />}
 						label={t('admin_assets:requiresApproval')}
 					/>
 				</FormControl>
@@ -124,7 +120,7 @@ const AssetDetail: FC = () => {
 						value={Status}
 						onChange={event => SetStatus(event.target.value as AssetStatus)}
 						sx={{ minWidth: 200 }}
-						required
+						slotProps={{ inputLabel: { shrink: true }, input: { readOnly: true } }}
 					>
 						{Object.entries(AssetStatus).map(([key, value]) => (
 							<MenuItem key={key} value={value}>
@@ -142,8 +138,11 @@ const AssetDetail: FC = () => {
 						}
 						label={t('admin_assets:minimumLendingDuration')}
 						variant='outlined'
-						slotProps={{ htmlInput: { min: 0 } }}
-						required
+						slotProps={{
+							htmlInput: { min: 0 },
+							inputLabel: { shrink: true },
+							input: { readOnly: true },
+						}}
 					/>
 				</FormControl>
 				<FormControl fullWidth>
@@ -155,8 +154,11 @@ const AssetDetail: FC = () => {
 						}
 						label={t('admin_assets:maximumLendingDuration')}
 						variant='outlined'
-						slotProps={{ htmlInput: { min: 0 } }}
-						required
+						slotProps={{
+							htmlInput: { min: 0 },
+							inputLabel: { shrink: true },
+							input: { readOnly: true },
+						}}
 					/>
 				</FormControl>
 				<ImagesPreview images={Galleries} disabled />

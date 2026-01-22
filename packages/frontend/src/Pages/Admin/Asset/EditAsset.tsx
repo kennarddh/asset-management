@@ -82,7 +82,7 @@ const EditAsset: FC = () => {
 			if (!id) return
 			if (!HasLoaded) return
 
-			if (CategoryId === null) return SetErrorText(t('admin_assets:errors.groupRequired'))
+			if (CategoryId === null) return SetErrorText(t('admin_assets:errors.categoryRequired'))
 
 			startTransition(async () => {
 				try {

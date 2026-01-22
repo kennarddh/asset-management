@@ -169,6 +169,19 @@ const router = createBrowserRouter([
 											},
 										],
 									},
+									{
+										path: 'order',
+										children: [
+											{
+												index: true,
+												lazy: () => import('Pages/Admin/Order/OrderList'),
+											},
+											{
+												path: ':id',
+												lazy: () => import('Pages/Admin/Order/OrderDetail'),
+											},
+										],
+									},
 								],
 							},
 						],

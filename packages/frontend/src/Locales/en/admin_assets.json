@@ -13,14 +13,10 @@
 		"title": "Edit Asset"
 	},
 	"list": {
-		"title": "Asset Categories"
+		"title": "Assets"
 	},
 	"detail": {
 		"title": "Asset Detail"
-	},
-	"select": {
-		"button": "Select Asset",
-		"title": "Select Asset"
 	},
 	"enums": {
 		"status": {
@@ -30,6 +26,6 @@
 	},
 	"errors": {
 		"notFound": "The asset you are looking for does not exist.",
-		"groupRequired": "Asset category is required."
+		"categoryRequired": "Asset category is required."
 	}
 }

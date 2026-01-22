@@ -1,6 +1,6 @@
 import argon2 from 'argon2'
 
-import { AssetStatus, UserRole } from '@asset-management/common'
+import { AssetStatus, OrderStatus, UserRole } from '@asset-management/common'
 import { PrismaPg } from '@prisma/adapter-pg'
 import fs from 'fs/promises'
 
@@ -44,7 +44,7 @@ const main = async () => {
 		},
 	})
 
-	await prisma.user.create({
+	const memberUser = await prisma.user.create({
 		data: {
 			username: 'member1',
 			name: 'Member 1',
@@ -62,7 +62,7 @@ const main = async () => {
 		],
 	})
 
-	await prisma.asset.create({
+	const digitalCameraAsset = await prisma.asset.create({
 		data: {
 			name: 'Digital Camera',
 			description: 'A high-quality digital camera for photography enthusiasts.',
@@ -191,6 +191,21 @@ const main = async () => {
 					],
 				},
 			},
+		},
+	})
+
+	const now = new Date().getTime()
+
+	await prisma.order.create({
+		data: {
+			description: 'I want to try.',
+			startAt: new Date(now + 1000 * 60 * 60 * 24 * 2),
+			finishAt: new Date(now + 1000 * 60 * 60 * 24 * 5),
+			status: OrderStatus.Pending,
+			assetId: digitalCameraAsset.id,
+			userId: memberUser.id,
+			updatedAt: new Date(now),
+			requestedAt: new Date(now),
 		},
 	})
 }

@@ -46,7 +46,7 @@ const NewAsset: FC = () => {
 		(event: FormEvent<HTMLFormElement>) => {
 			event.preventDefault()
 
-			if (CategoryId === null) return SetErrorText(t('admin_assets:errors.groupRequired'))
+			if (CategoryId === null) return SetErrorText(t('admin_assets:errors.categoryRequired'))
 
 			startTransition(async () => {
 				try {

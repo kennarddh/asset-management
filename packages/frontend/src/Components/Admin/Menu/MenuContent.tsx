@@ -50,6 +50,11 @@ const MenuContent: FC<{ onClickLink?: () => void }> = props => {
 				to: '/admin/asset/category',
 				icon: <CategoryRoundedIcon />,
 			},
+			{
+				text: t('admin_navigations:links.orders'),
+				to: '/admin/order',
+				icon: <Inventory2RoundedIcon />,
+			},
 		],
 		[t],
 	)
