@@ -30,5 +30,6 @@
 	"maxDuration": "Max Duration",
 	"approve": "Approve",
 	"reject": "Reject",
-	"return": "Return"
+	"return": "Return",
+	"reason": "Reason"
 }

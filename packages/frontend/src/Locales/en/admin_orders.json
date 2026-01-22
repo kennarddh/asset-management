@@ -37,7 +37,14 @@
 			"ReturnedLate": "Returned Late"
 		}
 	},
+	"prompts": {
+		"reason": {
+			"title": "Provide Reason",
+			"contentText": "Please provide a reason for this action."
+		}
+	},
 	"errors": {
-		"notFound": "The order you are looking for does not exist."
+		"notFound": "The order you are looking for does not exist.",
+		"processed": "The order has already been processed."
 	}
 }

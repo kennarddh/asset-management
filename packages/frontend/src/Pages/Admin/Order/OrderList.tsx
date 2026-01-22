@@ -17,17 +17,22 @@ import {
 	GridGetRowsResponse,
 } from '@mui/x-data-grid'
 
-import { OrderSortField, OrderStatus } from '@asset-management/common'
+import { ApiErrorKind, OrderSortField, OrderStatus } from '@asset-management/common'
 import { useTranslation } from 'react-i18next'
 
 import ListPageTemplate, { ListPageTemplateHandle } from 'Components/Admin/ListPageTemplate'
 
 import CreateArrayConditional from 'Utils/CreateArrayConditional'
+import HandleApiError from 'Utils/HandleApiError'
 import TransformGridGetRowsParams from 'Utils/TransformGridGetRowsParams'
 
 import useDebounce from 'Hooks/useDebounce'
+import usePrompt from 'Hooks/usePrompt'
 
+import OrderApproveApi from 'Api/Order/OrderApproveApi'
 import OrderFindManyApi, { OrderFindManySingleOutput } from 'Api/Order/OrderFindManyApi'
+import OrderRejectApi from 'Api/Order/OrderRejectApi'
+import OrderReturnApi from 'Api/Order/OrderReturnApi'
 
 const OrderList: FC = () => {
 	const [SearchParams, SetSearchParams] = useSearchParams()
@@ -47,6 +52,8 @@ const OrderList: FC = () => {
 
 	const Navigate = useNavigate()
 
+	const { ShowPrompt } = usePrompt()
+
 	const { t } = useTranslation('admin_orders')
 
 	const OnFilterReset = useCallback(() => {
@@ -54,17 +61,95 @@ const OrderList: FC = () => {
 		SetFilterStatus('')
 	}, [])
 
-	const OnApprove = useCallback(async (id: string) => {
-		// TODO: Implement
-	}, [])
+	const OnApprove = useCallback(
+		async (id: string) => {
+			const reason = await ShowPrompt({
+				title: t('admin_orders:prompts.reason.title'),
+				contentText: t('admin_orders:prompts.reason.contentText'),
+				inputLabel: t('common:reason'),
+				buttonLabel: t('common:approve'),
+			})
 
-	const OnReject = useCallback(async (id: string) => {
-		// TODO: Implement
-	}, [])
+			if (reason === null) return
 
-	const OnReturn = useCallback(async (id: string) => {
-		// TODO: Implement
-	}, [])
+			ListPageTemplateRef.current?.setLoading(true)
+
+			try {
+				await OrderApproveApi({ id, reason })
+			} catch (error) {
+				const errorText = await HandleApiError(error, async error => {
+					if (error.kind === ApiErrorKind.NotFound) {
+						return t('locations:errors.notFound')
+					} else if (error.kind === ApiErrorKind.Processed) {
+						return t('locations:errors.processed')
+					}
+				})
+
+				ListPageTemplateRef.current?.setError(errorText)
+			} finally {
+				ListPageTemplateRef.current?.setLoading(false)
+				ListPageTemplateRef.current?.refresh()
+			}
+		},
+		[ShowPrompt, t],
+	)
+
+	const OnReject = useCallback(
+		async (id: string) => {
+			const reason = await ShowPrompt({
+				title: t('admin_orders:prompts.reason.title'),
+				contentText: t('admin_orders:prompts.reason.contentText'),
+				inputLabel: t('common:reason'),
+				buttonLabel: t('common:approve'),
+			})
+
+			if (reason === null) return
+
+			ListPageTemplateRef.current?.setLoading(true)
+
+			try {
+				await OrderRejectApi({ id, reason })
+			} catch (error) {
+				const errorText = await HandleApiError(error, async error => {
+					if (error.kind === ApiErrorKind.NotFound) {
+						return t('locations:errors.notFound')
+					} else if (error.kind === ApiErrorKind.Processed) {
+						return t('locations:errors.processed')
+					}
+				})
+
+				ListPageTemplateRef.current?.setError(errorText)
+			} finally {
+				ListPageTemplateRef.current?.setLoading(false)
+				ListPageTemplateRef.current?.refresh()
+			}
+		},
+		[ShowPrompt, t],
+	)
+
+	const OnReturn = useCallback(
+		async (id: string) => {
+			ListPageTemplateRef.current?.setLoading(true)
+
+			try {
+				await OrderReturnApi({ id })
+			} catch (error) {
+				const errorText = await HandleApiError(error, async error => {
+					if (error.kind === ApiErrorKind.NotFound) {
+						return t('locations:errors.notFound')
+					} else if (error.kind === ApiErrorKind.Processed) {
+						return t('locations:errors.processed')
+					}
+				})
+
+				ListPageTemplateRef.current?.setError(errorText)
+			} finally {
+				ListPageTemplateRef.current?.setLoading(false)
+				ListPageTemplateRef.current?.refresh()
+			}
+		},
+		[t],
+	)
 
 	const Columns = useMemo<GridColDef<OrderFindManySingleOutput>[]>(
 		() => [

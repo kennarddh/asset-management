@@ -14,6 +14,8 @@ import MainLayout from 'Outlets/MainLayout'
 import MemberLayout from 'Outlets/MemberLayout'
 import { useTranslation } from 'react-i18next'
 
+import PromptProvider from 'Contexts/Prompt'
+
 import MUILocaleMap, { DefaultMUILocale } from 'Constants/MUILocaleMap'
 
 import ErrorPage from 'Pages/ErrorPage'
@@ -224,7 +226,9 @@ const App: FC = () => {
 		<Suspense fallback={<LoadingPage />}>
 			<ThemeProvider theme={theme} noSsr>
 				<LocalizationProvider dateAdapter={AdapterDayjs}>
-					<RouterProvider router={router} />
+					<PromptProvider>
+						<RouterProvider router={router} />
+					</PromptProvider>
 				</LocalizationProvider>
 			</ThemeProvider>
 		</Suspense>

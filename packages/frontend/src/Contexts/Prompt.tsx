@@ -1,0 +1,103 @@
+import { FC, createContext, useCallback, useId, useState } from 'react'
+
+import {
+	Button,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	TextField,
+} from '@mui/material'
+
+import { useTranslation } from 'react-i18next'
+
+export interface PromptProviderProps {
+	children: React.ReactNode
+}
+
+export interface PromptConfig {
+	title: string
+	contentText: string
+	inputLabel: string
+	buttonLabel: string
+}
+
+export interface PromptConfigInternal {
+	title: string
+	contentText: string
+	inputLabel: string
+	buttonLabel: string
+	resolve: (value: string | null) => void
+}
+
+export interface PromptContextValue {
+	ShowPrompt: (config: PromptConfig) => Promise<string | null>
+}
+
+export const PromptContext = createContext<PromptContextValue>({
+	ShowPrompt: async () => null,
+})
+
+const PromptProvider: FC<PromptProviderProps> = ({ children }) => {
+	const { t } = useTranslation('common')
+
+	const [PromptConfigInternal, SetPromptConfigInternal] = useState<PromptConfigInternal | null>(
+		null,
+	)
+
+	const [Value, SetValue] = useState('')
+
+	const ShowPrompt = useCallback((config: PromptConfig) => {
+		SetValue('')
+
+		return new Promise<string | null>(resolve => {
+			SetPromptConfigInternal({ ...config, resolve })
+		})
+	}, [])
+
+	const HandleClose = useCallback(
+		(value: string | null) => {
+			PromptConfigInternal?.resolve(value)
+
+			SetPromptConfigInternal(null)
+			SetValue('')
+		},
+		[PromptConfigInternal],
+	)
+
+	const Id = useId()
+
+	return (
+		<PromptContext.Provider value={{ ShowPrompt }}>
+			{children}
+			<Dialog open={PromptConfigInternal !== null} onClose={() => HandleClose(null)}>
+				<DialogTitle>{PromptConfigInternal?.title}</DialogTitle>
+				<DialogContent>
+					<DialogContentText>{PromptConfigInternal?.contentText}</DialogContentText>
+					<form onSubmit={() => HandleClose(Value)} id={Id}>
+						<TextField
+							// eslint-disable-next-line jsx-a11y/no-autofocus
+							autoFocus
+							required
+							margin='dense'
+							label={PromptConfigInternal?.inputLabel}
+							fullWidth
+							variant='standard'
+							value={Value}
+							onChange={e => SetValue(e.target.value)}
+						/>
+					</form>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => HandleClose(null)}>{t('common:cancel')}</Button>
+					<Button type='submit' form={Id}>
+						{PromptConfigInternal?.buttonLabel}
+					</Button>
+				</DialogActions>
+			</Dialog>
+		</PromptContext.Provider>
+	)
+}
+
+export default PromptProvider
