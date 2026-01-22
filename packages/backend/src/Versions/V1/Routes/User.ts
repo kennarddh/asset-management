@@ -24,7 +24,13 @@ UserRouter.get(
 )
 UserRouter.patch(
 	'/:id',
-	[new VerifyJWT(false), new HandleAccess([new IsSameUser()], new UserResourceContextGetter())],
+	[
+		new VerifyJWT(false),
+		new HandleAccess(
+			[new Or(new IsSameUser(), new HasRole(UserRole.Admin))],
+			new UserResourceContextGetter(),
+		),
+	],
 	new UpdateUser(),
 )
 UserRouter.get(
