@@ -3,6 +3,8 @@ import { FC, Suspense, useMemo } from 'react'
 import { RouterProvider, createBrowserRouter } from 'react-router'
 
 import { ThemeProvider, createTheme } from '@mui/material'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 import { UserRole } from '@asset-management/common'
 import AdminDashboardLayout from 'Outlets/AdminDashboardLayout'
@@ -210,13 +212,20 @@ const App: FC = () => {
 			? MUILocaleMap[i18n.language as keyof typeof MUILocaleMap]
 			: DefaultMUILocale
 
-		return createTheme({}, currentMUILocale.dataGrid, currentMUILocale.material)
+		return createTheme(
+			{},
+			currentMUILocale.dataGrid,
+			currentMUILocale.datePicker,
+			currentMUILocale.material,
+		)
 	}, [i18n.language])
 
 	return (
 		<Suspense fallback={<LoadingPage />}>
 			<ThemeProvider theme={theme} noSsr>
-				<RouterProvider router={router} />
+				<LocalizationProvider dateAdapter={AdapterDayjs}>
+					<RouterProvider router={router} />
+				</LocalizationProvider>
 			</ThemeProvider>
 		</Suspense>
 	)

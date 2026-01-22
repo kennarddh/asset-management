@@ -3,8 +3,10 @@ import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 
 import { Box, FormControl, MenuItem, TextField } from '@mui/material'
+import { DateTimeField } from '@mui/x-date-pickers/DateTimeField'
 
 import { OrderStatus } from '@asset-management/common'
+import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 
 import PageContainer from 'Components/Admin/PageContainer'
@@ -90,7 +92,7 @@ const OrderDetail: FC = () => {
 				</FormControl>
 				<FormControl fullWidth>
 					<TextField
-						value={Order.reason}
+						value={Order.reason ?? ''}
 						label={t('admin_orders:reason')}
 						variant='outlined'
 						multiline
@@ -98,15 +100,52 @@ const OrderDetail: FC = () => {
 					/>
 				</FormControl>
 				<FormControl fullWidth>
-					{/* TODO: Install npm install @mui/x-date-pickers*/}
-					{/* <DateTimePicker label={t('admin_orders:requestedAt')} value={Order.requestedAt} readOnly />
-					<DateTimePicker label={t('admin_orders:updatedAt')} value={Order.updatedAt} readOnly />
-					<DateTimePicker label={t('admin_orders:finishAt')} value={Order.finishAt} readOnly />
-					<DateTimePicker label={t('admin_orders:startAt')} value={Order.startAt} readOnly />
-					<DateTimePicker label={t('admin_orders:approvedAt')} value={Order.approvedAt} readOnly />
-					<DateTimePicker label={t('admin_orders:rejectedAt')} value={Order.rejectedAt} readOnly />
-					<DateTimePicker label={t('admin_orders:returnedAt')} value={Order.returnedAt} readOnly />
-					<DateTimePicker label={t('admin_orders:canceledAt')} value={Order.canceledAt} readOnly /> */}
+					<DateTimeField
+						label={t('admin_orders:requestedAt')}
+						defaultValue={dayjs(Order.requestedAt)}
+					/>
+				</FormControl>
+				<FormControl fullWidth>
+					<DateTimeField
+						label={t('admin_orders:updatedAt')}
+						defaultValue={dayjs(Order.updatedAt)}
+					/>
+				</FormControl>
+				<FormControl fullWidth>
+					<DateTimeField
+						label={t('admin_orders:finishAt')}
+						defaultValue={dayjs(Order.finishAt)}
+					/>
+				</FormControl>
+				<FormControl fullWidth>
+					<DateTimeField
+						label={t('admin_orders:startAt')}
+						defaultValue={dayjs(Order.startAt)}
+					/>
+				</FormControl>
+				<FormControl fullWidth>
+					<DateTimeField
+						label={t('admin_orders:approvedAt')}
+						defaultValue={dayjs(Order.approvedAt)}
+					/>
+				</FormControl>
+				<FormControl fullWidth>
+					<DateTimeField
+						label={t('admin_orders:rejectedAt')}
+						defaultValue={dayjs(Order.rejectedAt)}
+					/>
+				</FormControl>
+				<FormControl fullWidth>
+					<DateTimeField
+						label={t('admin_orders:returnedAt')}
+						defaultValue={dayjs(Order.returnedAt)}
+					/>
+				</FormControl>
+				<FormControl fullWidth>
+					<DateTimeField
+						label={t('admin_orders:canceledAt')}
+						defaultValue={dayjs(Order.canceledAt)}
+					/>
 				</FormControl>
 			</Box>
 		</PageContainer>
