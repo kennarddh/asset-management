@@ -33,6 +33,7 @@ export interface Order {
 		canBeApproved: boolean
 		canBeRejected: boolean
 		canBeReturned: boolean
+		canBeCanceled: boolean
 	}
 	requestedAt: Date
 	updatedAt: Date
@@ -111,6 +112,7 @@ class OrderService extends Service {
 				canBeApproved: status === OrderStatus.Pending,
 				canBeRejected: status === OrderStatus.Pending,
 				canBeReturned: status === OrderStatus.Active || status === OrderStatus.Overdue,
+				canBeCanceled: status === OrderStatus.Pending || status === OrderStatus.Approved,
 			},
 			requestedAt: data.requestedAt,
 			updatedAt: data.updatedAt,
@@ -279,6 +281,9 @@ class OrderService extends Service {
 						canBeReturned:
 							(order.status as OrderStatus) === OrderStatus.Active ||
 							(order.status as OrderStatus) === OrderStatus.Overdue,
+						canBeCanceled:
+							(order.status as OrderStatus) === OrderStatus.Pending ||
+							(order.status as OrderStatus) === OrderStatus.Approved,
 					},
 					requestedAt: order.requestedAt.getTime(),
 					updatedAt: order.updatedAt.getTime(),
@@ -410,13 +415,7 @@ class OrderService extends Service {
 			if (order === null) throw new ResourceNotFoundError('order')
 
 			// TODO: Refactor error JSON format
-			if (
-				!(
-					order.status === OrderStatus.Approved ||
-					order.status === OrderStatus.Rejected ||
-					order.status === OrderStatus.Pending
-				)
-			)
+			if (!(order.status === OrderStatus.Approved || order.status === OrderStatus.Pending))
 				throw new InvalidStateError('cancel', 'processed')
 
 			await this.update(id, { status: OrderStatus.Cancelled, canceledAt: new Date() })

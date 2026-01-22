@@ -18,6 +18,7 @@ type OrderFindManySelfResponse = FindManyResponse<{
 		canBeApproved: boolean
 		canBeRejected: boolean
 		canBeReturned: boolean
+		canBeCanceled: boolean
 	}
 	requestedAt: number
 	updatedAt: number
@@ -44,6 +45,7 @@ export interface OrderFindManySelfSingleOutput {
 		canBeApproved: boolean
 		canBeRejected: boolean
 		canBeReturned: boolean
+		canBeCanceled: boolean
 	}
 	requestedAt: Date
 	updatedAt: Date
@@ -92,6 +94,7 @@ const OrderFindManySelfApi: ApiFunction<
 				canBeApproved: order.flags.canBeApproved,
 				canBeRejected: order.flags.canBeRejected,
 				canBeReturned: order.flags.canBeReturned,
+				canBeCanceled: order.flags.canBeCanceled,
 			},
 			requestedAt: new Date(order.requestedAt),
 			updatedAt: new Date(order.updatedAt),

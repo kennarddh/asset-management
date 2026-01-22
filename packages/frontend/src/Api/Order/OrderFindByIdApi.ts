@@ -18,6 +18,7 @@ interface OrderFindByIdResponse {
 		canBeApproved: boolean
 		canBeRejected: boolean
 		canBeReturned: boolean
+		canBeCanceled: boolean
 	}
 	requestedAt: number
 	updatedAt: number
@@ -44,6 +45,7 @@ export interface OrderFindByIdOutput {
 		canBeApproved: boolean
 		canBeRejected: boolean
 		canBeReturned: boolean
+		canBeCanceled: boolean
 	}
 	requestedAt: Date
 	updatedAt: Date
@@ -75,6 +77,7 @@ const OrderFindByIdApi: ApiFunction<OrderFindByIdOutput, OrderFindByIdData> = as
 			canBeApproved: outputData.flags.canBeApproved,
 			canBeRejected: outputData.flags.canBeRejected,
 			canBeReturned: outputData.flags.canBeReturned,
+			canBeCanceled: outputData.flags.canBeCanceled,
 		},
 		requestedAt: new Date(outputData.requestedAt),
 		updatedAt: new Date(outputData.updatedAt),

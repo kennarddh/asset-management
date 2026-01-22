@@ -53,6 +53,7 @@ class FindOrderById extends Controller {
 						canBeApproved: order.flags.canBeApproved,
 						canBeRejected: order.flags.canBeRejected,
 						canBeReturned: order.flags.canBeReturned,
+						canBeCanceled: order.flags.canBeCanceled,
 					},
 					requestedAt: order.requestedAt.getTime(),
 					updatedAt: order.updatedAt.getTime(),
