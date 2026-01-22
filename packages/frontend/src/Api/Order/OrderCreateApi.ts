@@ -7,9 +7,9 @@ interface OrderCreateResponse {
 
 export interface OrderCreateData {
 	description: string
-	assetId: bigint
-	finishAt: Date
-	startAt: Date
+	assetId: string
+	finishAt: number
+	startAt: number
 }
 
 export interface OrderCreateOutput {

@@ -321,7 +321,7 @@ class OrderService extends Service {
 			const order = await transaction.getRepository(OrderRepository).create({
 				data: {
 					...data,
-					status: OrderStatus.Active,
+					status: OrderStatus.Pending,
 				},
 			})
 

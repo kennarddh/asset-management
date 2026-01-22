@@ -1,4 +1,17 @@
 {
+	"startAt": "Start At",
+	"finishAt": "Finish At",
+	"description": "Description",
 	"requiresApprovalAlert": "This asset requires admin approval before lending can be processed.",
-	"assetDelisted": "Asset Delisted"
+	"assetDelisted": "Asset Delisted",
+	"createOrder": {
+		"title": "Create Order",
+		"orderSuccessAlert": "Order created successfully!",
+		"errors": {
+			"startAtRequired": "Start at is required.",
+			"finishAtRequired": "Finish at is required.",
+			"invalidDateTime": "The provided date and time is invalid.",
+			"invalidDuration": "The provided duration is invalid."
+		}
+	}
 }

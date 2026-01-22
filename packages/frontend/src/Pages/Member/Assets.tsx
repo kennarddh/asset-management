@@ -116,7 +116,6 @@ const Assets: FC = () => {
 								<Button size='small' component={Link} to={`/assets/${asset.id}`}>
 									{t('common:details')}
 								</Button>
-								<Button size='small'>{t('common:order')}</Button>
 							</CardActions>
 						</Card>
 					</Grid>
