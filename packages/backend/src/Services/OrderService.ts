@@ -110,7 +110,7 @@ class OrderService extends Service {
 			flags: {
 				canBeApproved: status === OrderStatus.Pending,
 				canBeRejected: status === OrderStatus.Pending,
-				canBeReturned: status === OrderStatus.Active,
+				canBeReturned: status === OrderStatus.Active || status === OrderStatus.Overdue,
 			},
 			requestedAt: data.requestedAt,
 			updatedAt: data.updatedAt,
@@ -276,7 +276,9 @@ class OrderService extends Service {
 					flags: {
 						canBeApproved: (order.status as OrderStatus) === OrderStatus.Pending,
 						canBeRejected: (order.status as OrderStatus) === OrderStatus.Pending,
-						canBeReturned: (order.status as OrderStatus) === OrderStatus.Active,
+						canBeReturned:
+							(order.status as OrderStatus) === OrderStatus.Active ||
+							(order.status as OrderStatus) === OrderStatus.Overdue,
 					},
 					requestedAt: order.requestedAt.getTime(),
 					updatedAt: order.updatedAt.getTime(),
@@ -428,7 +430,7 @@ class OrderService extends Service {
 			if (order === null) throw new ResourceNotFoundError('order')
 
 			// TODO: Refactor error JSON format
-			if (order.status !== OrderStatus.Active)
+			if (!(order.status === OrderStatus.Active || order.status === OrderStatus.Overdue))
 				throw new InvalidStateError('return', 'processed')
 
 			const isLate = new Date().getTime() > order.finishAt.getTime()
@@ -453,11 +455,7 @@ class OrderService extends Service {
 			}
 
 			if (jobName === 'order-auto-cancel') {
-				if (
-					order.status !== OrderStatus.Pending &&
-					order.status !== OrderStatus.Approved &&
-					order.status !== OrderStatus.Rejected
-				) {
+				if (order.status !== OrderStatus.Pending) {
 					this.logger.debug(
 						`Order with ID ${data.orderId} is in status ${order.status}, skipping auto-cancel.`,
 					)

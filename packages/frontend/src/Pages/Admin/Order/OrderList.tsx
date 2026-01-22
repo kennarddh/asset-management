@@ -79,9 +79,9 @@ const OrderList: FC = () => {
 			} catch (error) {
 				const errorText = await HandleApiError(error, async error => {
 					if (error.kind === ApiErrorKind.NotFound) {
-						return t('locations:errors.notFound')
+						return t('admin_orders:errors.notFound')
 					} else if (error.kind === ApiErrorKind.Processed) {
-						return t('locations:errors.processed')
+						return t('admin_orders:errors.processed')
 					}
 				})
 
@@ -112,9 +112,9 @@ const OrderList: FC = () => {
 			} catch (error) {
 				const errorText = await HandleApiError(error, async error => {
 					if (error.kind === ApiErrorKind.NotFound) {
-						return t('locations:errors.notFound')
+						return t('admin_orders:errors.notFound')
 					} else if (error.kind === ApiErrorKind.Processed) {
-						return t('locations:errors.processed')
+						return t('admin_orders:errors.processed')
 					}
 				})
 
@@ -136,9 +136,9 @@ const OrderList: FC = () => {
 			} catch (error) {
 				const errorText = await HandleApiError(error, async error => {
 					if (error.kind === ApiErrorKind.NotFound) {
-						return t('locations:errors.notFound')
+						return t('admin_orders:errors.notFound')
 					} else if (error.kind === ApiErrorKind.Processed) {
-						return t('locations:errors.processed')
+						return t('admin_orders:errors.processed')
 					}
 				})
 
