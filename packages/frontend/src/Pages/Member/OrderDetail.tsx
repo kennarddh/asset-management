@@ -33,8 +33,7 @@ import { useTranslation } from 'react-i18next'
 import HandleApiError from 'Utils/HandleApiError'
 
 import OrderFindByIdApi, { OrderFindByIdOutput } from 'Api/Order/OrderFindByIdApi'
-
-import { StatusToChipColor } from './MyOrders'
+import OrderStatusToColor from 'Constants/OrderStatusToColor'
 
 const OrderDetail: FC = () => {
 	const [OrderData, SetOrderData] = useState<OrderFindByIdOutput | null>()
@@ -85,12 +84,6 @@ const OrderDetail: FC = () => {
 
 		SetActiveImageIndex(prev => (prev === 0 ? OrderData.asset.galleries.length - 1 : prev - 1))
 	}
-
-	const StatusColor = useMemo(() => {
-		if (!OrderData) return 'default'
-
-		return StatusToChipColor[OrderData.status]
-	}, [OrderData])
 
 	const StatusIcon = useMemo(() => {
 		if (!OrderData) return
@@ -233,8 +226,10 @@ const OrderDetail: FC = () => {
 									mb={2}
 								>
 									<Chip
-										label={t(`member_myOrders:enums.status.${OrderData.status}`)}
-										color={StatusColor}
+										label={t(
+											`member_myOrders:enums.status.${OrderData.status}`,
+										)}
+										color={OrderStatusToColor[OrderData.status]}
 										{...(StatusIcon && { icon: StatusIcon })}
 										size='small'
 										sx={{ fontWeight: 'bold' }}

@@ -22,23 +22,11 @@ import { useTranslation } from 'react-i18next'
 
 import HandleApiError from 'Utils/HandleApiError'
 
+import OrderStatusToColor from 'Constants/OrderStatusToColor'
+
 import OrderCancelApi from 'Api/Order/OrderCancelApi'
 import OrderFindManySelfApi, { OrderFindManySelfSingleOutput } from 'Api/Order/OrderFindManySelfApi'
 import { ApiPagination } from 'Api/Types'
-
-export const StatusToChipColor: Record<
-	OrderStatus,
-	'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
-> = {
-	[OrderStatus.Pending]: 'info',
-	[OrderStatus.Approved]: 'primary',
-	[OrderStatus.Rejected]: 'error',
-	[OrderStatus.Canceled]: 'warning',
-	[OrderStatus.Active]: 'success',
-	[OrderStatus.Overdue]: 'error',
-	[OrderStatus.Returned]: 'success',
-	[OrderStatus.ReturnedLate]: 'warning',
-}
 
 const MyOrders: FC = () => {
 	const [SelfOrdersList, SetSelfOrdersList] = useState<OrderFindManySelfSingleOutput[]>([])
@@ -161,7 +149,7 @@ const MyOrders: FC = () => {
 									</Typography>
 									<Chip
 										label={t(`member_myOrders:enums.status.${order.status}`)}
-										color={StatusToChipColor[order.status]}
+										color={OrderStatusToColor[order.status]}
 									/>
 									<Typography
 										variant='body2'
