@@ -481,7 +481,12 @@ const AssetDetail: FC = () => {
 								}
 								ampm={false}
 								{...(CreateOrderFinishAt !== null
-									? { maxDateTime: CreateOrderFinishAt }
+									? {
+											maxDateTime: CreateOrderFinishAt.subtract(
+												AssetData.minimumLendingDuration,
+												'seconds',
+											),
+										}
 									: {})}
 								minDateTime={dayjs()}
 							/>
@@ -494,8 +499,13 @@ const AssetDetail: FC = () => {
 									SetCreateOrderFinishAt(newValue as Dayjs | null)
 								}
 								ampm={false}
-								{...(CreateOrderFinishAt !== null
-									? { minDateTime: CreateOrderFinishAt }
+								{...(CreateOrderStartAt !== null
+									? {
+											minDateTime: CreateOrderStartAt.add(
+												AssetData.minimumLendingDuration,
+												'seconds',
+											),
+										}
 									: {})}
 							/>
 						</FormControl>
