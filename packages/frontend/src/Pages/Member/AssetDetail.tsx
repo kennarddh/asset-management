@@ -243,6 +243,24 @@ const AssetDetail: FC = () => {
 										<Stack direction='row' spacing={1} alignItems='center'>
 											<CalendarTodayIcon color='action' fontSize='small' />
 											<Typography variant='body2' color='text.secondary'>
+												{t('common:minDuration')}
+											</Typography>
+										</Stack>
+										<Typography variant='h6'>
+											{t('common:duration', {
+												value: AssetData.minimumLendingDuration,
+											})}
+										</Typography>
+									</Paper>
+								</Grid>
+								<Grid size={{ xs: 6 }}>
+									<Paper
+										variant='outlined'
+										sx={{ p: 2, bgcolor: 'background.default' }}
+									>
+										<Stack direction='row' spacing={1} alignItems='center'>
+											<CalendarTodayIcon color='action' fontSize='small' />
+											<Typography variant='body2' color='text.secondary'>
 												{t('common:maxDuration')}
 											</Typography>
 										</Stack>

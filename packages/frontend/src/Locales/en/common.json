@@ -26,5 +26,6 @@
 	"seeDetail": "See detail",
 	"description": "Description",
 	"lastUpdated": "Last Updated",
+	"minDuration": "Min Duration",
 	"maxDuration": "Max Duration"
 }
