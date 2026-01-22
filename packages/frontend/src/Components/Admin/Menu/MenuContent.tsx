@@ -7,6 +7,7 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded'
 import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded'
+import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded'
 
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material'
 
@@ -53,7 +54,7 @@ const MenuContent: FC<{ onClickLink?: () => void }> = props => {
 			{
 				text: t('admin_navigations:links.orders'),
 				to: '/admin/order',
-				icon: <Inventory2RoundedIcon />,
+				icon: <ShoppingCartRoundedIcon />,
 			},
 		],
 		[t],
