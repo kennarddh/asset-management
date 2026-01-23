@@ -2,6 +2,8 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Link, useSearchParams } from 'react-router'
 
+import SearchIcon from '@mui/icons-material/Search'
+
 import {
 	Box,
 	Button,
@@ -10,6 +12,7 @@ import {
 	CardContent,
 	CardMedia,
 	Grid,
+	InputAdornment,
 	Pagination,
 	Stack,
 	TextField,
@@ -101,6 +104,15 @@ const Assets: FC = () => {
 				type='search'
 				value={FilterSearch}
 				onChange={event => SetFilterSearch(event.target.value)}
+				slotProps={{
+					input: {
+						startAdornment: (
+							<InputAdornment position='start'>
+								<SearchIcon />
+							</InputAdornment>
+						),
+					},
+				}}
 			/>
 			<Grid container spacing={4}>
 				{AssetsList.map(asset => (
