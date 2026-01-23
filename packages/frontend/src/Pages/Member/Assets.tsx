@@ -12,10 +12,13 @@ import {
 	Grid,
 	Pagination,
 	Stack,
+	TextField,
 	Typography,
 } from '@mui/material'
 
 import { useTranslation } from 'react-i18next'
+
+import useDebounce from 'Hooks/useDebounce'
 
 import AssetFindManyApi, { AssetFindManySingleOutput } from 'Api/Asset/AssetFindManyApi'
 import { ApiPagination } from 'Api/Types'
@@ -30,6 +33,8 @@ const Assets: FC = () => {
 
 	const [SearchParams, SetSearchParams] = useSearchParams()
 
+	const [FilterSearch, SetFilterSearch] = useState(() => SearchParams.get('search') ?? '')
+
 	const { t } = useTranslation()
 
 	const PaginationPage = useMemo(() => {
@@ -40,25 +45,39 @@ const Assets: FC = () => {
 
 	const OnPaginationChange = useCallback(
 		(_: React.ChangeEvent<unknown>, page: number) => {
-			SetSearchParams({ page: page.toString() })
+			SetSearchParams(prev => {
+				prev.set('page', page.toString())
+
+				return prev
+			})
 		},
 		[SetSearchParams],
 	)
 
+	const debouncedFilterSearch = useDebounce(FilterSearch, 500)
+
 	const RefreshData = useCallback(async () => {
 		const assets = await AssetFindManyApi({
 			pagination: { page: PaginationPage - 1, limit: 16 },
+			search: debouncedFilterSearch,
 		})
 
 		SetAssetsList(assets.list)
 		SetPaginationInfo(assets.pagination)
 
-		if (PaginationPage >= assets.pagination.total / assets.pagination.limit) {
-			SetSearchParams({
-				page: Math.ceil(assets.pagination.total / assets.pagination.limit).toString(),
-			})
-		}
-	}, [PaginationPage, SetSearchParams])
+		SetSearchParams(prev => {
+			if (PaginationPage >= assets.pagination.total / assets.pagination.limit) {
+				prev.set(
+					'page',
+					Math.ceil(assets.pagination.total / assets.pagination.limit).toString(),
+				)
+			}
+
+			prev.set('search', debouncedFilterSearch)
+
+			return prev
+		})
+	}, [PaginationPage, debouncedFilterSearch, SetSearchParams])
 
 	useEffect(() => {
 		// eslint-disable-next-line react-hooks/set-state-in-effect
@@ -67,12 +86,22 @@ const Assets: FC = () => {
 
 	useEffect(() => {
 		if (PaginationPage < 1) {
-			SetSearchParams({ page: '1' })
+			SetSearchParams(prev => {
+				prev.set('page', '1')
+
+				return prev
+			})
 		}
 	}, [PaginationPage, SetSearchParams])
 
 	return (
 		<Stack sx={{ p: 4 }} gap={5}>
+			<TextField
+				label={t('common:search')}
+				type='search'
+				value={FilterSearch}
+				onChange={event => SetFilterSearch(event.target.value)}
+			/>
 			<Grid container spacing={4}>
 				{AssetsList.map(asset => (
 					<Grid key={asset.id} size={{ xs: 6, sm: 4, md: 4, lg: 3 }}>
