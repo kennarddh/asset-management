@@ -1,4 +1,4 @@
-import { OrderStatus } from "@asset-management/common"
+import { OrderStatus } from '@asset-management/common'
 
 const OrderStatusToColor: Record<
 	OrderStatus,

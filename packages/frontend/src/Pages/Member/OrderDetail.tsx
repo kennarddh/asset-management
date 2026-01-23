@@ -32,8 +32,9 @@ import { useTranslation } from 'react-i18next'
 
 import HandleApiError from 'Utils/HandleApiError'
 
-import OrderFindByIdApi, { OrderFindByIdOutput } from 'Api/Order/OrderFindByIdApi'
 import OrderStatusToColor from 'Constants/OrderStatusToColor'
+
+import OrderFindByIdApi, { OrderFindByIdOutput } from 'Api/Order/OrderFindByIdApi'
 
 const OrderDetail: FC = () => {
 	const [OrderData, SetOrderData] = useState<OrderFindByIdOutput | null>()
@@ -96,6 +97,7 @@ const OrderDetail: FC = () => {
 		if (OrderData.status === OrderStatus.Rejected) return <RemoveCircleIcon fontSize='small' />
 		if (OrderData.status === OrderStatus.Returned)
 			return <AssignmentTurnedInIcon fontSize='small' />
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (OrderData.status === OrderStatus.ReturnedLate)
 			return <AssignmentLateIcon fontSize='small' />
 	}, [OrderData])
@@ -111,228 +113,220 @@ const OrderDetail: FC = () => {
 			: ''
 
 	return (
-		<>
-			<Stack sx={{ p: 4, maxWidth: '1600px', margin: '0 auto' }} gap={4}>
-				<Grid container spacing={6}>
-					<Grid size={{ xs: 12, md: 6, lg: 5 }}>
-						<Stack spacing={2}>
-							<Paper
-								elevation={0}
+		<Stack sx={{ p: 4, maxWidth: '1600px', margin: '0 auto' }} gap={4}>
+			<Grid container spacing={6}>
+				<Grid size={{ xs: 12, md: 6, lg: 5 }}>
+					<Stack spacing={2}>
+						<Paper
+							elevation={0}
+							sx={{
+								position: 'relative',
+								width: '100%',
+								aspectRatio: '1/1',
+								overflow: 'hidden',
+								borderRadius: 2,
+								bgcolor: 'grey.100',
+								border: '1px solid',
+								borderColor: 'divider',
+							}}
+						>
+							<CardMedia
+								component='img'
+								image={currentImageUrl}
+								alt={OrderData.asset.name}
 								sx={{
-									position: 'relative',
 									width: '100%',
-									aspectRatio: '1/1',
-									overflow: 'hidden',
-									borderRadius: 2,
-									bgcolor: 'grey.100',
-									border: '1px solid',
-									borderColor: 'divider',
+									height: '100%',
+									objectFit: 'contain',
+									transition: '0.3s',
 								}}
-							>
-								<CardMedia
-									component='img'
-									image={currentImageUrl}
-									alt={OrderData.asset.name}
-									sx={{
-										width: '100%',
-										height: '100%',
-										objectFit: 'contain',
-										transition: '0.3s',
-									}}
-								/>
-
-								{OrderData.asset.galleries.length > 1 && (
-									<>
-										<IconButton
-											onClick={OnPrevImage}
-											sx={{
-												position: 'absolute',
-												left: 10,
-												top: '50%',
-												transform: 'translateY(-50%)',
-												bgcolor: 'rgba(255,255,255,0.8)',
-												'&:hover': { bgcolor: 'white' },
-											}}
-										>
-											<ArrowBackIosNewIcon fontSize='small' />
-										</IconButton>
-										<IconButton
-											onClick={OnNextImage}
-											sx={{
-												position: 'absolute',
-												right: 10,
-												top: '50%',
-												transform: 'translateY(-50%)',
-												bgcolor: 'rgba(255,255,255,0.8)',
-												'&:hover': { bgcolor: 'white' },
-											}}
-										>
-											<ArrowForwardIosIcon fontSize='small' />
-										</IconButton>
-									</>
-								)}
-							</Paper>
+							/>
 
 							{OrderData.asset.galleries.length > 1 && (
-								<Stack
-									direction='row'
-									spacing={2}
-									sx={{ overflowX: 'auto', py: 1 }}
-								>
-									{OrderData.asset.galleries.map((img, index) => (
-										<Box
-											key={img.id}
-											onClick={() => SetActiveImageIndex(index)}
-											sx={{
-												width: 80,
-												height: 80,
-												flexShrink: 0,
-												borderRadius: 1,
-												overflow: 'hidden',
-												cursor: 'pointer',
-												border: '2px solid',
-												borderColor:
-													ActiveImageIndex === index
-														? 'primary.main'
-														: 'transparent',
-												opacity: ActiveImageIndex === index ? 1 : 0.6,
-												transition: 'all 0.2s',
-												'&:hover': { opacity: 1 },
-											}}
-										>
-											<img
-												src={img.url}
-												alt={`Thumbnail ${index}`}
-												style={{
-													width: '100%',
-													height: '100%',
-													objectFit: 'cover',
-												}}
-											/>
-										</Box>
-									))}
-								</Stack>
+								<>
+									<IconButton
+										onClick={OnPrevImage}
+										sx={{
+											position: 'absolute',
+											left: 10,
+											top: '50%',
+											transform: 'translateY(-50%)',
+											bgcolor: 'rgba(255,255,255,0.8)',
+											'&:hover': { bgcolor: 'white' },
+										}}
+									>
+										<ArrowBackIosNewIcon fontSize='small' />
+									</IconButton>
+									<IconButton
+										onClick={OnNextImage}
+										sx={{
+											position: 'absolute',
+											right: 10,
+											top: '50%',
+											transform: 'translateY(-50%)',
+											bgcolor: 'rgba(255,255,255,0.8)',
+											'&:hover': { bgcolor: 'white' },
+										}}
+									>
+										<ArrowForwardIosIcon fontSize='small' />
+									</IconButton>
+								</>
 							)}
-						</Stack>
-					</Grid>
+						</Paper>
 
-					<Grid size={{ xs: 12, md: 6, lg: 7 }}>
-						<Stack height='100%' justifyContent='space-between' spacing={4}>
-							<Box>
-								<Stack
-									direction='row'
-									justifyContent='flex-end'
-									alignItems='flex-start'
-									mb={2}
-								>
-									<Chip
-										label={t(
-											`member_myOrders:enums.status.${OrderData.status}`,
-										)}
-										color={OrderStatusToColor[OrderData.status]}
-										{...(StatusIcon && { icon: StatusIcon })}
-										size='small'
-										sx={{ fontWeight: 'bold' }}
-									/>
-								</Stack>
-
-								<Typography variant='h3' fontWeight='bold' gutterBottom>
-									{OrderData.asset.name}
-								</Typography>
-
-								<Divider sx={{ my: 2 }}>{t('common:description')}</Divider>
-
-								<Typography
-									variant='body1'
-									color='text.secondary'
-									sx={{ lineHeight: 1.8, whiteSpace: 'pre-line' }}
-								>
-									{OrderData.description}
-								</Typography>
-
-								<Divider sx={{ my: 2 }}>{t('common:reason')}</Divider>
-
-								<Typography
-									variant='body1'
-									color='text.secondary'
-									sx={{ lineHeight: 1.8, whiteSpace: 'pre-line' }}
-								>
-									{OrderData.reason}
-								</Typography>
-
-								<Divider sx={{ mb: 3 }} />
-
-								<Grid container spacing={2}>
-									<Grid size={4}>
-										<DateTimeField
-											label={t('member_myOrders:requestedAt')}
-											defaultValue={dayjs(OrderData.requestedAt)}
+						{OrderData.asset.galleries.length > 1 && (
+							<Stack direction='row' spacing={2} sx={{ overflowX: 'auto', py: 1 }}>
+								{OrderData.asset.galleries.map((img, index) => (
+									<Box
+										key={img.id}
+										onClick={() => SetActiveImageIndex(index)}
+										sx={{
+											width: 80,
+											height: 80,
+											flexShrink: 0,
+											borderRadius: 1,
+											overflow: 'hidden',
+											cursor: 'pointer',
+											border: '2px solid',
+											borderColor:
+												ActiveImageIndex === index
+													? 'primary.main'
+													: 'transparent',
+											opacity: ActiveImageIndex === index ? 1 : 0.6,
+											transition: 'all 0.2s',
+											'&:hover': { opacity: 1 },
+										}}
+									>
+										<img
+											src={img.url}
+											alt={`Thumbnail ${index}`}
+											style={{
+												width: '100%',
+												height: '100%',
+												objectFit: 'cover',
+											}}
 										/>
-									</Grid>
-									<Grid size={4}>
-										<DateTimeField
-											label={t('member_myOrders:updatedAt')}
-											defaultValue={dayjs(OrderData.updatedAt)}
-										/>
-									</Grid>
-									<Grid size={4}>
-										<DateTimeField
-											label={t('member_myOrders:finishAt')}
-											defaultValue={dayjs(OrderData.finishAt)}
-										/>
-									</Grid>
-									<Grid size={4}>
-										<DateTimeField
-											label={t('member_myOrders:startAt')}
-											defaultValue={dayjs(OrderData.startAt)}
-										/>
-									</Grid>
-									<Grid size={4}>
-										<DateTimeField
-											label={t('member_myOrders:approvedAt')}
-											defaultValue={dayjs(OrderData.approvedAt)}
-										/>
-									</Grid>
-									<Grid size={4}>
-										<DateTimeField
-											label={t('member_myOrders:rejectedAt')}
-											defaultValue={dayjs(OrderData.rejectedAt)}
-										/>
-									</Grid>
-									<Grid size={4}>
-										<DateTimeField
-											label={t('member_myOrders:returnedAt')}
-											defaultValue={dayjs(OrderData.returnedAt)}
-										/>
-									</Grid>
-									<Grid size={4}>
-										<DateTimeField
-											label={t('member_myOrders:canceledAt')}
-											defaultValue={dayjs(OrderData.canceledAt)}
-										/>
-									</Grid>
-								</Grid>
-							</Box>
-
-							<Box pt={4}>
-								<Divider sx={{ mb: 3 }} />
-								<Stack
-									direction={{ xs: 'column-reverse', sm: 'row' }}
-									spacing={2}
-									alignItems='center'
-									justifyContent='space-between'
-								>
-									<Typography variant='caption' color='text.secondary'>
-										{t('common:lastUpdated')}:{' '}
-										{t('common:dateTime', { date: OrderData.updatedAt })}
-									</Typography>
-								</Stack>
-							</Box>
-						</Stack>
-					</Grid>
+									</Box>
+								))}
+							</Stack>
+						)}
+					</Stack>
 				</Grid>
-			</Stack>
-		</>
+
+				<Grid size={{ xs: 12, md: 6, lg: 7 }}>
+					<Stack height='100%' justifyContent='space-between' spacing={4}>
+						<Box>
+							<Stack
+								direction='row'
+								justifyContent='flex-end'
+								alignItems='flex-start'
+								mb={2}
+							>
+								<Chip
+									label={t(`member_myOrders:enums.status.${OrderData.status}`)}
+									color={OrderStatusToColor[OrderData.status]}
+									{...(StatusIcon && { icon: StatusIcon })}
+									size='small'
+									sx={{ fontWeight: 'bold' }}
+								/>
+							</Stack>
+
+							<Typography variant='h3' fontWeight='bold' gutterBottom>
+								{OrderData.asset.name}
+							</Typography>
+
+							<Divider sx={{ my: 2 }}>{t('common:description')}</Divider>
+
+							<Typography
+								variant='body1'
+								color='text.secondary'
+								sx={{ lineHeight: 1.8, whiteSpace: 'pre-line' }}
+							>
+								{OrderData.description}
+							</Typography>
+
+							<Divider sx={{ my: 2 }}>{t('common:reason')}</Divider>
+
+							<Typography
+								variant='body1'
+								color='text.secondary'
+								sx={{ lineHeight: 1.8, whiteSpace: 'pre-line' }}
+							>
+								{OrderData.reason}
+							</Typography>
+
+							<Divider sx={{ mb: 3 }} />
+
+							<Grid container spacing={2}>
+								<Grid size={4}>
+									<DateTimeField
+										label={t('member_myOrders:requestedAt')}
+										defaultValue={dayjs(OrderData.requestedAt)}
+									/>
+								</Grid>
+								<Grid size={4}>
+									<DateTimeField
+										label={t('member_myOrders:updatedAt')}
+										defaultValue={dayjs(OrderData.updatedAt)}
+									/>
+								</Grid>
+								<Grid size={4}>
+									<DateTimeField
+										label={t('member_myOrders:finishAt')}
+										defaultValue={dayjs(OrderData.finishAt)}
+									/>
+								</Grid>
+								<Grid size={4}>
+									<DateTimeField
+										label={t('member_myOrders:startAt')}
+										defaultValue={dayjs(OrderData.startAt)}
+									/>
+								</Grid>
+								<Grid size={4}>
+									<DateTimeField
+										label={t('member_myOrders:approvedAt')}
+										defaultValue={dayjs(OrderData.approvedAt)}
+									/>
+								</Grid>
+								<Grid size={4}>
+									<DateTimeField
+										label={t('member_myOrders:rejectedAt')}
+										defaultValue={dayjs(OrderData.rejectedAt)}
+									/>
+								</Grid>
+								<Grid size={4}>
+									<DateTimeField
+										label={t('member_myOrders:returnedAt')}
+										defaultValue={dayjs(OrderData.returnedAt)}
+									/>
+								</Grid>
+								<Grid size={4}>
+									<DateTimeField
+										label={t('member_myOrders:canceledAt')}
+										defaultValue={dayjs(OrderData.canceledAt)}
+									/>
+								</Grid>
+							</Grid>
+						</Box>
+
+						<Box pt={4}>
+							<Divider sx={{ mb: 3 }} />
+							<Stack
+								direction={{ xs: 'column-reverse', sm: 'row' }}
+								spacing={2}
+								alignItems='center'
+								justifyContent='space-between'
+							>
+								<Typography variant='caption' color='text.secondary'>
+									{t('common:lastUpdated')}:{' '}
+									{t('common:dateTime', { date: OrderData.updatedAt })}
+								</Typography>
+							</Stack>
+						</Box>
+					</Stack>
+				</Grid>
+			</Grid>
+		</Stack>
 	)
 }
 
