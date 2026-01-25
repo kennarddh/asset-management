@@ -37,9 +37,58 @@ services:
         ports:
             - 6379:6379
 
+    garage:
+        image: dxflrs/garage:v2.2.0
+        volumes:
+            - ./infrastructure/garage/garage.toml:/etc/garage.toml
+            - garage-meta:/var/lib/garage/meta
+            - garage-data:/var/lib/garage/data
+        environment:
+            - GARAGE_ADMIN_TOKEN=158355971c2cd3fa14217efec8a9acda29bc0db2b3fc664cc79a515340a745ca
+            - GARAGE_METRICS_TOKEN=870e34f996c9b391c673870004a59c9241b207888b967f120c18638c83b38dac
+            - GARAGE_RPC_SECRET=4930749f6a4a6e0544e1ef087bc46a3d5d876229476a5766dd3539bff214404d
+        healthcheck:
+            test: ["CMD", "/garage", "status"]
+            interval: 5s
+            timeout: 2s
+            retries: 5
+            start_period: 5s
+        networks:
+            - app
+            - garage
+        ports:
+            - 3900:3900
+            - 3901:3901
+            - 3902:3902
+            - 3903:3903
+
+    garage-init:
+        build:
+            context: ./infrastructure/garage/
+            dockerfile: Dockerfile
+        depends_on:
+            garage:
+                condition: service_healthy
+        volumes:
+            - ./infrastructure/garage/provision.sh:/provision.sh:ro
+        environment:
+            - GARAGE_RPC_HOST=garage:3901
+            - GARAGE_ADMIN_TOKEN=158355971c2cd3fa14217efec8a9acda29bc0db2b3fc664cc79a515340a745ca
+            - GARAGE_RPC_SECRET=4930749f6a4a6e0544e1ef087bc46a3d5d876229476a5766dd3539bff214404d
+            - APP_KEY_NAME=app-key
+            - APP_KEY_ID=GK2cd8296fca181b3baaa26d63
+            - APP_SECRET_KEY=5ceac4772d26394d7902488c246232667dbe9d2504296446d8d7da733d6addb3
+            - CAPACITY=1T
+        networks:
+            - garage
+        entrypoint: ["/bin/sh", "/provision.sh"]
+
 volumes:
     database:
     redis-data:
+    garage-data:
+    garage-meta:
 
 networks:
     app:
+    garage:
