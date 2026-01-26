@@ -39,6 +39,14 @@ export interface ProcessEnvVariables {
 	REDIS_PASSWORD?: string
 	REDIS_PASSWORD_FILE?: string
 	REDIS_DB?: string
+
+	S3_ENDPOINT: string
+	S3_ACCESS_KEY?: string
+	S3_ACCESS_KEY_FILE?: string
+	S3_SECRET_KEY?: string
+	S3_SECRET_KEY_FILE?: string
+	BUCKET_PROFILES: string
+	BUCKET_ASSETS: string
 }
 
 declare global {

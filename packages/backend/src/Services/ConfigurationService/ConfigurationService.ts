@@ -49,6 +49,15 @@ export const ApplicationConfigurationSchema = z.object({
 		password: z.string(),
 		db: z.number().default(0),
 	}),
+	s3: z.object({
+		endpoint: z.string(),
+		accessKey: z.string(),
+		secretKey: z.string(),
+		buckets: z.object({
+			profiles: z.string(),
+			assets: z.string(),
+		}),
+	}),
 })
 
 export type ApplicationConfiguration = z.infer<typeof ApplicationConfigurationSchema>

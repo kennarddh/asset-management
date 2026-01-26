@@ -90,6 +90,15 @@ class EnvironmentConfigurationProvider extends ConfigurationProvider<
 				password: await this.loadValueOrFile('REDIS_PASSWORD', 'REDIS_PASSWORD_FILE'),
 				db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : undefined,
 			},
+			s3: {
+				endpoint: process.env.S3_ENDPOINT,
+				accessKey: await this.loadValueOrFile('S3_ACCESS_KEY', 'S3_ACCESS_KEY_FILE'),
+				secretKey: await this.loadValueOrFile('S3_SECRET_KEY', 'S3_SECRET_KEY_FILE'),
+				buckets: {
+					profiles: process.env.BUCKET_PROFILES,
+					assets: process.env.BUCKET_ASSETS,
+				},
+			},
 		}
 	}
 }
