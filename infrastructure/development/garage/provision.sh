@@ -26,6 +26,8 @@ for BUCKET in user-profiles asset-images; do
     $GARAGE bucket create "$BUCKET" || true
     
 	$GARAGE bucket allow "$BUCKET" --read --write --key "$APP_KEY_NAME"
+
+	$GARAGE bucket website --allow "$BUCKET"
 done
 
 echo "Provisioning complete!"
