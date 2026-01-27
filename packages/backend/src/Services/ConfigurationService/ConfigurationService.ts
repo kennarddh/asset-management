@@ -38,6 +38,7 @@ export const ApplicationConfigurationSchema = z.object({
 		path: z.string(),
 	}),
 	baseUrl: z.string(),
+	imageBaseUrl: z.string(),
 	pagination: z.object({
 		defaultLimit: z.int(),
 		defaultMaxLimit: z.int(),
@@ -53,10 +54,15 @@ export const ApplicationConfigurationSchema = z.object({
 		endpoint: z.string(),
 		accessKey: z.string(),
 		secretKey: z.string(),
+		region: z.string(),
 		buckets: z.object({
 			profiles: z.string(),
 			assets: z.string(),
 		}),
+	}),
+	image: z.object({
+		userProfileMaxWidth: z.number().default(1024),
+		assetImageMaxWidth: z.number().default(1920),
 	}),
 })
 

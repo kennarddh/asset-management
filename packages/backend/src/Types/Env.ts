@@ -29,6 +29,7 @@ export interface ProcessEnvVariables {
 	LOG_PATH: string
 
 	BASE_URL: string
+	IMAGE_BASE_URL: string
 
 	PAGINATION_DEFAULT_LIMIT: string
 	PAGINATION_DEFAULT_MAX_LIMIT: string
@@ -45,8 +46,12 @@ export interface ProcessEnvVariables {
 	S3_ACCESS_KEY_FILE?: string
 	S3_SECRET_KEY?: string
 	S3_SECRET_KEY_FILE?: string
-	BUCKET_PROFILES: string
-	BUCKET_ASSETS: string
+	S3_REGION: string
+	S3_BUCKET_PROFILES: string
+	S3_BUCKET_ASSETS: string
+
+	IMAGE_USER_PROFILE_MAX_WIDTH?: string
+	IMAGE_ASSET_IMAGE_MAX_WIDTH?: string
 }
 
 declare global {

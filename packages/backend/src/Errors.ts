@@ -24,3 +24,9 @@ export class UnauthorizedError extends Error {
 		super('Unauthorized')
 	}
 }
+
+export class ProcessingError extends Error {
+	constructor() {
+		super('Processing failed')
+	}
+}

@@ -79,6 +79,7 @@ class EnvironmentConfigurationProvider extends ConfigurationProvider<
 				path: process.env.LOG_PATH,
 			},
 			baseUrl: process.env.BASE_URL,
+			imageBaseUrl: process.env.IMAGE_BASE_URL,
 			pagination: {
 				defaultLimit: parseInt(process.env.PAGINATION_DEFAULT_LIMIT, 10),
 				defaultMaxLimit: parseInt(process.env.PAGINATION_DEFAULT_MAX_LIMIT, 10),
@@ -94,10 +95,19 @@ class EnvironmentConfigurationProvider extends ConfigurationProvider<
 				endpoint: process.env.S3_ENDPOINT,
 				accessKey: await this.loadValueOrFile('S3_ACCESS_KEY', 'S3_ACCESS_KEY_FILE'),
 				secretKey: await this.loadValueOrFile('S3_SECRET_KEY', 'S3_SECRET_KEY_FILE'),
+				region: process.env.S3_REGION,
 				buckets: {
-					profiles: process.env.BUCKET_PROFILES,
-					assets: process.env.BUCKET_ASSETS,
+					profiles: process.env.S3_BUCKET_PROFILES,
+					assets: process.env.S3_BUCKET_ASSETS,
 				},
+			},
+			image: {
+				userProfileMaxWidth: process.env.IMAGE_USER_PROFILE_MAX_WIDTH
+					? parseInt(process.env.IMAGE_USER_PROFILE_MAX_WIDTH, 10)
+					: undefined,
+				assetImageMaxWidth: process.env.IMAGE_ASSET_IMAGE_MAX_WIDTH
+					? parseInt(process.env.IMAGE_ASSET_IMAGE_MAX_WIDTH, 10)
+					: undefined,
 			},
 		}
 	}
