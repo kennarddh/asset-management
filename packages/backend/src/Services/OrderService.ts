@@ -325,18 +325,32 @@ class OrderService extends Service {
 			if (duration < asset.minimumLendingDuration * 1000)
 				throw new InvalidStateError('create', 'invalidDuration')
 
+			const shouldAutoApprove = !asset.requiresApproval
+
+			const initialStatus = shouldAutoApprove ? OrderStatus.Approved : OrderStatus.Pending
+			const approvedAt = shouldAutoApprove ? new Date() : null
+			const reason = shouldAutoApprove ? 'Auto-approved upon creation' : null
+
 			const order = await transaction.getRepository(OrderRepository).create({
 				data: {
 					...data,
-					status: OrderStatus.Pending,
+					status: initialStatus,
+					approvedAt: approvedAt,
+					reason: reason,
 				},
 			})
 
-			await this.schedulerService.addJob(
-				'order-auto-cancel',
-				{ orderId: order.id.toString(), targetStatus: OrderStatus.Canceled },
-				data.startAt.getTime() - nowTime,
-			)
+			if (shouldAutoApprove) {
+				await this.handleOrderApprovedEffects(order.id, order.startAt, order.finishAt)
+
+				// TODO: Send notification to admin that order was auto-approved
+			} else {
+				await this.schedulerService.addJob(
+					'order-auto-cancel',
+					{ orderId: order.id.toString(), targetStatus: OrderStatus.Canceled },
+					data.startAt.getTime() - nowTime,
+				)
+			}
 
 			return order
 		})
@@ -350,6 +364,24 @@ class OrderService extends Service {
 				.getRepository(OrderRepository)
 				.update({ filter: { id }, data: updateData })
 		})
+	}
+
+	private async handleOrderApprovedEffects(id: bigint, startAt: Date, finishAt: Date) {
+		const nowTime = new Date().getTime()
+
+		await this.schedulerService.addJob(
+			'order-start',
+			{ orderId: id.toString(), targetStatus: OrderStatus.Active },
+			startAt.getTime() - nowTime,
+		)
+
+		await this.schedulerService.addJob(
+			'order-finish',
+			{ orderId: id.toString(), targetStatus: OrderStatus.Overdue },
+			finishAt.getTime() - nowTime,
+		)
+
+		// TODO: Send notification to member
 	}
 
 	async approve(id: bigint, reason: string) {
@@ -371,19 +403,7 @@ class OrderService extends Service {
 
 			await this.update(id, { status: OrderStatus.Approved, approvedAt: now, reason })
 
-			// TODO: Send notification to member
-
-			await this.schedulerService.addJob(
-				'order-start',
-				{ orderId: id.toString(), targetStatus: OrderStatus.Active },
-				order.startAt.getTime() - now.getTime(),
-			)
-
-			await this.schedulerService.addJob(
-				'order-finish',
-				{ orderId: id.toString(), targetStatus: OrderStatus.Overdue },
-				order.finishAt.getTime() - now.getTime(),
-			)
+			await this.handleOrderApprovedEffects(id, order.startAt, order.finishAt)
 		})
 	}
 
