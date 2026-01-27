@@ -329,6 +329,8 @@ class OrderService extends Service {
 
 			const initialStatus = shouldAutoApprove ? OrderStatus.Approved : OrderStatus.Pending
 			const approvedAt = shouldAutoApprove ? new Date() : null
+
+			// TODO: Replace with approvedBy in database. If approved but no approvedBy user, it means it is auto-approved.
 			const reason = shouldAutoApprove ? 'Auto-approved upon creation' : null
 
 			const order = await transaction.getRepository(OrderRepository).create({

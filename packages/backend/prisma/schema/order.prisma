@@ -7,6 +7,8 @@ model Order {
     userId BigInt
     user   User   @relation(fields: [userId], references: [id])
 
+    // TODO: Store approvedBy, rejectedBy, canceledBy user ids.
+
     assetId BigInt
     asset   Asset  @relation(fields: [assetId], references: [id])
 
