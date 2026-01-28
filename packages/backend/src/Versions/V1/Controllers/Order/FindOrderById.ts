@@ -18,7 +18,7 @@ class FindOrderById extends Controller {
 		const { id } = request.params
 
 		try {
-			const order = await this.orderService.findById(id)
+			const order = await this.orderService.findByIdWithUrls(id)
 
 			if (!order)
 				return response.status(404).json({

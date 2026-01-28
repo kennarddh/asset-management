@@ -15,6 +15,7 @@ import { Prisma } from 'PrismaGenerated/client'
 
 import AssetService from './AssetService'
 import ConfigurationService from './ConfigurationService/ConfigurationService'
+import S3Service from './S3Service'
 import SchedulerService, { OrderJobData } from './SchedulerService'
 import { FindManyOptions } from './Types'
 
@@ -27,7 +28,7 @@ export interface Order {
 	asset: {
 		id: bigint
 		name: string
-		galleries: { id: bigint; url: string }[]
+		galleries: { id: bigint; key: string }[]
 	}
 	flags: {
 		canBeApproved: boolean
@@ -92,6 +93,7 @@ class OrderService extends Service {
 		private configurationService = DI.get(ConfigurationService),
 		private assetService = DI.get(AssetService),
 		private schedulerService = DI.get(SchedulerService),
+		private s3Service = DI.get(S3Service),
 	) {
 		super('OrderService')
 	}
@@ -164,7 +166,7 @@ class OrderService extends Service {
 				select: {
 					id: true,
 					name: true,
-					galleries: { select: { id: true, url: true } },
+					galleries: { select: { id: true, key: true } },
 				},
 			},
 			requestedAt: true,
@@ -185,7 +187,7 @@ class OrderService extends Service {
 				asset: {
 					id: bigint
 					name: string
-					galleries: { id: bigint; url: string }[]
+					galleries: { id: bigint; key: string }[]
 				}
 			}>({
 				filter: { id },
@@ -196,6 +198,23 @@ class OrderService extends Service {
 
 			return this.transformData(result)
 		})
+	}
+
+	async findByIdWithUrls(id: bigint) {
+		const order = await this.findById(id)
+
+		if (order === null) return null
+
+		return {
+			...order,
+			asset: {
+				...order.asset,
+				galleries: order.asset.galleries.map(gallery => ({
+					id: gallery.id,
+					url: this.s3Service.getPublicUrl(gallery.key, 'asset'),
+				})),
+			},
+		}
 	}
 
 	async findMany(options: OrderFindManyOptions = {}) {
@@ -230,7 +249,7 @@ class OrderService extends Service {
 				asset: {
 					id: bigint
 					name: string
-					galleries: { id: bigint; url: string }[]
+					galleries: { id: bigint; key: string }[]
 				}
 			}>(repositoryOptions),
 		)
@@ -272,7 +291,7 @@ class OrderService extends Service {
 						name: order.asset.name,
 						galleries: order.asset.galleries.map(gallery => ({
 							id: gallery.id.toString(),
-							url: gallery.url,
+							url: this.s3Service.getPublicUrl(gallery.key, 'asset'),
 						})),
 					},
 					flags: {

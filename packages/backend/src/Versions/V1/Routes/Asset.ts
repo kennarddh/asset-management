@@ -1,4 +1,5 @@
 import { CelosiaRouter } from '@celosiajs/core'
+import { FileUpload } from '@celosiajs/file-upload'
 
 import { UserRole } from '@asset-management/common'
 
@@ -17,7 +18,13 @@ AssetRouter.useRouters('/category/', AssetCategoryRouter)
 AssetRouter.get('/', [new VerifyJWT(false)], new FindManyAssets())
 AssetRouter.post(
 	'/',
-	[new VerifyJWT(false), new HandleAccess([new HasRole(UserRole.Admin)])],
+	[
+		new VerifyJWT(false),
+		new HandleAccess([new HasRole(UserRole.Admin)]),
+		new FileUpload({
+			limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+		}),
+	],
 	new CreateAsset(),
 )
 AssetRouter.get('/:id', [new VerifyJWT(false)], new FindAssetById())

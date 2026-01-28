@@ -1,11 +1,12 @@
 import { CelosiaResponse, Controller, ControllerRequest, DI, EmptyObject } from '@celosiajs/core'
+import { ZodUploadedFileType } from '@celosiajs/file-upload'
 
 import { ApiErrorKind, ApiErrorResource, AssetStatus } from '@asset-management/common'
 import z from 'zod/v4'
 
 import AssetService from 'Services/AssetService'
 
-import { ResourceNotFoundError } from 'Errors'
+import { InvalidStateError, ResourceNotFoundError } from 'Errors'
 
 class UpdateAsset extends Controller {
 	constructor(private assetService = DI.get(AssetService)) {
@@ -38,7 +39,14 @@ class UpdateAsset extends Controller {
 				requiresApproval,
 				status,
 				categoryId,
-				galleries,
+				...(galleries !== undefined
+					? {
+							galleries: {
+								newImages: galleries.newImages.map(image => image.buffer),
+								existingIds: galleries.existingIds,
+							},
+						}
+					: {}),
 			})
 
 			return response.sendStatus(204)
@@ -55,6 +63,20 @@ class UpdateAsset extends Controller {
 					},
 					data: {},
 				})
+			} else if (error instanceof InvalidStateError) {
+				if (error.operation === 'update' && error.state === 'mustHaveAtLeastOneImage') {
+					return response.status(409).json({
+						errors: {
+							others: [
+								{
+									resource: ApiErrorResource.Image,
+									kind: ApiErrorKind.Invalid,
+								},
+							],
+						},
+						data: {},
+					})
+				}
 			}
 
 			this.logger.error('Other.', error)
@@ -73,12 +95,10 @@ class UpdateAsset extends Controller {
 			status: z.enum(AssetStatus).optional(),
 			categoryId: z.coerce.bigint().min(1n).optional(),
 			galleries: z
-				.array(
-					z.object({
-						url: z.url(),
-					}),
-				)
-				.min(1)
+				.object({
+					newImages: z.array(ZodUploadedFileType),
+					existingIds: z.array(z.coerce.bigint().min(1n)),
+				})
 				.optional(),
 		})
 	}

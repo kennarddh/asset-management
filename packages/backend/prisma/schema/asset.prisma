@@ -23,13 +23,12 @@ model Asset {
 
 model AssetGallery {
     id  BigInt @id @default(autoincrement())
-    url String
+    key String
 
     assetId BigInt
     asset   Asset  @relation(fields: [assetId], references: [id])
 
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 
     @@map("asset_galleries")
 }

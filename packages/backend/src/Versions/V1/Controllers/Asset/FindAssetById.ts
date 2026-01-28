@@ -18,7 +18,7 @@ class FindAssetById extends Controller {
 		const { id } = request.params
 
 		try {
-			const asset = await this.assetService.findById(id)
+			const asset = await this.assetService.findByIdWithUrls(id)
 
 			if (!asset)
 				return response.status(404).json({

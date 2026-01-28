@@ -1,9 +1,12 @@
 import { CelosiaResponse, Controller, ControllerRequest, DI, EmptyObject } from '@celosiajs/core'
+import { ZodUploadedFileType } from '@celosiajs/file-upload'
 
-import { AssetStatus } from '@asset-management/common'
+import { ApiErrorKind, ApiErrorResource, AssetStatus } from '@asset-management/common'
 import z from 'zod/v4'
 
 import AssetService from 'Services/AssetService'
+
+import { InvalidStateError } from 'Errors'
 
 class CreateAsset extends Controller {
 	constructor(private assetService = DI.get(AssetService)) {
@@ -25,7 +28,6 @@ class CreateAsset extends Controller {
 			categoryId,
 			galleries,
 		} = request.body
-
 		try {
 			const asset = await this.assetService.create({
 				name,
@@ -35,7 +37,7 @@ class CreateAsset extends Controller {
 				requiresApproval,
 				status,
 				categoryId,
-				galleries,
+				galleries: galleries.map(image => image.buffer),
 			})
 
 			return response.status(200).json({
@@ -45,6 +47,22 @@ class CreateAsset extends Controller {
 				},
 			})
 		} catch (error) {
+			if (error instanceof InvalidStateError) {
+				if (error.operation === 'create' && error.state === 'imageUploadFailed') {
+					return response.status(409).json({
+						errors: {
+							others: [
+								{
+									resource: ApiErrorResource.Image,
+									kind: ApiErrorKind.UploadFailed,
+								},
+							],
+						},
+						data: {},
+					})
+				}
+			}
+
 			this.logger.error('Other.', error)
 
 			return response.sendInternalServerError()
@@ -60,13 +78,7 @@ class CreateAsset extends Controller {
 			requiresApproval: z.boolean(),
 			status: z.enum(AssetStatus),
 			categoryId: z.coerce.bigint().min(1n),
-			galleries: z
-				.array(
-					z.object({
-						url: z.url(),
-					}),
-				)
-				.min(1),
+			galleries: z.array(ZodUploadedFileType).min(1),
 		})
 	}
 }

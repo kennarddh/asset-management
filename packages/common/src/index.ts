@@ -17,6 +17,7 @@ export enum ApiErrorResource {
 	Username = 'Username',
 	Duration = 'Duration',
 	DateTime = 'DateTime',
+	Image = 'Image',
 }
 
 export enum ApiErrorKind {
@@ -31,6 +32,7 @@ export enum ApiErrorKind {
 	InternalServerError = 'InternalServerError',
 	Processed = 'Processed',
 	Unavailable = 'Unavailable',
+	UploadFailed = 'UploadFailed',
 }
 
 export interface ApiOtherError {
