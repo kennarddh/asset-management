@@ -157,6 +157,11 @@ const AssetDetail: FC = () => {
 								error.kind === ApiErrorKind.Invalid
 							) {
 								return t('member_assets:createOrder.errors.invalidDuration')
+							} else if (
+								error.resource === ApiErrorResource.Asset &&
+								error.kind === ApiErrorKind.Unavailable
+							) {
+								return t('member_assets:createOrder.errors.assetUnavailable')
 							}
 						}),
 					)

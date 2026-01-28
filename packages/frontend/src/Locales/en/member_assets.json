@@ -11,7 +11,8 @@
 			"startAtRequired": "Start at is required.",
 			"finishAtRequired": "Finish at is required.",
 			"invalidDateTime": "The provided date and time is invalid.",
-			"invalidDuration": "The provided duration is invalid."
+			"invalidDuration": "The provided duration is invalid.",
+			"assetUnavailable": "The asset is unavailable for the selected time period."
 		}
 	}
 }

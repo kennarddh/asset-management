@@ -333,6 +333,16 @@ class OrderService extends Service {
 			// TODO: Replace with approvedBy in database. If approved but no approvedBy user, it means it is auto-approved.
 			const reason = shouldAutoApprove ? 'Auto-approved upon creation' : null
 
+			if (shouldAutoApprove) {
+				const isAssetAvailable = await this.ensureAssetAvailability(
+					data.assetId,
+					data.startAt,
+					data.finishAt,
+				)
+
+				if (!isAssetAvailable) throw new InvalidStateError('create', 'assetUnavailable')
+			}
+
 			const order = await transaction.getRepository(OrderRepository).create({
 				data: {
 					...data,
@@ -355,6 +365,26 @@ class OrderService extends Service {
 			}
 
 			return order
+		})
+	}
+
+	private async ensureAssetAvailability(
+		assetId: bigint,
+		startAt: Date,
+		finishAt: Date,
+	): Promise<boolean> {
+		return await this.unitOfWork.execute(async transaction => {
+			const orderRepository = transaction.getRepository(OrderRepository)
+
+			const overlappingOrdersCount = await orderRepository.count({
+				filter: {
+					assetId: assetId,
+					status: { in: [OrderStatus.Active, OrderStatus.Approved, OrderStatus.Overdue] },
+					AND: [{ startAt: { lt: finishAt } }, { finishAt: { gt: startAt } }],
+				},
+			})
+
+			return overlappingOrdersCount === 0
 		})
 	}
 
@@ -401,7 +431,13 @@ class OrderService extends Service {
 			if (order.status !== OrderStatus.Pending)
 				throw new InvalidStateError('approve', 'processed')
 
-			// TODO: Check for quantity availability at the booked timeframe
+			const isAssetAvailable = await this.ensureAssetAvailability(
+				order.asset.id,
+				order.startAt,
+				order.finishAt,
+			)
+
+			if (!isAssetAvailable) throw new InvalidStateError('approve', 'assetUnavailable')
 
 			await this.update(id, { status: OrderStatus.Approved, approvedAt: now, reason })
 

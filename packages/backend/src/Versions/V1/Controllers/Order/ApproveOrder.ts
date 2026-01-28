@@ -37,22 +37,32 @@ class ApproveOrder extends Controller {
 					},
 					data: {},
 				})
-			} else if (
-				error instanceof InvalidStateError &&
-				error.operation === 'approve' &&
-				error.state === 'processed'
-			) {
-				return response.status(409).json({
-					errors: {
-						others: [
-							{
-								resource: ApiErrorResource.Order,
-								kind: ApiErrorKind.Processed,
-							},
-						],
-					},
-					data: {},
-				})
+			} else if (error instanceof InvalidStateError) {
+				if (error.operation === 'approve' && error.state === 'processed') {
+					return response.status(409).json({
+						errors: {
+							others: [
+								{
+									resource: ApiErrorResource.Order,
+									kind: ApiErrorKind.Processed,
+								},
+							],
+						},
+						data: {},
+					})
+				} else if (error.operation === 'approve' && error.state === 'assetUnavailable') {
+					return response.status(409).json({
+						errors: {
+							others: [
+								{
+									resource: ApiErrorResource.Asset,
+									kind: ApiErrorKind.Unavailable,
+								},
+							],
+						},
+						data: {},
+					})
+				}
 			}
 
 			this.logger.error('Other.', error)

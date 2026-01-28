@@ -79,6 +79,18 @@ class CreateOrder extends Controller {
 						},
 						data: {},
 					})
+				} else if (error.operation === 'create' && error.state === 'assetUnavailable') {
+					return response.status(409).json({
+						errors: {
+							others: [
+								{
+									resource: ApiErrorResource.Asset,
+									kind: ApiErrorKind.Unavailable,
+								},
+							],
+						},
+						data: {},
+					})
 				}
 			}
 

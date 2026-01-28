@@ -17,7 +17,12 @@ import {
 	GridGetRowsResponse,
 } from '@mui/x-data-grid'
 
-import { ApiErrorKind, OrderSortField, OrderStatus } from '@asset-management/common'
+import {
+	ApiErrorKind,
+	ApiErrorResource,
+	OrderSortField,
+	OrderStatus,
+} from '@asset-management/common'
 import { useTranslation } from 'react-i18next'
 
 import ListPageTemplate, { ListPageTemplateHandle } from 'Components/Admin/ListPageTemplate'
@@ -83,6 +88,11 @@ const OrderList: FC = () => {
 						return t('admin_orders:errors.notFound')
 					} else if (error.kind === ApiErrorKind.Processed) {
 						return t('admin_orders:errors.processed')
+					} else if (
+						error.resource === ApiErrorResource.Asset &&
+						error.kind === ApiErrorKind.Unavailable
+					) {
+						return t('admin_orders:errors.assetUnavailable')
 					}
 				})
 

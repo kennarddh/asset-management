@@ -45,6 +45,7 @@
 	},
 	"errors": {
 		"notFound": "The order you are looking for does not exist.",
-		"processed": "The order has already been processed."
+		"processed": "The order has already been processed.",
+		"assetUnavailable": "The asset is unavailable for the selected time period."
 	}
 }
