@@ -8,6 +8,7 @@ import VerifyJWT from 'Middlewares/VerifyJWT'
 import HasRole from 'Services/AccessControl/ResourceAccessPolicies/HasRole'
 import IsSameUser from 'Services/AccessControl/ResourceAccessPolicies/IsSameUser'
 import IsSameUserBySession from 'Services/AccessControl/ResourceAccessPolicies/IsSameUserBySession'
+import { Or } from 'Services/AccessControl/ResourceAccessPoliciesBoolean'
 import UserResourceContextGetter from 'Services/AccessControl/ResourceContextGetters/UserResourceContextGetter'
 import UserSessionResourceContextGetter from 'Services/AccessControl/ResourceContextGetters/UserSessionResourceContextGetter'
 
@@ -24,7 +25,10 @@ UserSessionRouter.get(
 	'/session/:id',
 	[
 		new VerifyJWT(false),
-		new HandleAccess([new IsSameUserBySession()], new UserSessionResourceContextGetter()),
+		new HandleAccess(
+			[new Or(new IsSameUserBySession(), new HasRole(UserRole.Admin))],
+			new UserSessionResourceContextGetter(),
+		),
 	],
 	new FindUserSessionById(),
 )
@@ -32,13 +36,22 @@ UserSessionRouter.delete(
 	'/session/:id',
 	[
 		new VerifyJWT(false),
-		new HandleAccess([new IsSameUserBySession()], new UserSessionResourceContextGetter()),
+		new HandleAccess(
+			[new Or(new IsSameUserBySession(), new HasRole(UserRole.Admin))],
+			new UserSessionResourceContextGetter(),
+		),
 	],
 	new RevokeUserSession(),
 )
 UserSessionRouter.delete(
 	'/:id/session/',
-	[new VerifyJWT(false), new HandleAccess([new IsSameUser()], new UserResourceContextGetter())],
+	[
+		new VerifyJWT(false),
+		new HandleAccess(
+			[new Or(new IsSameUser(), new HasRole(UserRole.Admin))],
+			new UserResourceContextGetter(),
+		),
+	],
 	new RevokeAllUserSessionsByUserId(),
 )
 UserSessionRouter.get(
