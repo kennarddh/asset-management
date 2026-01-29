@@ -1,4 +1,4 @@
-import { FC, FormEvent, useCallback, useEffect, useState, useTransition } from 'react'
+import { FC, FormEvent, useCallback, useEffect, useRef, useState, useTransition } from 'react'
 
 import { useNavigate, useParams } from 'react-router'
 
@@ -38,7 +38,9 @@ const EditAsset: FC = () => {
 	const [Status, SetStatus] = useState<AssetStatus>(AssetStatus.Available)
 	const [RequiresApproval, SetRequiresApproval] = useState(true)
 	const [CategoryId, SetCategoryId] = useState<string | null>(null)
-	const [Galleries, SetGalleries] = useState<{ url: string }[]>([])
+	const [Galleries, SetGalleries] = useState<{ id?: string; file?: File; url: string }[]>([])
+
+	const AllObjectUrlsRef = useRef<Set<string>>(new Set())
 
 	const [isPending, startTransition] = useTransition()
 
@@ -62,6 +64,7 @@ const EditAsset: FC = () => {
 				SetCategoryId(asset.category.id)
 				SetGalleries(
 					asset.galleries.map(gallery => ({
+						id: gallery.id,
 						url: gallery.url,
 					})),
 				)
@@ -95,7 +98,14 @@ const EditAsset: FC = () => {
 						requiresApproval: RequiresApproval,
 						status: Status,
 						categoryId: CategoryId,
-						galleries: Galleries,
+						galleries: {
+							existingIds: Galleries.map(galleryEntry => galleryEntry.id).filter(
+								id => id !== undefined,
+							),
+							newImages: Galleries.map(galleryEntry => galleryEntry.file).filter(
+								file => file !== undefined,
+							),
+						},
 					})
 
 					await Navigate('../../')
@@ -129,17 +139,45 @@ const EditAsset: FC = () => {
 		],
 	)
 
-	const OnAddGalleryImage = useCallback(() => {
-		// TODO: Replace with proper image upload dialog
-		const imageUrl = window.prompt("Enter image URL to add to asset's gallery:")
+	const OnAddGalleryImages = useCallback((files: File[]) => {
+		SetGalleries(prevGalleries => {
+			const newGalleries = [...prevGalleries]
 
-		if (imageUrl) {
-			SetGalleries(prevGalleries => [...prevGalleries, { url: imageUrl }])
-		}
+			for (const file of files) {
+				const url = URL.createObjectURL(file)
+
+				newGalleries.push({ file, url })
+
+				AllObjectUrlsRef.current.add(url)
+			}
+
+			return newGalleries
+		})
 	}, [])
 
 	const OnRemoveGalleryImage = useCallback((index: number) => {
-		SetGalleries(prevGalleries => prevGalleries.filter((_, i) => i !== index))
+		SetGalleries(prevGalleries => {
+			const galleryEntry = prevGalleries[index]
+
+			if (galleryEntry === undefined) return prevGalleries
+
+			URL.revokeObjectURL(galleryEntry.url)
+
+			AllObjectUrlsRef.current.delete(galleryEntry.url)
+
+			return prevGalleries.filter((_, i) => i !== index)
+		})
+	}, [])
+
+	useEffect(() => {
+		return () => {
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+			for (const url of AllObjectUrlsRef.current) {
+				URL.revokeObjectURL(url)
+			}
+
+			AllObjectUrlsRef.current.clear()
+		}
 	}, [])
 
 	return (
@@ -243,8 +281,8 @@ const EditAsset: FC = () => {
 				</FormControl>
 				<ImagesPreview
 					images={Galleries}
-					onAddGalleryImage={OnAddGalleryImage}
-					onRemoveGalleryImage={OnRemoveGalleryImage}
+					onAddImages={OnAddGalleryImages}
+					onRemoveImage={OnRemoveGalleryImage}
 				/>
 				<Button
 					type='submit'

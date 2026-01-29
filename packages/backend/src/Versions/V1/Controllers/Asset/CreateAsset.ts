@@ -28,6 +28,7 @@ class CreateAsset extends Controller {
 			categoryId,
 			galleries,
 		} = request.body
+
 		try {
 			const asset = await this.assetService.create({
 				name,
@@ -73,9 +74,9 @@ class CreateAsset extends Controller {
 		return z.object({
 			name: z.string().trim().min(1).max(100),
 			description: z.string().trim(),
-			maximumLendingDuration: z.int().min(1),
-			minimumLendingDuration: z.int().min(1),
-			requiresApproval: z.boolean(),
+			maximumLendingDuration: z.coerce.number().int().min(1),
+			minimumLendingDuration: z.coerce.number().int().min(1),
+			requiresApproval: z.coerce.boolean(),
 			status: z.enum(AssetStatus),
 			categoryId: z.coerce.bigint().min(1n),
 			galleries: z.array(ZodUploadedFileType).min(1),

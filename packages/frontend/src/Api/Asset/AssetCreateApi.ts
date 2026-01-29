@@ -34,7 +34,7 @@ const AssetCreateApi: ApiFunction<AssetCreateOutput, AssetCreateData> = async da
 	formData.append('categoryId', data.categoryId)
 
 	for (const file of data.galleries) {
-		formData.append('galleries', file)
+		formData.append('galleries[]', file)
 	}
 
 	const result = await CallApi<AssetCreateResponse>('/v1/asset', 'POST', true, {

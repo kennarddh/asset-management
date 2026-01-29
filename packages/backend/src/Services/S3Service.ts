@@ -74,9 +74,13 @@ class S3Service extends Service {
 
 	public getPublicUrl(key: string, type: 'profile' | 'asset'): string {
 		const baseUrl = this.configurationService.configurations.imageBaseUrl
-		const prefix = type === 'profile' ? '/images/profiles/' : '/images/assets/'
+		const prefix = type === 'profile' ? 'images/profiles/' : 'images/assets/'
 
-		return `${baseUrl}${prefix}${key}`
+		const path = `${prefix}${key}`
+
+		const url = new URL(path, baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`)
+
+		return url.toString()
 	}
 }
 

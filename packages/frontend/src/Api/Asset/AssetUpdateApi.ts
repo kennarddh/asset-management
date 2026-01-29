@@ -51,11 +51,11 @@ const AssetUpdateApi: ApiFunction<null, AssetUpdateData> = async data => {
 
 	if (data.galleries !== undefined) {
 		for (const file of data.galleries.newImages) {
-			formData.append('galleries[newImages]', file)
+			formData.append('galleries[newImages][]', file)
 		}
 
 		for (const id of data.galleries.existingIds) {
-			formData.append('galleries[existingIds]', id)
+			formData.append('galleries[existingIds][]', id)
 		}
 	}
 

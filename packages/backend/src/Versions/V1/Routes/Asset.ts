@@ -19,17 +19,21 @@ AssetRouter.get('/', [new VerifyJWT(false)], new FindManyAssets())
 AssetRouter.post(
 	'/',
 	[
-		new VerifyJWT(false),
-		new HandleAccess([new HasRole(UserRole.Admin)]),
 		new FileUpload({
 			limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
 		}),
 	],
+	[new VerifyJWT(false), new HandleAccess([new HasRole(UserRole.Admin)])],
 	new CreateAsset(),
 )
 AssetRouter.get('/:id', [new VerifyJWT(false)], new FindAssetById())
 AssetRouter.patch(
 	'/:id',
+	[
+		new FileUpload({
+			limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+		}),
+	],
 	[new VerifyJWT(false), new HandleAccess([new HasRole(UserRole.Admin)])],
 	new UpdateAsset(),
 )
