@@ -303,65 +303,64 @@ class AssetService extends Service {
 
 		const galleries = data.galleries
 
-		if (galleries !== undefined) {
-			const currentAssetData = await this.findById(id)
+		const currentAssetData = await this.findById(id)
 
-			if (currentAssetData === null) throw new ResourceNotFoundError('asset')
+		if (currentAssetData === null) throw new ResourceNotFoundError('asset')
 
-			for (const imageBuffer of galleries.newImages) {
-				const isValid = await this.imageProcessingService.isValidImage(imageBuffer)
+		const newImages = galleries.newImages ?? []
+		const existingIds = galleries.existingIds ?? []
 
-				if (!isValid) {
-					throw new InvalidStateError('update', 'imageInvalid')
-				}
+		for (const imageBuffer of newImages) {
+			const isValid = await this.imageProcessingService.isValidImage(imageBuffer)
+
+			if (!isValid) {
+				throw new InvalidStateError('update', 'imageInvalid')
+			}
+		}
+
+		const galleriesToRemove = currentAssetData.galleries.filter(
+			currentGallery => !existingIds.includes(currentGallery.id),
+		)
+
+		updateData.galleries = {}
+
+		let keysCount = 0
+
+		if (newImages.length > 0) {
+			const promises = newImages.map(buffer => this.s3Service.uploadAssetImage(buffer))
+
+			const uploadResults = await Promise.allSettled(promises)
+
+			const keys = uploadResults
+				.filter(result => result.status === 'fulfilled')
+				.map(result => result.value)
+
+			keysCount = keys.length
+
+			updateData.galleries.createMany = {
+				data: keys.map(key => ({ key })),
+			}
+		}
+
+		if (galleriesToRemove.length > 0) {
+			if (keysCount + existingIds.length === 0) {
+				throw new InvalidStateError('update', 'mustHaveAtLeastOneImage')
 			}
 
-			const galleriesToRemove = currentAssetData.galleries.filter(
-				currentGallery => !galleries.existingIds.includes(currentGallery.id),
-			)
+			const promises = galleriesToRemove.map(async gallery => {
+				await this.s3Service.deleteAssetImage(gallery.key)
 
-			updateData.galleries = {}
+				return gallery.id
+			})
 
-			let keysCount = 0
+			const deleteResults = await Promise.allSettled(promises)
 
-			if (galleries.newImages.length > 0) {
-				const promises = galleries.newImages.map(buffer =>
-					this.s3Service.uploadAssetImage(buffer),
-				)
+			const deletedIds = deleteResults
+				.filter(result => result.status === 'fulfilled')
+				.map(result => result.value)
 
-				const uploadResults = await Promise.allSettled(promises)
-
-				const keys = uploadResults
-					.filter(result => result.status === 'fulfilled')
-					.map(result => result.value)
-
-				keysCount = keys.length
-
-				updateData.galleries.createMany = {
-					data: keys.map(key => ({ key })),
-				}
-			}
-
-			if (galleriesToRemove.length > 0) {
-				const promises = galleriesToRemove.map(async gallery => {
-					await this.s3Service.deleteAssetImage(gallery.key)
-
-					return gallery.id
-				})
-
-				const deleteResults = await Promise.allSettled(promises)
-
-				const deletedIds = deleteResults
-					.filter(result => result.status === 'fulfilled')
-					.map(result => result.value)
-
-				updateData.galleries.deleteMany = {
-					id: { in: deletedIds },
-				}
-
-				if (keysCount + galleries.existingIds.length === 0) {
-					throw new InvalidStateError('update', 'mustHaveAtLeastOneImage')
-				}
+			updateData.galleries.deleteMany = {
+				id: { in: deletedIds },
 			}
 		}
 

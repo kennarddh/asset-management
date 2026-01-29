@@ -39,14 +39,10 @@ class UpdateAsset extends Controller {
 				requiresApproval,
 				status,
 				categoryId,
-				...(galleries !== undefined
-					? {
-							galleries: {
-								newImages: galleries.newImages.map(image => image.buffer),
-								existingIds: galleries.existingIds,
-							},
-						}
-					: {}),
+				galleries: {
+					newImages: (galleries.newImages ?? []).map(image => image.buffer),
+					existingIds: galleries.existingIds ?? [],
+				},
 			})
 
 			return response.sendStatus(204)
@@ -108,10 +104,10 @@ class UpdateAsset extends Controller {
 			categoryId: z.coerce.bigint().min(1n).optional(),
 			galleries: z
 				.object({
-					newImages: z.array(ZodUploadedFileType),
-					existingIds: z.array(z.coerce.bigint().min(1n)),
+					newImages: z.array(ZodUploadedFileType).optional(),
+					existingIds: z.array(z.coerce.bigint()).optional(),
 				})
-				.optional(),
+				.default({ newImages: [], existingIds: [] }),
 		})
 	}
 

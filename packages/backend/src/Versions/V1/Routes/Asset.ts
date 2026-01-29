@@ -21,6 +21,7 @@ AssetRouter.post(
 	[
 		new FileUpload({
 			limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+			parser: { allowEmptyArrays: true },
 		}),
 	],
 	[new VerifyJWT(false), new HandleAccess([new HasRole(UserRole.Admin)])],

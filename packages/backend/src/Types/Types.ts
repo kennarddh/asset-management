@@ -29,9 +29,13 @@ export type DeepPartialAndUndefined<T, K extends keyof T = never> = T extends Fu
 			? T extends any[]
 				? T
 				: {
+						// If P is in K, it's required. Otherwise, it's optional.
 						[P in keyof T]?: P extends K
-							? T[P] | undefined // If key is in K: Stop recursion, just make it optional
-							: DeepPartialAndUndefined<T[P]> | undefined // If not in K: Recurse deeply
+							? DeepPartialAndUndefined<T[P]>
+							: DeepPartialAndUndefined<T[P]> | undefined
+					} & {
+						// This second part ensures keys in K are strictly required
+						[P in K]: DeepPartialAndUndefined<T[P]>
 					}
 			: T
 
