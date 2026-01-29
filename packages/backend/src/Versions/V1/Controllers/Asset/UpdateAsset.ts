@@ -70,6 +70,18 @@ class UpdateAsset extends Controller {
 							others: [
 								{
 									resource: ApiErrorResource.Image,
+									kind: ApiErrorKind.NotFound,
+								},
+							],
+						},
+						data: {},
+					})
+				} else if (error.operation === 'update' && error.state === 'imageInvalid') {
+					return response.status(409).json({
+						errors: {
+							others: [
+								{
+									resource: ApiErrorResource.Image,
 									kind: ApiErrorKind.Invalid,
 								},
 							],

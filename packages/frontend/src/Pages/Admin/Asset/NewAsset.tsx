@@ -13,7 +13,7 @@ import {
 	TextField,
 } from '@mui/material'
 
-import { AssetStatus } from '@asset-management/common'
+import { ApiErrorKind, ApiErrorResource, AssetStatus } from '@asset-management/common'
 import { useTranslation } from 'react-i18next'
 
 import ImagesPreview from 'Components/Admin/ImagesPreview'
@@ -65,7 +65,21 @@ const NewAsset: FC = () => {
 
 					await Navigate('../')
 				} catch (error) {
-					SetErrorText(await HandleApiError(error))
+					SetErrorText(
+						await HandleApiError(error, async error => {
+							if (
+								error.resource === ApiErrorResource.Image &&
+								error.kind === ApiErrorKind.UploadFailed
+							) {
+								return t('admin_assets:errors.imageUploadFailed')
+							} else if (
+								error.resource === ApiErrorResource.Image &&
+								error.kind === ApiErrorKind.Invalid
+							) {
+								return t('admin_assets:errors.imageInvalid')
+							}
+						}),
+					)
 				}
 			})
 		},

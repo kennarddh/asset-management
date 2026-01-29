@@ -61,6 +61,18 @@ class CreateAsset extends Controller {
 						},
 						data: {},
 					})
+				} else if (error.operation === 'create' && error.state === 'imageInvalid') {
+					return response.status(409).json({
+						errors: {
+							others: [
+								{
+									resource: ApiErrorResource.Image,
+									kind: ApiErrorKind.Invalid,
+								},
+							],
+						},
+						data: {},
+					})
 				}
 			}
 

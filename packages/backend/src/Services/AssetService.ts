@@ -15,6 +15,7 @@ import { InvalidStateError, ResourceNotFoundError } from 'Errors'
 import { Prisma } from 'PrismaGenerated/client'
 
 import ConfigurationService from './ConfigurationService/ConfigurationService'
+import ImageProcessingService from './ImageProcessingService'
 import S3Service from './S3Service'
 import { FindManyOptions } from './Types'
 
@@ -77,6 +78,7 @@ class AssetService extends Service {
 		private unitOfWork = DI.get(UnitOfWork),
 		private configurationService = DI.get(ConfigurationService),
 		private s3Service = DI.get(S3Service),
+		private imageProcessingService = DI.get(ImageProcessingService),
 	) {
 		super('AssetService')
 	}
@@ -256,22 +258,30 @@ class AssetService extends Service {
 	}
 
 	async create(data: AssetCreateData) {
-		return await this.unitOfWork.execute(async transaction => {
-			const newData = RemoveKeyFromObjectImmutable(data, ['galleries'])
+		const newData = RemoveKeyFromObjectImmutable(data, ['galleries'])
 
-			const promises = data.galleries.map(buffer => this.s3Service.uploadAssetImage(buffer))
+		for (const imageBuffer of data.galleries) {
+			const isValid = await this.imageProcessingService.isValidImage(imageBuffer)
 
-			const uploadResults = await Promise.allSettled(promises)
-
-			const keys = uploadResults
-				.filter(result => result.status === 'fulfilled')
-				.map(result => result.value)
-
-			// TODO: By default it will just pick any succesful uploads and ignore failed one, but we might want to handle failed uploads better.
-			if (keys.length === 0) {
-				throw new InvalidStateError('create', 'imageUploadFailed')
+			if (!isValid) {
+				throw new InvalidStateError('create', 'imageInvalid')
 			}
+		}
 
+		const promises = data.galleries.map(buffer => this.s3Service.uploadAssetImage(buffer))
+
+		const uploadResults = await Promise.allSettled(promises)
+
+		const keys = uploadResults
+			.filter(result => result.status === 'fulfilled')
+			.map(result => result.value)
+
+		// TODO: By default it will just pick any succesful uploads and ignore failed one, but we might want to handle failed uploads better.
+		if (keys.length === 0) {
+			throw new InvalidStateError('create', 'imageUploadFailed')
+		}
+
+		return await this.unitOfWork.execute(async transaction => {
 			return await transaction.getRepository(AssetRepository).create({
 				data: {
 					...newData,
@@ -297,6 +307,14 @@ class AssetService extends Service {
 			const currentAssetData = await this.findById(id)
 
 			if (currentAssetData === null) throw new ResourceNotFoundError('asset')
+
+			for (const imageBuffer of galleries.newImages) {
+				const isValid = await this.imageProcessingService.isValidImage(imageBuffer)
+
+				if (!isValid) {
+					throw new InvalidStateError('update', 'imageInvalid')
+				}
+			}
 
 			const galleriesToRemove = currentAssetData.galleries.filter(
 				currentGallery => !galleries.existingIds.includes(currentGallery.id),

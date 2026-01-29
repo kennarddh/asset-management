@@ -1,5 +1,6 @@
 import { Injectable, Service } from '@celosiajs/core'
 
+import { fileTypeFromBuffer } from 'file-type'
 import sharp from 'sharp'
 
 import { ProcessingError } from 'Errors'
@@ -26,6 +27,16 @@ class ImageProcessingService extends Service {
 
 			throw new ProcessingError()
 		}
+	}
+
+	public async isValidImage(buffer: Buffer) {
+		const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
+
+		const fileType = await fileTypeFromBuffer(buffer)
+
+		if (fileType === undefined) return false
+
+		return allowedMimes.includes(fileType.mime)
 	}
 }
 

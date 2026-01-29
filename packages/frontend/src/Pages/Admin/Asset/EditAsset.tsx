@@ -117,6 +117,16 @@ const EditAsset: FC = () => {
 								error.kind === ApiErrorKind.NotFound
 							) {
 								return t('admin_assets:errors.notFound')
+							} else if (
+								error.resource === ApiErrorResource.Image &&
+								error.kind === ApiErrorKind.NotFound
+							) {
+								return t('admin_assets:errors.imageNotFound')
+							} else if (
+								error.resource === ApiErrorResource.Image &&
+								error.kind === ApiErrorKind.Invalid
+							) {
+								return t('admin_assets:errors.imageInvalid')
 							}
 						}),
 					)
