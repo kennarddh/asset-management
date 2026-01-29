@@ -110,7 +110,7 @@ const ImagesPreview: FC<ImagesPreviewProps> = props => {
 						type='file'
 						multiple
 						onChange={OnFileChange}
-						accept="image/jpeg, image/png, image/webp, image/avif"
+						accept='image/jpeg, image/png, image/webp, image/avif'
 					/>
 				</Button>
 			)}
