@@ -7,7 +7,7 @@
 		"sourceMap": true,
 		"jsx": "react-jsx",
 		"baseUrl": "src",
-		"lib": ["DOM", "DOM.Iterable", "ES2023"],
+		"lib": ["DOM", "DOM.Iterable", "ES2023", "WebWorker"],
 		"plugins": [
 			{
 				"name": "@styled/typescript-styled-plugin",
@@ -22,7 +22,8 @@
 		"paths": {
 			"@asset-management/common": ["../common"],
 			"@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
-		}
+		},
+		"types": ["vite-plugin-pwa/react"]
 	},
 	"include": ["src", "vite.config.ts"]
 }
