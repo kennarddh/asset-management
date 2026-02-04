@@ -7,6 +7,9 @@
 - Refactor controller error handling by making error handling centralized and remove the need of putting standard error log of internal server error try catch in every controller.
 - Refactor seed script to use password hash service.
 
+- Create notification table. Make it store `payload` field which is the parameters for the notification template string. Has template key which is an enum for locale key of what kind of notification it is. Show notificaiton in app and also on push notification.
+- Add SSE/WebSocket if the app is open to faster send the notification without web push processing delay.
+
 POST /order -> Member
 
 - Create order entry
