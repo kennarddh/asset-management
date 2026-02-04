@@ -48,7 +48,7 @@
 		"@types/cors": "^2.8.19",
 		"@types/jsonwebtoken": "^9.0.10",
 		"dotenv": "^17.2.3",
-		"esbuild": "^0.27.0",
+		"esbuild": "^0.27.1",
 		"prisma": "^7.0.1"
 	}
 }
