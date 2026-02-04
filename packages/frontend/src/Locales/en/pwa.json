@@ -1,0 +1,19 @@
+{
+	"manager": {
+		"modal": {
+			"Error": {
+				"title": "PWA Error",
+				"description": "App service worker failed to register."
+			},
+			"OfflineReady": {
+				"title": "Offline Ready",
+				"description": "App is ready to work offline."
+			},
+			"UpdateAvailable": {
+				"title": "An update is available.",
+				"description": "\"Update\" will refresh the app. You may lose the progress, if any. \"Close\" will install the update next time you visit the app.",
+				"update": "Update"
+			}
+		}
+	}
+}

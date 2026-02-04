@@ -1,13 +1,31 @@
 import { FC, useCallback, useEffect, useState } from 'react'
 
+import {
+	Button,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+} from '@mui/material'
+
+import { useTranslation } from 'react-i18next'
 import { useRegisterSW } from 'virtual:pwa-register/react'
+
+enum ModalType {
+	Error = 'Error',
+	OfflineReady = 'OfflineReady',
+	UpdateAvailable = 'UpdateAvailable',
+}
 
 const PWAManager: FC = () => {
 	const [HasOfflineReadyModalShown, SetHasOfflineReadyModalShown] = useState<boolean>(
 		() => localStorage.getItem('hasOfflineReadyModalShown') === '1',
 	)
 
-	const { CloseModal, IsOpen, QueueOpenModal } = useModal()
+	const [CurrentModalType, SetCurrentModalType] = useState<ModalType | null>(null)
+
+	const { t } = useTranslation(['pwa'])
 
 	const {
 		offlineReady: [OfflineReady, SetOfflineReady],
@@ -43,75 +61,66 @@ const PWAManager: FC = () => {
 		onRegisterError(error) {
 			console.log('Service worker registration error', error)
 
-			QueueOpenModal({
-				title: 'PWA Error',
-				description: 'Service worker failed to register.',
-			})
+			SetCurrentModalType(ModalType.Error)
 		},
 	})
 
 	const Close = useCallback(() => {
 		SetOfflineReady(false)
 		SetNeedRefresh(false)
-		CloseModal()
-	}, [SetOfflineReady, SetNeedRefresh, CloseModal])
+		SetCurrentModalType(null)
+	}, [SetOfflineReady, SetNeedRefresh])
 
 	useEffect(() => {
 		if (!OfflineReady) return
-		if (IsOpen) return
+		if (CurrentModalType !== null) return
 		if (HasOfflineReadyModalShown) return
 
+		// eslint-disable-next-line react-hooks/set-state-in-effect
 		SetHasOfflineReadyModalShown(true)
 
-		QueueOpenModal({
-			title: 'Offline Ready',
-			description: 'App is ready to work offline',
-		})
-	}, [OfflineReady, QueueOpenModal, IsOpen, HasOfflineReadyModalShown])
+		SetCurrentModalType(ModalType.OfflineReady)
+	}, [OfflineReady, CurrentModalType, HasOfflineReadyModalShown])
 
 	useEffect(() => {
 		if (!NeedRefresh) return
-		if (IsOpen) return
+		if (CurrentModalType !== null) return
 
-		QueueOpenModal({
-			title: 'An update is available.',
-			description: [
-				{
-					id: 'reload',
-					text: '"Reload" will refresh the app. You may lose the progress, if any.',
-				},
-				{
-					id: 'cancel',
-					text: '"Cancel" will install the update next time you visit the app.',
-				},
-			],
-			buttons: [
-				{
-					id: 'close',
-					text: 'Close',
-					onClick: Close,
-					submit: false,
-				},
-				{
-					id: 'reload',
-					text: 'Reload',
-					onClick: UpdateServiceWorker,
-					submit: false,
-				},
-			],
-			defaultCloseButton: false,
-		})
-	}, [Close, NeedRefresh, QueueOpenModal, UpdateServiceWorker, IsOpen])
+		// eslint-disable-next-line react-hooks/set-state-in-effect
+		SetCurrentModalType(ModalType.UpdateAvailable)
+	}, [Close, NeedRefresh, CurrentModalType, UpdateServiceWorker])
 
 	useEffect(() => {
 		localStorage.setItem('hasOfflineReadyModalShown', HasOfflineReadyModalShown ? '1' : '0')
 	}, [HasOfflineReadyModalShown])
 
 	useEffect(() => {
+		// eslint-disable-next-line react-hooks/set-state-in-effect
 		if (!OfflineReady) SetHasOfflineReadyModalShown(false)
 	}, [OfflineReady])
 
-	return null
+	return (
+		<Dialog open={CurrentModalType !== null} onClose={() => SetCurrentModalType(null)}>
+			<DialogTitle>
+				{CurrentModalType !== null ? t(`pwa:manager.modal.${CurrentModalType}.title`) : ''}
+			</DialogTitle>
+			<DialogContent>
+				<DialogContentText>
+					{CurrentModalType !== null
+						? t(`pwa:manager.modal.${CurrentModalType}.description`)
+						: ''}
+				</DialogContentText>
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={() => SetCurrentModalType(null)}>{t('common:close')}</Button>
+				{CurrentModalType === ModalType.UpdateAvailable ? (
+					<Button onClick={() => UpdateServiceWorker()}>
+						{t('pwa:manager.modal.UpdateAvailable.update')}
+					</Button>
+				) : null}
+			</DialogActions>
+		</Dialog>
+	)
 }
 
 export default PWAManager

@@ -14,6 +14,8 @@ import MainLayout from 'Outlets/MainLayout'
 import MemberLayout from 'Outlets/MemberLayout'
 import { useTranslation } from 'react-i18next'
 
+import PWAManager from 'Components/PWAManager'
+
 import PromptProvider from 'Contexts/Prompt'
 
 import MUILocaleMap, { DefaultMUILocale } from 'Constants/MUILocaleMap'
@@ -236,6 +238,7 @@ const App: FC = () => {
 			<ThemeProvider theme={theme} noSsr>
 				<LocalizationProvider dateAdapter={AdapterDayjs}>
 					<PromptProvider>
+						<PWAManager />
 						<RouterProvider router={router} />
 					</PromptProvider>
 				</LocalizationProvider>
