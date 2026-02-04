@@ -1,11 +1,12 @@
 import { CelosiaResponse, Controller, ControllerRequest, DI, EmptyObject } from '@celosiajs/core'
+import { ZodUploadedFileType } from '@celosiajs/file-upload'
 
 import { ApiErrorKind, ApiErrorResource, AssetStatus } from '@asset-management/common'
 import z from 'zod/v4'
 
 import AssetService from 'Services/AssetService'
 
-import { ResourceNotFoundError } from 'Errors'
+import { InvalidStateError, ResourceNotFoundError } from 'Errors'
 
 class UpdateAsset extends Controller {
 	constructor(private assetService = DI.get(AssetService)) {
@@ -38,7 +39,10 @@ class UpdateAsset extends Controller {
 				requiresApproval,
 				status,
 				categoryId,
-				galleries,
+				galleries: {
+					newImages: (galleries.newImages ?? []).map(image => image.buffer),
+					existingIds: galleries.existingIds ?? [],
+				},
 			})
 
 			return response.sendStatus(204)
@@ -55,6 +59,32 @@ class UpdateAsset extends Controller {
 					},
 					data: {},
 				})
+			} else if (error instanceof InvalidStateError) {
+				if (error.operation === 'update' && error.state === 'mustHaveAtLeastOneImage') {
+					return response.status(409).json({
+						errors: {
+							others: [
+								{
+									resource: ApiErrorResource.Image,
+									kind: ApiErrorKind.NotFound,
+								},
+							],
+						},
+						data: {},
+					})
+				} else if (error.operation === 'update' && error.state === 'imageInvalid') {
+					return response.status(409).json({
+						errors: {
+							others: [
+								{
+									resource: ApiErrorResource.Image,
+									kind: ApiErrorKind.Invalid,
+								},
+							],
+						},
+						data: {},
+					})
+				}
 			}
 
 			this.logger.error('Other.', error)
@@ -67,19 +97,17 @@ class UpdateAsset extends Controller {
 		return z.object({
 			name: z.string().trim().min(1).max(100).optional(),
 			description: z.string().trim().optional(),
-			maximumLendingDuration: z.int().min(1).optional(),
-			minimumLendingDuration: z.int().min(1),
-			requiresApproval: z.boolean().optional(),
+			maximumLendingDuration: z.coerce.number().int().min(1).optional(),
+			minimumLendingDuration: z.coerce.number().int().min(1),
+			requiresApproval: z.coerce.boolean().optional(),
 			status: z.enum(AssetStatus).optional(),
 			categoryId: z.coerce.bigint().min(1n).optional(),
 			galleries: z
-				.array(
-					z.object({
-						url: z.url(),
-					}),
-				)
-				.min(1)
-				.optional(),
+				.object({
+					newImages: z.array(ZodUploadedFileType).optional(),
+					existingIds: z.array(z.coerce.bigint()).optional(),
+				})
+				.default({ newImages: [], existingIds: [] }),
 		})
 	}
 

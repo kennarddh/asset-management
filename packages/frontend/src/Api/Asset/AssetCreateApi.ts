@@ -15,7 +15,7 @@ export interface AssetCreateData {
 	requiresApproval: boolean
 	status: AssetStatus
 	categoryId: string
-	galleries: { url: string }[]
+	galleries: File[]
 }
 
 export interface AssetCreateOutput {
@@ -23,8 +23,22 @@ export interface AssetCreateOutput {
 }
 
 const AssetCreateApi: ApiFunction<AssetCreateOutput, AssetCreateData> = async data => {
+	const formData = new FormData()
+
+	formData.append('name', data.name)
+	formData.append('description', data.description)
+	formData.append('maximumLendingDuration', data.maximumLendingDuration.toString())
+	formData.append('minimumLendingDuration', data.minimumLendingDuration.toString())
+	formData.append('requiresApproval', data.requiresApproval ? 'true' : 'false')
+	formData.append('status', data.status)
+	formData.append('categoryId', data.categoryId)
+
+	for (const file of data.galleries) {
+		formData.append('galleries[]', file)
+	}
+
 	const result = await CallApi<AssetCreateResponse>('/v1/asset', 'POST', true, {
-		data,
+		data: formData,
 	})
 
 	const outputData = result.data.data

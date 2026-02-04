@@ -1,9 +1,12 @@
 import { CelosiaResponse, Controller, ControllerRequest, DI, EmptyObject } from '@celosiajs/core'
+import { ZodUploadedFileType } from '@celosiajs/file-upload'
 
-import { AssetStatus } from '@asset-management/common'
+import { ApiErrorKind, ApiErrorResource, AssetStatus } from '@asset-management/common'
 import z from 'zod/v4'
 
 import AssetService from 'Services/AssetService'
+
+import { InvalidStateError } from 'Errors'
 
 class CreateAsset extends Controller {
 	constructor(private assetService = DI.get(AssetService)) {
@@ -35,7 +38,7 @@ class CreateAsset extends Controller {
 				requiresApproval,
 				status,
 				categoryId,
-				galleries,
+				galleries: galleries.map(image => image.buffer),
 			})
 
 			return response.status(200).json({
@@ -45,6 +48,34 @@ class CreateAsset extends Controller {
 				},
 			})
 		} catch (error) {
+			if (error instanceof InvalidStateError) {
+				if (error.operation === 'create' && error.state === 'imageUploadFailed') {
+					return response.status(409).json({
+						errors: {
+							others: [
+								{
+									resource: ApiErrorResource.Image,
+									kind: ApiErrorKind.UploadFailed,
+								},
+							],
+						},
+						data: {},
+					})
+				} else if (error.operation === 'create' && error.state === 'imageInvalid') {
+					return response.status(409).json({
+						errors: {
+							others: [
+								{
+									resource: ApiErrorResource.Image,
+									kind: ApiErrorKind.Invalid,
+								},
+							],
+						},
+						data: {},
+					})
+				}
+			}
+
 			this.logger.error('Other.', error)
 
 			return response.sendInternalServerError()
@@ -55,18 +86,12 @@ class CreateAsset extends Controller {
 		return z.object({
 			name: z.string().trim().min(1).max(100),
 			description: z.string().trim(),
-			maximumLendingDuration: z.int().min(1),
-			minimumLendingDuration: z.int().min(1),
-			requiresApproval: z.boolean(),
+			maximumLendingDuration: z.coerce.number().int().min(1),
+			minimumLendingDuration: z.coerce.number().int().min(1),
+			requiresApproval: z.coerce.boolean(),
 			status: z.enum(AssetStatus),
 			categoryId: z.coerce.bigint().min(1n),
-			galleries: z
-				.array(
-					z.object({
-						url: z.url(),
-					}),
-				)
-				.min(1),
+			galleries: z.array(ZodUploadedFileType).min(1),
 		})
 	}
 }

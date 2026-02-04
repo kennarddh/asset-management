@@ -1,20 +1,20 @@
-import { FC } from 'react'
+import { ChangeEvent, FC, useCallback } from 'react'
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { Avatar, Box, IconButton, Stack } from '@mui/material'
+import { Avatar, Box, Button, IconButton, Stack } from '@mui/material'
 
 export interface ImagesPreviewActiveProps {
-	onAddGalleryImage: () => void
-	onRemoveGalleryImage: (index: number) => void
+	onAddImages: (files: File[]) => void
+	onRemoveImage: (index: number) => void
 	images: { url: string }[]
 	disabled?: false
 }
 
 export interface ImagesPreviewDisabledProps {
-	onAddGalleryImage?: never
-	onRemoveGalleryImage?: never
+	onAddImages?: never
+	onRemoveImage?: never
 	images: { url: string }[]
 	disabled: true
 }
@@ -22,6 +22,21 @@ export interface ImagesPreviewDisabledProps {
 export type ImagesPreviewProps = ImagesPreviewActiveProps | ImagesPreviewDisabledProps
 
 const ImagesPreview: FC<ImagesPreviewProps> = props => {
+	const OnFileChange = useCallback(
+		(event: ChangeEvent<HTMLInputElement>) => {
+			if (event.target.files === null) return
+
+			const files = [...event.target.files]
+
+			if (files.length > 0) {
+				props.onAddImages?.(files)
+
+				event.target.value = ''
+			}
+		},
+		[props],
+	)
+
 	return (
 		<Stack direction='row' spacing={2} sx={{ p: 1 }}>
 			{props.images.map(({ url }, index) => (
@@ -42,7 +57,7 @@ const ImagesPreview: FC<ImagesPreviewProps> = props => {
 					{props.disabled ? null : (
 						<IconButton
 							size='small'
-							onClick={() => props.onRemoveGalleryImage(index)}
+							onClick={() => props.onRemoveImage(index)}
 							sx={{
 								position: 'absolute',
 								top: 4,
@@ -59,8 +74,10 @@ const ImagesPreview: FC<ImagesPreviewProps> = props => {
 				</Box>
 			))}
 			{props.disabled ? null : (
-				<Box
-					onClick={props.onAddGalleryImage}
+				<Button
+					component='label'
+					variant='contained'
+					tabIndex={-1}
 					sx={{
 						width: 100,
 						height: 100,
@@ -78,7 +95,24 @@ const ImagesPreview: FC<ImagesPreviewProps> = props => {
 					}}
 				>
 					<AddPhotoAlternateIcon color='action' />
-				</Box>
+					<input
+						style={{
+							clip: 'rect(0 0 0 0)',
+							clipPath: 'inset(50%)',
+							height: 1,
+							overflow: 'hidden',
+							position: 'absolute',
+							bottom: 0,
+							left: 0,
+							whiteSpace: 'nowrap',
+							width: 1,
+						}}
+						type='file'
+						multiple
+						onChange={OnFileChange}
+						accept='image/jpeg, image/png, image/webp, image/avif'
+					/>
+				</Button>
 			)}
 		</Stack>
 	)

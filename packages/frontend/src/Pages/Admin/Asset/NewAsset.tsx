@@ -1,4 +1,4 @@
-import { FC, FormEvent, useCallback, useState, useTransition } from 'react'
+import { FC, FormEvent, useCallback, useEffect, useRef, useState, useTransition } from 'react'
 
 import { useNavigate } from 'react-router'
 
@@ -13,7 +13,7 @@ import {
 	TextField,
 } from '@mui/material'
 
-import { AssetStatus } from '@asset-management/common'
+import { ApiErrorKind, ApiErrorResource, AssetStatus } from '@asset-management/common'
 import { useTranslation } from 'react-i18next'
 
 import ImagesPreview from 'Components/Admin/ImagesPreview'
@@ -34,7 +34,9 @@ const NewAsset: FC = () => {
 	const [Status, SetStatus] = useState<AssetStatus>(AssetStatus.Available)
 	const [RequiresApproval, SetRequiresApproval] = useState(true)
 	const [CategoryId, SetCategoryId] = useState<string | null>(null)
-	const [Galleries, SetGalleries] = useState<{ url: string }[]>([])
+	const [Galleries, SetGalleries] = useState<{ file: File; url: string }[]>([])
+
+	const AllObjectUrlsRef = useRef<Set<string>>(new Set())
 
 	const [isPending, startTransition] = useTransition()
 
@@ -58,12 +60,26 @@ const NewAsset: FC = () => {
 						requiresApproval: RequiresApproval,
 						status: Status,
 						categoryId: CategoryId,
-						galleries: Galleries,
+						galleries: Galleries.map(galleryEntry => galleryEntry.file),
 					})
 
 					await Navigate('../')
 				} catch (error) {
-					SetErrorText(await HandleApiError(error))
+					SetErrorText(
+						await HandleApiError(error, async error => {
+							if (
+								error.resource === ApiErrorResource.Image &&
+								error.kind === ApiErrorKind.UploadFailed
+							) {
+								return t('admin_assets:errors.imageUploadFailed')
+							} else if (
+								error.resource === ApiErrorResource.Image &&
+								error.kind === ApiErrorKind.Invalid
+							) {
+								return t('admin_assets:errors.imageInvalid')
+							}
+						}),
+					)
 				}
 			})
 		},
@@ -81,17 +97,45 @@ const NewAsset: FC = () => {
 		],
 	)
 
-	const OnAddGalleryImage = useCallback(() => {
-		// TODO: Replace with proper image upload dialog
-		const imageUrl = window.prompt("Enter image URL to add to asset's gallery:")
+	const OnAddGalleryImages = useCallback((files: File[]) => {
+		SetGalleries(prevGalleries => {
+			const newGalleries = [...prevGalleries]
 
-		if (imageUrl) {
-			SetGalleries(prevGalleries => [...prevGalleries, { url: imageUrl }])
-		}
+			for (const file of files) {
+				const url = URL.createObjectURL(file)
+
+				newGalleries.push({ file, url })
+
+				AllObjectUrlsRef.current.add(url)
+			}
+
+			return newGalleries
+		})
 	}, [])
 
 	const OnRemoveGalleryImage = useCallback((index: number) => {
-		SetGalleries(prevGalleries => prevGalleries.filter((_, i) => i !== index))
+		SetGalleries(prevGalleries => {
+			const galleryEntry = prevGalleries[index]
+
+			if (galleryEntry === undefined) return prevGalleries
+
+			URL.revokeObjectURL(galleryEntry.url)
+
+			AllObjectUrlsRef.current.delete(galleryEntry.url)
+
+			return prevGalleries.filter((_, i) => i !== index)
+		})
+	}, [])
+
+	useEffect(() => {
+		return () => {
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+			for (const url of AllObjectUrlsRef.current) {
+				URL.revokeObjectURL(url)
+			}
+
+			AllObjectUrlsRef.current.clear()
+		}
 	}, [])
 
 	return (
@@ -195,8 +239,8 @@ const NewAsset: FC = () => {
 				</FormControl>
 				<ImagesPreview
 					images={Galleries}
-					onAddGalleryImage={OnAddGalleryImage}
-					onRemoveGalleryImage={OnRemoveGalleryImage}
+					onAddImages={OnAddGalleryImages}
+					onRemoveImage={OnRemoveGalleryImage}
 				/>
 				<Button type='submit' variant='outlined' fullWidth loading={isPending}>
 					{t('common:submit')}

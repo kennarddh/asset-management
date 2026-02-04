@@ -26,6 +26,9 @@
 	},
 	"errors": {
 		"notFound": "The asset you are looking for does not exist.",
-		"categoryRequired": "Asset category is required."
+		"categoryRequired": "Asset category is required.",
+		"imageInvalid": "The uploaded file is not a valid image.",
+		"imageUploadFailed": "Image upload failed.",
+		"imageNotFound": "The asset requires at least one image."
 	}
 }

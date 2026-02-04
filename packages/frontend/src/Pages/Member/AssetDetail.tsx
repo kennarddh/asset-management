@@ -112,6 +112,7 @@ const AssetDetail: FC = () => {
 	const OnCreateOrderModalOpen = useCallback(() => {
 		SetIsCreateOrderModalOpen(true)
 		SetOrderWasSuccessful(false)
+		SetErrorText(null)
 	}, [])
 
 	const OnCreateOrderModalSubmit = useCallback(

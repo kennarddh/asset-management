@@ -10,11 +10,13 @@ import RemoveUndefinedValueFromObject from 'Utils/RemoveUndefinedValueFromObject
 import AssetRepository, { AssetQueryAllOptions } from 'Repositories/AssetRepository'
 import UnitOfWork from 'Repositories/UnitOfWork/UnitOfWork'
 
-import { ResourceNotFoundError } from 'Errors'
+import { InvalidStateError, ResourceNotFoundError } from 'Errors'
 
 import { Prisma } from 'PrismaGenerated/client'
 
 import ConfigurationService from './ConfigurationService/ConfigurationService'
+import ImageProcessingService from './ImageProcessingService'
+import S3Service from './S3Service'
 import { FindManyOptions } from './Types'
 
 export interface Asset {
@@ -26,7 +28,7 @@ export interface Asset {
 	requiresApproval: boolean
 	status: AssetStatus
 	category: { id: bigint; name: string }
-	galleries: { id: bigint; url: string }[]
+	galleries: { id: bigint; key: string }[]
 	createdAt: Date
 	updatedAt: Date
 }
@@ -39,7 +41,7 @@ export interface AssetCreateData {
 	requiresApproval: boolean
 	status: AssetStatus
 	categoryId: bigint
-	galleries: { url: string }[]
+	galleries: Buffer[]
 }
 
 export interface AssetUpdateData {
@@ -50,7 +52,10 @@ export interface AssetUpdateData {
 	requiresApproval: boolean
 	status: AssetStatus
 	categoryId: bigint
-	galleries: { url: string }[]
+	galleries: {
+		newImages: Buffer[]
+		existingIds: bigint[]
+	}
 }
 
 export interface AssetFilterOptions {
@@ -72,6 +77,8 @@ class AssetService extends Service {
 	constructor(
 		private unitOfWork = DI.get(UnitOfWork),
 		private configurationService = DI.get(ConfigurationService),
+		private s3Service = DI.get(S3Service),
+		private imageProcessingService = DI.get(ImageProcessingService),
 	) {
 		super('AssetService')
 	}
@@ -133,7 +140,7 @@ class AssetService extends Service {
 			galleries: {
 				select: {
 					id: true,
-					url: true,
+					key: true,
 				},
 			},
 			createdAt: true,
@@ -145,7 +152,7 @@ class AssetService extends Service {
 		return await this.unitOfWork.execute(async transaction => {
 			const result = await transaction.getRepository(AssetRepository).findUnique<{
 				category: { id: bigint; name: string }
-				galleries: { id: bigint; url: string }[]
+				galleries: { id: bigint; key: string }[]
 			}>({
 				filter: { id },
 				select: this.dataSelect,
@@ -155,6 +162,20 @@ class AssetService extends Service {
 
 			return this.transformData(result)
 		})
+	}
+
+	async findByIdWithUrls(id: bigint) {
+		const asset = await this.findById(id)
+
+		if (asset === null) return null
+
+		return {
+			...asset,
+			galleries: asset.galleries.map(gallery => ({
+				id: gallery.id,
+				url: this.s3Service.getPublicUrl(gallery.key, 'asset'),
+			})),
+		}
 	}
 
 	async findMany(options: AssetFindManyOptions = {}) {
@@ -186,7 +207,7 @@ class AssetService extends Service {
 		return await this.unitOfWork.execute(async transaction =>
 			transaction.getRepository(AssetRepository).findMany<{
 				category: { id: bigint; name: string }
-				galleries: { id: bigint; url: string }[]
+				galleries: { id: bigint; key: string }[]
 			}>(repositoryOptions),
 		)
 	}
@@ -227,7 +248,7 @@ class AssetService extends Service {
 					status: asset.status as AssetStatus,
 					galleries: asset.galleries.map(gallery => ({
 						id: gallery.id.toString(),
-						url: gallery.url,
+						url: this.s3Service.getPublicUrl(gallery.key, 'asset'),
 					})),
 					createdAt: asset.createdAt.getTime(),
 					updatedAt: asset.updatedAt.getTime(),
@@ -237,16 +258,36 @@ class AssetService extends Service {
 	}
 
 	async create(data: AssetCreateData) {
-		return await this.unitOfWork.execute(async transaction => {
-			const newData = RemoveKeyFromObjectImmutable(data, ['galleries'])
+		const newData = RemoveKeyFromObjectImmutable(data, ['galleries'])
 
+		for (const imageBuffer of data.galleries) {
+			const isValid = await this.imageProcessingService.isValidImage(imageBuffer)
+
+			if (!isValid) {
+				throw new InvalidStateError('create', 'imageInvalid')
+			}
+		}
+
+		const promises = data.galleries.map(buffer => this.s3Service.uploadAssetImage(buffer))
+
+		const uploadResults = await Promise.allSettled(promises)
+
+		const keys = uploadResults
+			.filter(result => result.status === 'fulfilled')
+			.map(result => result.value)
+
+		// TODO: By default it will just pick any succesful uploads and ignore failed one, but we might want to handle failed uploads better.
+		if (keys.length === 0) {
+			throw new InvalidStateError('create', 'imageUploadFailed')
+		}
+
+		return await this.unitOfWork.execute(async transaction => {
 			return await transaction.getRepository(AssetRepository).create({
 				data: {
 					...newData,
 					galleries: {
 						createMany: {
-							// TODO: Validate gallery URLs
-							data: data.galleries.map(gallery => ({ url: gallery.url })),
+							data: keys.map(key => ({ key })),
 						},
 					},
 				},
@@ -254,7 +295,7 @@ class AssetService extends Service {
 		})
 	}
 
-	async update(id: bigint, data: DeepPartialAndUndefined<AssetUpdateData>) {
+	async update(id: bigint, data: DeepPartialAndUndefined<AssetUpdateData, 'galleries'>) {
 		const updateData: Prisma.AssetUpdateArgs['data'] = RemoveKeyFromObjectImmutable(
 			RemoveUndefinedValueFromObject(data),
 			['galleries'],
@@ -262,37 +303,64 @@ class AssetService extends Service {
 
 		const galleries = data.galleries
 
-		// TODO: Check for quantity validity before updating it. If it is lowered then there must be enough to fulfill all approved orders.
+		const currentAssetData = await this.findById(id)
 
-		if (galleries !== undefined) {
-			const currentAssetData = await this.findById(id)
+		if (currentAssetData === null) throw new ResourceNotFoundError('asset')
 
-			if (currentAssetData === null) throw new ResourceNotFoundError('asset')
+		const newImages = galleries.newImages ?? []
+		const existingIds = galleries.existingIds ?? []
 
-			const galleriesToAdd = galleries.filter(
-				gallery =>
-					!currentAssetData.galleries.some(
-						currentGallery => currentGallery.url === gallery.url,
-					),
-			)
+		for (const imageBuffer of newImages) {
+			const isValid = await this.imageProcessingService.isValidImage(imageBuffer)
 
-			const galleriesToRemove = currentAssetData.galleries.filter(
-				currentGallery => !galleries.some(gallery => gallery.url === currentGallery.url),
-			)
+			if (!isValid) {
+				throw new InvalidStateError('update', 'imageInvalid')
+			}
+		}
 
-			updateData.galleries = {}
+		const galleriesToRemove = currentAssetData.galleries.filter(
+			currentGallery => !existingIds.includes(currentGallery.id),
+		)
 
-			if (galleriesToAdd.length > 0) {
-				updateData.galleries.createMany = {
-					// TODO: Validate gallery URLs
-					data: galleriesToAdd.map(gallery => ({ url: gallery.url })),
-				}
+		updateData.galleries = {}
+
+		let keysCount = 0
+
+		if (newImages.length > 0) {
+			const promises = newImages.map(buffer => this.s3Service.uploadAssetImage(buffer))
+
+			const uploadResults = await Promise.allSettled(promises)
+
+			const keys = uploadResults
+				.filter(result => result.status === 'fulfilled')
+				.map(result => result.value)
+
+			keysCount = keys.length
+
+			updateData.galleries.createMany = {
+				data: keys.map(key => ({ key })),
+			}
+		}
+
+		if (galleriesToRemove.length > 0) {
+			if (keysCount + existingIds.length === 0) {
+				throw new InvalidStateError('update', 'mustHaveAtLeastOneImage')
 			}
 
-			if (galleriesToRemove.length > 0) {
-				updateData.galleries.deleteMany = {
-					id: { in: galleriesToRemove.map(gallery => gallery.id) },
-				}
+			const promises = galleriesToRemove.map(async gallery => {
+				await this.s3Service.deleteAssetImage(gallery.key)
+
+				return gallery.id
+			})
+
+			const deleteResults = await Promise.allSettled(promises)
+
+			const deletedIds = deleteResults
+				.filter(result => result.status === 'fulfilled')
+				.map(result => result.value)
+
+			updateData.galleries.deleteMany = {
+				id: { in: deletedIds },
 			}
 		}
 

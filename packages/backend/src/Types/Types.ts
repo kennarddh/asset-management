@@ -21,7 +21,7 @@ export type FilteredStringUnionNotSuffix<
 > = T extends `${string}${Suffix}` ? never : T
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-export type DeepPartialAndUndefined<T> = T extends Function
+export type DeepPartialAndUndefined<T, K extends keyof T = never> = T extends Function
 	? T
 	: T extends Date
 		? T
@@ -29,7 +29,13 @@ export type DeepPartialAndUndefined<T> = T extends Function
 			? T extends any[]
 				? T
 				: {
-						[P in keyof T]?: DeepPartialAndUndefined<T[P]> | undefined
+						// If P is in K, it's required. Otherwise, it's optional.
+						[P in keyof T]?: P extends K
+							? DeepPartialAndUndefined<T[P]>
+							: DeepPartialAndUndefined<T[P]> | undefined
+					} & {
+						// This second part ensures keys in K are strictly required
+						[P in K]: DeepPartialAndUndefined<T[P]>
 					}
 			: T
 
