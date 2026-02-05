@@ -1,0 +1,8 @@
+{
+	"AdminNewOrder": "New order #{{orderId}} from {{memberName}} for {{assetName}}. Please review the request.",
+	"AdminOrderAutoApproved": "Order #{{orderId}} for {{assetName}} was auto-approved.",
+	"MemberOrderApproved": "Your order #{{orderId}} for {{assetName}} is approved! Reason: {{reason}}.",
+	"MemberOrderRejected": "Your order #{{orderId}} for {{assetName}} was rejected. Reason: {{reason}}.",
+	"MemberOrderReturned": "Return confirmed order #{{orderId}} for {{assetName}}. Thank you for returning the asset on time!",
+	"MemberOrderOverdue": "The order #{{orderId}} for {{assetName}} was due on {{dueDate}}. Please return it immediately."
+}

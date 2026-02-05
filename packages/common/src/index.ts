@@ -112,3 +112,12 @@ export enum UserRole {
 	Admin = 'Admin',
 	Member = 'Member',
 }
+
+export enum NotificationTemplateKey {
+	AdminNewOrder = 'AdminNewOrder',
+	AdminOrderAutoApproved = 'AdminOrderAutoApproved',
+	MemberOrderApproved = 'MemberOrderApproved',
+	MemberOrderRejected = 'MemberOrderRejected',
+	MemberOrderReturned = 'MemberOrderReturned',
+	MemberOrderOverdue = 'MemberOrderOverdue',
+}

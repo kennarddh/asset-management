@@ -560,6 +560,8 @@ class OrderService extends Service {
 				}
 
 				await this.update(BigInt(data.orderId), { status: OrderStatus.Overdue })
+
+				// TODO: Send notification to member
 			} else {
 				this.logger.warn(`Unknown job name: ${jobName}`)
 			}
