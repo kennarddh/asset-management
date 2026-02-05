@@ -1,6 +1,11 @@
 import { DI, Injectable, Service } from '@celosiajs/core'
 
-import { NotificationSortField, SortOrder } from '@asset-management/common'
+import {
+	NotificationSortField,
+	NotificationTemplateKey,
+	NotificationTemplatePayload,
+	SortOrder,
+} from '@asset-management/common'
 
 import RemoveKeyFromObjectImmutable from 'Utils/RemoveKeyFromObjectImmutable'
 
@@ -25,9 +30,9 @@ export interface Notification {
 	createdAt: Date
 }
 
-export interface NotificationCreateData {
-	templateKey: string
-	payload: JsonValue
+export interface NotificationCreateData<T extends NotificationTemplateKey> {
+	templateKey: T
+	payload: NotificationTemplatePayload[T]
 	userId: bigint
 }
 
@@ -175,7 +180,7 @@ class NotificationService extends Service {
 		})
 	}
 
-	async create(data: NotificationCreateData) {
+	async create<T extends NotificationTemplateKey>(data: NotificationCreateData<T>) {
 		const newData = RemoveKeyFromObjectImmutable(data, ['payload'])
 
 		return await this.unitOfWork.execute(async transaction => {

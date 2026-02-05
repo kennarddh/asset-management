@@ -121,3 +121,35 @@ export enum NotificationTemplateKey {
 	MemberOrderReturned = 'MemberOrderReturned',
 	MemberOrderOverdue = 'MemberOrderOverdue',
 }
+
+export interface NotificationTemplatePayload {
+	[NotificationTemplateKey.AdminNewOrder]: {
+		orderId: string
+		userName: string
+		assetName: string
+	}
+	[NotificationTemplateKey.AdminOrderAutoApproved]: {
+		orderId: string
+		userName: string
+		assetName: string
+	}
+	[NotificationTemplateKey.MemberOrderApproved]: {
+		orderId: string
+		assetName: string
+		reason: string
+	}
+	[NotificationTemplateKey.MemberOrderRejected]: {
+		orderId: string
+		assetName: string
+		reason: string
+	}
+	[NotificationTemplateKey.MemberOrderReturned]: {
+		orderId: string
+		assetName: string
+	}
+	[NotificationTemplateKey.MemberOrderOverdue]: {
+		orderId: string
+		assetName: string
+		dueDate: number
+	}
+}

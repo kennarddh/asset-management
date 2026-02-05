@@ -1,6 +1,11 @@
 import { DI, Injectable, Service } from '@celosiajs/core'
 
-import { OrderSortField, OrderStatus, SortOrder } from '@asset-management/common'
+import {
+	NotificationTemplateKey,
+	OrderSortField,
+	OrderStatus,
+	SortOrder,
+} from '@asset-management/common'
 
 import { DeepPartialAndUndefined } from 'Types/Types'
 
@@ -15,9 +20,11 @@ import { Prisma } from 'PrismaGenerated/client'
 
 import AssetService from './AssetService'
 import ConfigurationService from './ConfigurationService/ConfigurationService'
+import NotificationService from './NotificationService'
 import S3Service from './S3Service'
 import SchedulerService, { OrderJobData } from './SchedulerService'
 import { FindManyOptions } from './Types'
+import UserService from './UserService'
 
 export interface Order {
 	id: bigint
@@ -94,6 +101,8 @@ class OrderService extends Service {
 		private assetService = DI.get(AssetService),
 		private schedulerService = DI.get(SchedulerService),
 		private s3Service = DI.get(S3Service),
+		private notificationService = DI.get(NotificationService),
+		private userService = DI.get(UserService),
 	) {
 		super('OrderService')
 	}
@@ -318,9 +327,6 @@ class OrderService extends Service {
 	}
 
 	async create(data: OrderCreateData) {
-		// TODO: Send notification to admin
-		// TODO: Check for requireApproval
-
 		const nowTime = new Date().getTime()
 
 		if (data.startAt.getTime() <= nowTime)
@@ -337,6 +343,10 @@ class OrderService extends Service {
 			const asset = await this.assetService.findById(data.assetId)
 
 			if (asset === null) throw new ResourceNotFoundError('asset')
+
+			const user = await this.userService.findById(data.userId)
+
+			if (user === null) throw new ResourceNotFoundError('user')
 
 			if (duration >= asset.maximumLendingDuration * 1000)
 				throw new InvalidStateError('create', 'invalidDuration')
@@ -372,15 +382,41 @@ class OrderService extends Service {
 			})
 
 			if (shouldAutoApprove) {
-				await this.handleOrderApprovedEffects(order.id, order.startAt, order.finishAt)
+				await this.handleOrderApprovedEffects(
+					order.id,
+					order.startAt,
+					order.finishAt,
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					reason!,
+					user.id,
+					asset.name,
+				)
 
-				// TODO: Send notification to admin that order was auto-approved
+				await this.notificationService.create({
+					userId: user.id,
+					templateKey: NotificationTemplateKey.AdminOrderAutoApproved,
+					payload: {
+						orderId: order.id.toString(),
+						assetName: asset.name,
+						userName: user.name,
+					},
+				})
 			} else {
 				await this.schedulerService.addJob(
 					'order-auto-cancel',
 					{ orderId: order.id.toString(), targetStatus: OrderStatus.Canceled },
 					data.startAt.getTime() - nowTime,
 				)
+
+				await this.notificationService.create({
+					userId: user.id,
+					templateKey: NotificationTemplateKey.AdminNewOrder,
+					payload: {
+						orderId: order.id.toString(),
+						assetName: asset.name,
+						userName: user.name,
+					},
+				})
 			}
 
 			return order
@@ -417,7 +453,14 @@ class OrderService extends Service {
 		})
 	}
 
-	private async handleOrderApprovedEffects(id: bigint, startAt: Date, finishAt: Date) {
+	private async handleOrderApprovedEffects(
+		id: bigint,
+		startAt: Date,
+		finishAt: Date,
+		reason: string,
+		userId: bigint,
+		assetName: string,
+	) {
 		const nowTime = new Date().getTime()
 
 		await this.schedulerService.addJob(
@@ -432,7 +475,15 @@ class OrderService extends Service {
 			finishAt.getTime() - nowTime,
 		)
 
-		// TODO: Send notification to member
+		await this.notificationService.create({
+			userId: userId,
+			templateKey: NotificationTemplateKey.MemberOrderApproved,
+			payload: {
+				orderId: id.toString(),
+				assetName: assetName,
+				reason,
+			},
+		})
 	}
 
 	async approve(id: bigint, reason: string) {
@@ -460,7 +511,14 @@ class OrderService extends Service {
 
 			await this.update(id, { status: OrderStatus.Approved, approvedAt: now, reason })
 
-			await this.handleOrderApprovedEffects(id, order.startAt, order.finishAt)
+			await this.handleOrderApprovedEffects(
+				id,
+				order.startAt,
+				order.finishAt,
+				reason,
+				order.user.id,
+				order.asset.name,
+			)
 		})
 	}
 
@@ -481,7 +539,15 @@ class OrderService extends Service {
 
 			await this.update(id, { status: OrderStatus.Rejected, rejectedAt: now, reason })
 
-			// TODO: Send notification to member
+			await this.notificationService.create({
+				userId: order.user.id,
+				templateKey: NotificationTemplateKey.MemberOrderRejected,
+				payload: {
+					orderId: id.toString(),
+					assetName: order.asset.name,
+					reason,
+				},
+			})
 		})
 	}
 
@@ -516,7 +582,14 @@ class OrderService extends Service {
 				returnedAt: new Date(),
 			})
 
-			// TODO: Send notification to member
+			await this.notificationService.create({
+				userId: order.user.id,
+				templateKey: NotificationTemplateKey.MemberOrderReturned,
+				payload: {
+					orderId: id.toString(),
+					assetName: order.asset.name,
+				},
+			})
 		})
 	}
 
@@ -561,7 +634,15 @@ class OrderService extends Service {
 
 				await this.update(BigInt(data.orderId), { status: OrderStatus.Overdue })
 
-				// TODO: Send notification to member
+				await this.notificationService.create({
+					userId: order.user.id,
+					templateKey: NotificationTemplateKey.MemberOrderOverdue,
+					payload: {
+						orderId: order.id.toString(),
+						assetName: order.asset.name,
+						dueDate: order.finishAt.getTime(),
+					},
+				})
 			} else {
 				this.logger.warn(`Unknown job name: ${jobName}`)
 			}
