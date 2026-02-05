@@ -80,6 +80,12 @@ export enum OrderSortField {
 	CanceledAt = 'canceledAt',
 }
 
+export enum NotificationSortField {
+	IsRead = 'isRead',
+	ReadAt = 'readAt',
+	CreatedAt = 'createdAt',
+}
+
 export enum AssetStatus {
 	Available = 'Available',
 	Delisted = 'Delisted',

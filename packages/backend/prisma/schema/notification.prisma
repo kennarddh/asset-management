@@ -1,0 +1,17 @@
+model Notification {
+    id BigInt @id @default(autoincrement())
+
+    templateKey String @db.VarChar(200)
+    payload     Json
+
+    userId BigInt
+    user   User   @relation(fields: [userId], references: [id])
+
+    isRead Boolean   @default(false)
+    readAt DateTime?
+
+    createdAt DateTime @default(now())
+
+    @@index([userId, isRead])
+    @@map("notifications")
+}
