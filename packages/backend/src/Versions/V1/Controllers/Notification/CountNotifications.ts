@@ -25,7 +25,7 @@ class CountNotifications extends Controller {
 		}) satisfies NotificationCountOptions
 
 		try {
-			const data = await this.notificationService.list(options)
+			const data = await this.notificationService.count(options)
 
 			return response.status(200).json({
 				errors: {},

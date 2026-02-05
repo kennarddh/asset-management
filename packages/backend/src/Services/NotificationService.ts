@@ -1,4 +1,4 @@
-import { DI, Injectable, Service } from '@celosiajs/core'
+import { DI, Injectable, JSON, Service } from '@celosiajs/core'
 
 import {
 	NotificationSortField,
@@ -170,7 +170,7 @@ class NotificationService extends Service {
 				list: result.map(asset => ({
 					id: asset.id.toString(),
 					templateKey: asset.templateKey,
-					payload: JSON.stringify(asset.payload),
+					payload: asset.payload as JSON,
 					user: { id: asset.user.id.toString(), name: asset.user.name },
 					isRead: asset.isRead,
 					readAt: asset.readAt?.getTime() ?? null,
@@ -187,7 +187,7 @@ class NotificationService extends Service {
 			return await transaction.getRepository(NotificationRepository).create({
 				data: {
 					...newData,
-					payload: JSON.stringify(data.payload),
+					payload: data.payload,
 				},
 			})
 		})
