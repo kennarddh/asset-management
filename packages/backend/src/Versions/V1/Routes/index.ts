@@ -2,6 +2,7 @@ import { CelosiaRouter } from '@celosiajs/core'
 
 import AssetRouter from './Asset'
 import AuthRouter from './Auth'
+import NotificationRouter from './Notification'
 import OrderRouter from './Order'
 import UserRouter from './User'
 
@@ -11,5 +12,6 @@ V1Router.useRouters('/auth', AuthRouter)
 V1Router.useRouters('/user', UserRouter)
 V1Router.useRouters('/asset', AssetRouter)
 V1Router.useRouters('/order', OrderRouter)
+V1Router.useRouters('/notification', NotificationRouter)
 
 export default V1Router
