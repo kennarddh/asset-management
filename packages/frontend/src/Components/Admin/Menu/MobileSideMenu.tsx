@@ -3,7 +3,6 @@ import { FC, useCallback, useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
-import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded'
 
 import {
 	Alert,
@@ -23,7 +22,7 @@ import useAuthStore from 'Stores/AuthStore'
 import { useTranslation } from 'react-i18next'
 
 import MenuContent from 'Components/Admin/Menu/MenuContent'
-import MenuButton from 'Components/Menu/MenuButton'
+import NotificationButton from 'Components/Menu/NotificationButton'
 
 import AuthLogoutApi from 'Api/Auth/AuthLogoutApi'
 
@@ -109,9 +108,7 @@ const MobileSideMenu: FC<MobileSideMenuProps> = ({ open, toggleDrawer }) => {
 							</Typography>
 						</Stack>
 						<LanguageSelector />
-						<MenuButton showBadge>
-							<NotificationsRoundedIcon />
-						</MenuButton>
+						<NotificationButton />
 					</Stack>
 					<Divider />
 					<Stack sx={{ flexGrow: 1 }}>

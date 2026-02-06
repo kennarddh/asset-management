@@ -20,6 +20,7 @@ import useAuthStore from 'Stores/AuthStore'
 import { useTranslation } from 'react-i18next'
 
 import LanguageSelector from 'Components/Menu/LanguageSelector'
+import NotificationButton from 'Components/Menu/NotificationButton'
 
 import UserMenu from './UserMenu'
 
@@ -126,6 +127,7 @@ const Navbar: FC = () => {
 								>
 									{user.name}
 								</Typography>
+								<NotificationButton />
 								<UserMenu />
 							</Box>
 						</Stack>
@@ -182,6 +184,7 @@ const Navbar: FC = () => {
 									{user.name}
 								</Typography>
 							</Box>
+							<NotificationButton />
 							<UserMenu />
 						</Stack>
 					</Stack>

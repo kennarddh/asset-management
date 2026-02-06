@@ -1,13 +1,12 @@
 import { FC } from 'react'
 
-import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded'
-
 import { AppBar, Box, Stack, Toolbar, Typography } from '@mui/material'
 
 import { useTranslation } from 'react-i18next'
 
+import NotificationButton from 'Components/Menu/NotificationButton'
+
 import LanguageSelector from '../../Menu/LanguageSelector'
-import MenuButton from '../../Menu/MenuButton'
 
 const DesktopHeader: FC = () => {
 	const { t } = useTranslation('admin_navigations')
@@ -35,9 +34,7 @@ const DesktopHeader: FC = () => {
 					</Stack>
 					<Box sx={{ display: 'flex', gap: 1, flexDirection: 'row' }}>
 						<LanguageSelector />
-						<MenuButton showBadge>
-							<NotificationsRoundedIcon />
-						</MenuButton>
+						<NotificationButton />
 					</Box>
 				</Stack>
 			</Toolbar>
