@@ -25,11 +25,11 @@ class CountNotifications extends Controller {
 		}) satisfies NotificationCountOptions
 
 		try {
-			const data = await this.notificationService.count(options)
+			const count = await this.notificationService.count(options)
 
 			return response.status(200).json({
 				errors: {},
-				data,
+				data: { count },
 			})
 		} catch (error) {
 			this.logger.error('Other.', error)
@@ -40,7 +40,7 @@ class CountNotifications extends Controller {
 
 	public override get query() {
 		return z.object({
-			isRead: z.coerce.boolean().optional(),
+			isRead: z.stringbool().optional(),
 		})
 	}
 }
