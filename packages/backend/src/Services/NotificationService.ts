@@ -5,6 +5,7 @@ import {
 	NotificationTemplateKey,
 	NotificationTemplatePayload,
 	SortOrder,
+	UserRole,
 } from '@asset-management/common'
 
 import RemoveKeyFromObjectImmutable from 'Utils/RemoveKeyFromObjectImmutable'
@@ -20,24 +21,53 @@ import { JsonValue } from 'PrismaGenerated/internal/prismaNamespace'
 import ConfigurationService from './ConfigurationService/ConfigurationService'
 import { FindManyOptions } from './Types'
 
-export interface Notification {
+export interface NotificationForUser {
 	id: bigint
 	templateKey: string
 	payload: JsonValue
 	user: { id: bigint; name: string }
+	targetRole: null
+	clearedBy: { id: bigint; name: string } | null
 	isRead: boolean
 	readAt: Date | null
 	createdAt: Date
 }
 
-export interface NotificationCreateData<T extends NotificationTemplateKey> {
+export interface NotificationForRole {
+	id: bigint
+	templateKey: string
+	payload: JsonValue
+	user: null
+	targetRole: UserRole
+	clearedBy: { id: bigint; name: string } | null
+	isRead: boolean
+	readAt: Date | null
+	createdAt: Date
+}
+
+export type Notification = NotificationForUser | NotificationForRole
+
+export interface NotificationCreateDataForUser<T extends NotificationTemplateKey> {
 	templateKey: T
 	payload: NotificationTemplatePayload[T]
 	userId: bigint
+	targetRole?: never
 }
+
+export interface NotificationCreateDataForRole<T extends NotificationTemplateKey> {
+	templateKey: T
+	payload: NotificationTemplatePayload[T]
+	userId?: never
+	targetRole: UserRole
+}
+
+export type NotificationCreateData<T extends NotificationTemplateKey> =
+	| NotificationCreateDataForUser<T>
+	| NotificationCreateDataForRole<T>
 
 export interface NotificationFilterOptions {
 	userId?: bigint
+	targetRole?: UserRole
 	isRead?: boolean
 }
 
@@ -61,14 +91,28 @@ class NotificationService extends Service {
 	private transformData(
 		data: Prisma.NotificationGetPayload<{ select: NotificationService['dataSelect'] }>,
 	): Notification {
-		return {
+		const common = {
 			id: data.id,
 			templateKey: data.templateKey,
 			payload: data.payload,
-			user: { id: data.user.id, name: data.user.name },
 			isRead: data.isRead,
 			readAt: data.readAt,
 			createdAt: data.createdAt,
+			clearedBy: data.clearedBy ? { id: data.clearedBy.id, name: data.clearedBy.name } : null,
+		}
+
+		if (data.user !== null) {
+			return {
+				...common,
+				user: { id: data.user.id, name: data.user.name },
+				targetRole: null,
+			} as NotificationForUser
+		} else {
+			return {
+				...common,
+				targetRole: data.targetRole as UserRole,
+				user: null,
+			} as NotificationForRole
 		}
 	}
 
@@ -79,6 +123,8 @@ class NotificationService extends Service {
 
 		if (filter.isRead !== undefined) repositoryFilter.isRead = filter.isRead
 
+		if (filter.targetRole !== undefined) repositoryFilter.targetRole = filter.targetRole
+
 		return repositoryFilter
 	}
 
@@ -88,6 +134,8 @@ class NotificationService extends Service {
 			templateKey: true,
 			payload: true,
 			user: { select: { id: true, name: true } },
+			targetRole: true,
+			clearedBy: { select: { id: true, name: true } },
 			isRead: true,
 			readAt: true,
 			createdAt: true,
@@ -97,7 +145,8 @@ class NotificationService extends Service {
 	async findById(id: bigint) {
 		return await this.unitOfWork.execute(async transaction => {
 			const result = await transaction.getRepository(NotificationRepository).findUnique<{
-				user: { id: bigint; name: string }
+				user: { id: bigint; name: string } | null
+				clearedBy: { id: bigint; name: string } | null
 			}>({
 				filter: { id },
 				select: this.dataSelect,
@@ -137,7 +186,8 @@ class NotificationService extends Service {
 
 		return await this.unitOfWork.execute(async transaction =>
 			transaction.getRepository(NotificationRepository).findMany<{
-				user: { id: bigint; name: string }
+				user: { id: bigint; name: string } | null
+				clearedBy: { id: bigint; name: string } | null
 			}>(repositoryOptions),
 		)
 	}
@@ -167,14 +217,18 @@ class NotificationService extends Service {
 						this.configurationService.configurations.pagination.defaultLimit,
 					total: count,
 				},
-				list: result.map(asset => ({
-					id: asset.id.toString(),
-					templateKey: asset.templateKey,
-					payload: asset.payload as JSON,
-					user: { id: asset.user.id.toString(), name: asset.user.name },
-					isRead: asset.isRead,
-					readAt: asset.readAt?.getTime() ?? null,
-					createdAt: asset.createdAt.getTime(),
+				list: result.map(notif => ({
+					id: notif.id.toString(),
+					templateKey: notif.templateKey,
+					payload: notif.payload as unknown as JSON,
+					user: notif.user
+						? { id: notif.user.id.toString(), name: notif.user.name }
+						: null,
+					targetRole: notif.targetRole ?? null,
+					clearedBy: notif.clearedBy ? { id: notif.clearedBy.id.toString() } : null,
+					isRead: notif.isRead,
+					readAt: notif.readAt?.getTime() ?? null,
+					createdAt: notif.createdAt.getTime(),
 				})),
 			}
 		})

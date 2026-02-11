@@ -5,6 +5,7 @@ import {
 	OrderSortField,
 	OrderStatus,
 	SortOrder,
+	UserRole,
 } from '@asset-management/common'
 
 import { DeepPartialAndUndefined } from 'Types/Types'
@@ -393,7 +394,7 @@ class OrderService extends Service {
 				)
 
 				await this.notificationService.create({
-					userId: user.id,
+					targetRole: UserRole.Admin,
 					templateKey: NotificationTemplateKey.AdminOrderAutoApproved,
 					payload: {
 						orderId: order.id.toString(),
@@ -409,7 +410,7 @@ class OrderService extends Service {
 				)
 
 				await this.notificationService.create({
-					userId: user.id,
+					targetRole: UserRole.Admin,
 					templateKey: NotificationTemplateKey.AdminNewOrder,
 					payload: {
 						orderId: order.id.toString(),

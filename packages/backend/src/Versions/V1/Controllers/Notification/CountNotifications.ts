@@ -20,6 +20,7 @@ class CountNotifications extends Controller {
 	) {
 		const { isRead } = request.query
 
+		// TODO: Return self notifcicaiton
 		const options = RemoveUndefinedValueFromObject({
 			filter: { isRead, userId: data.user.session.user.id },
 		}) satisfies NotificationCountOptions

@@ -5,9 +5,10 @@ model User {
     password String
     role     String @db.VarChar(50)
 
-    userSessions  UserSession[]
-    orders        Order[]
-    notifications Notification[]
+    userSessions         UserSession[]
+    orders               Order[]
+    notifications        Notification[] @relation("UserTarget")
+    cleraedNotifications Notification[] @relation("ClearedBy")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

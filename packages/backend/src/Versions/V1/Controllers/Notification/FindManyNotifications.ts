@@ -23,6 +23,7 @@ class FindManyNotifications extends Controller {
 	) {
 		const { isRead, pagination, sort } = request.query
 
+		// TODO: Return self notifcicaiton
 		const options = RemoveUndefinedValueFromObject({
 			filter: { isRead, userId: data.user.session.user.id },
 			pagination,
