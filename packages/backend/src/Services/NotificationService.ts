@@ -20,6 +20,7 @@ import { JsonValue } from 'PrismaGenerated/internal/prismaNamespace'
 
 import ConfigurationService from './ConfigurationService/ConfigurationService'
 import { FindManyOptions } from './Types'
+import { User } from './UserService'
 
 export interface NotificationForUser {
 	id: bigint
@@ -69,6 +70,7 @@ export interface NotificationFilterOptions {
 	userId?: bigint
 	targetRole?: UserRole
 	isRead?: boolean
+	currentUser?: User
 }
 
 export interface NotificationFindManyOptions extends FindManyOptions<NotificationSortField> {
@@ -124,6 +126,13 @@ class NotificationService extends Service {
 		if (filter.isRead !== undefined) repositoryFilter.isRead = filter.isRead
 
 		if (filter.targetRole !== undefined) repositoryFilter.targetRole = filter.targetRole
+
+		if (filter.currentUser !== undefined) {
+			repositoryFilter.OR = [
+				{ userId: filter.currentUser.id },
+				{ targetRole: filter.currentUser.role },
+			]
+		}
 
 		return repositoryFilter
 	}

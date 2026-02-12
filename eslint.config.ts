@@ -24,6 +24,7 @@ export default defineConfig(
 		name: 'Ignores',
 		ignores: [
 			'packages/frontend/build/**/*',
+			'packages/frontend/dev-dist/**/*',
 			'packages/backend/build/**/*',
 			'packages/backend/prisma/generated/**/*',
 		],

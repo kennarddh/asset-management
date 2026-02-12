@@ -174,7 +174,11 @@ class AuthService extends Service {
 
 		if (!this.userSessionService.isSessionActive(userSession)) throw new UnauthorizedError()
 
-		return userSession
+		const user = await this.userService.findById(userSession.user.id)
+
+		if (user === null) throw new ResourceNotFoundError('user')
+
+		return { userSession, user }
 	}
 
 	async findUserForGetSession(userId: bigint) {

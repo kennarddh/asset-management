@@ -11,6 +11,7 @@ import { ApiErrorKind, ApiErrorResource } from '@asset-management/common'
 
 import AuthService from 'Services/AuthService'
 import { TokenExpiredError, TokenVerifyError } from 'Services/Token/Errors'
+import { User } from 'Services/UserService'
 import { UserSession } from 'Services/UserSessionService'
 
 import { UnauthorizedError } from 'Errors'
@@ -18,6 +19,7 @@ import { UnauthorizedError } from 'Errors'
 export interface JWTVerifiedData {
 	user: {
 		session: UserSession
+		data: User
 	}
 }
 
@@ -90,11 +92,12 @@ class VerifyJWT<Optional extends boolean> extends Middleware<
 			})
 
 		try {
-			const userSession = await this.authService.verifyAccessToken(accessToken)
+			const { userSession, user } = await this.authService.verifyAccessToken(accessToken)
 
 			next({
 				user: {
 					session: userSession,
+					data: user,
 				},
 			})
 		} catch (error) {
