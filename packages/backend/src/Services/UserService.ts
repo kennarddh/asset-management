@@ -25,6 +25,7 @@ export interface User {
 	username: string
 	password: string
 	role: UserRole
+	createdBy: { id: bigint; name: string }
 	createdAt: Date
 	updatedAt: Date
 }
@@ -34,6 +35,7 @@ export interface UserCreateData {
 	username: string
 	password: string
 	role: UserRole
+	createdById?: bigint
 }
 
 export interface UserUpdateData {
@@ -71,6 +73,7 @@ class UserService extends Service {
 			username: data.username,
 			password: data.password,
 			role: data.role as UserRole,
+			createdBy: { id: data.createdBy.id, name: data.createdBy.name },
 			createdAt: data.createdAt,
 			updatedAt: data.updatedAt,
 		}
@@ -105,6 +108,7 @@ class UserService extends Service {
 			username: true,
 			password: true,
 			role: true,
+			createdBy: { select: { id: true, name: true } },
 			createdAt: true,
 			updatedAt: true,
 		} satisfies Prisma.UserSelect
@@ -112,10 +116,12 @@ class UserService extends Service {
 
 	async findById(id: bigint) {
 		return await this.unitOfWork.execute(async transaction => {
-			const result = await transaction.getRepository(UserRepository).findUnique({
-				filter: { id },
-				select: this.dataSelect,
-			})
+			const result = await transaction
+				.getRepository(UserRepository)
+				.findUnique<{ createdBy: { id: bigint; name: string } }>({
+					filter: { id },
+					select: this.dataSelect,
+				})
 
 			if (result === null) return null
 
@@ -125,9 +131,9 @@ class UserService extends Service {
 
 	async findByUsername(username: string) {
 		return await this.unitOfWork.execute(async transaction => {
-			const result = await transaction
-				.getRepository(UserRepository)
-				.findUnique({ filter: { username }, select: this.dataSelect })
+			const result = await transaction.getRepository(UserRepository).findUnique<{
+				createdBy: { id: bigint; name: string }
+			}>({ filter: { username }, select: this.dataSelect })
 
 			if (result === null) return null
 
@@ -168,7 +174,9 @@ class UserService extends Service {
 		}
 
 		return await this.unitOfWork.execute(async transaction =>
-			transaction.getRepository(UserRepository).findMany(repositoryOptions),
+			transaction
+				.getRepository(UserRepository)
+				.findMany<{ createdBy: { id: bigint; name: string } }>(repositoryOptions),
 		)
 	}
 
@@ -201,6 +209,7 @@ class UserService extends Service {
 					id: user.id.toString(),
 					username: user.username,
 					name: user.name,
+					role: user.role,
 					createdAt: user.createdAt.getTime(),
 					updatedAt: user.updatedAt.getTime(),
 				})),

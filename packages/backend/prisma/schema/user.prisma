@@ -5,10 +5,14 @@ model User {
     password String
     role     String @db.VarChar(50)
 
+    createdById BigInt?
+    createdby   User?   @relation("CreatedByUser", fields: [createdById], references: [id])
+
     userSessions         UserSession[]
     orders               Order[]
     notifications        Notification[] @relation("UserTarget")
     cleraedNotifications Notification[] @relation("ClearedBy")
+    createdUsers         User[]         @relation("CreatedByUser")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

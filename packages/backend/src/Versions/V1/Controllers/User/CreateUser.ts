@@ -1,7 +1,9 @@
-import { CelosiaResponse, Controller, ControllerRequest, DI, EmptyObject } from '@celosiajs/core'
+import { CelosiaResponse, Controller, ControllerRequest, DI } from '@celosiajs/core'
 
 import { ApiErrorKind, ApiErrorResource, UserRole } from '@asset-management/common'
 import z from 'zod/v4'
+
+import { JWTVerifiedData } from 'Middlewares/VerifyJWT'
 
 import UserService from 'Services/UserService'
 
@@ -13,19 +15,20 @@ class CreateUser extends Controller {
 	}
 
 	public async index(
-		_: EmptyObject,
+		data: JWTVerifiedData,
 		request: ControllerRequest<CreateUser>,
 		response: CelosiaResponse,
 	) {
 		const { name, username, password, role } = request.body
 
 		try {
-			// TODO: Add created by in db field. Add disabled/enabled user.
+			// TODO: Add disabled/enabled user.
 			const user = await this.userService.create({
 				name,
 				username,
 				password,
 				role,
+				createdById: data.user.data.id,
 			})
 
 			return response.status(200).json({
