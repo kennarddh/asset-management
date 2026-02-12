@@ -10,7 +10,7 @@ import IsSameUser from 'Services/AccessControl/ResourceAccessPolicies/IsSameUser
 import { Or } from 'Services/AccessControl/ResourceAccessPoliciesBoolean'
 import UserResourceContextGetter from 'Services/AccessControl/ResourceContextGetters/UserResourceContextGetter'
 
-import { FindManyUsers, FindUserById, UpdateUser } from '../Controllers/User'
+import { CreateUser, FindManyUsers, FindUserById, UpdateUser } from '../Controllers/User'
 import UserSessionRouter from './UserSession'
 
 const UserRouter = new CelosiaRouter({ strict: true })
@@ -21,6 +21,11 @@ UserRouter.get(
 	'/',
 	[new VerifyJWT(false), new HandleAccess([new HasRole(UserRole.Admin)])],
 	new FindManyUsers(),
+)
+UserRouter.post(
+	'/',
+	[new VerifyJWT(false), new HandleAccess([new HasRole(UserRole.Admin)])],
+	new CreateUser(),
 )
 UserRouter.patch(
 	'/:id',
