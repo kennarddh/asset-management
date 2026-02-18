@@ -1,4 +1,4 @@
-import { FC, createContext, useCallback, useId, useState } from 'react'
+import { FC, FormEvent, createContext, useCallback, useId, useState } from 'react'
 
 import {
 	Button,
@@ -57,7 +57,11 @@ const PromptProvider: FC<PromptProviderProps> = ({ children }) => {
 	}, [])
 
 	const HandleClose = useCallback(
-		(value: string | null) => {
+		(event: FormEvent<HTMLFormElement> | null, value: string | null) => {
+			if (event) {
+				event.preventDefault()
+			}
+
 			PromptConfigInternal?.resolve(value)
 
 			SetPromptConfigInternal(null)
@@ -71,11 +75,11 @@ const PromptProvider: FC<PromptProviderProps> = ({ children }) => {
 	return (
 		<PromptContext.Provider value={{ ShowPrompt }}>
 			{children}
-			<Dialog open={PromptConfigInternal !== null} onClose={() => HandleClose(null)}>
+			<Dialog open={PromptConfigInternal !== null} onClose={() => HandleClose(null, null)}>
 				<DialogTitle>{PromptConfigInternal?.title}</DialogTitle>
 				<DialogContent>
 					<DialogContentText>{PromptConfigInternal?.contentText}</DialogContentText>
-					<form onSubmit={() => HandleClose(Value)} id={Id}>
+					<form onSubmit={event => HandleClose(event, Value)} id={Id}>
 						<TextField
 							required
 							label={PromptConfigInternal?.inputLabel}
@@ -87,7 +91,7 @@ const PromptProvider: FC<PromptProviderProps> = ({ children }) => {
 					</form>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={() => HandleClose(null)}>{t('common:cancel')}</Button>
+					<Button onClick={() => HandleClose(null, null)}>{t('common:cancel')}</Button>
 					<Button type='submit' form={Id}>
 						{PromptConfigInternal?.buttonLabel}
 					</Button>
