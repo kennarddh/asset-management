@@ -1,8 +1,29 @@
 {
-	"AdminNewOrder": "New order #{{orderId}} from {{userName}} for {{assetName}}. Please review the request.",
-	"AdminOrderAutoApproved": "Order #{{orderId}} from {{userName}} for {{assetName}} was auto-approved.",
-	"MemberOrderApproved": "Your order #{{orderId}} for {{assetName}} is approved! Reason: {{reason}}.",
-	"MemberOrderRejected": "Your order #{{orderId}} for {{assetName}} was rejected. Reason: {{reason}}.",
-	"MemberOrderReturned": "Return confirmed order #{{orderId}} for {{assetName}}. Thank you for returning the asset on time!",
-	"MemberOrderOverdue": "The order #{{orderId}} for {{assetName}} was due on {{dueDate}}. Please return it immediately."
+	"noNotifications": "No notifications found.",
+	"templates": {
+		"AdminNewOrder": {
+			"title": "New Order #{{orderId}}",
+			"text": "New order #{{orderId}} from {{userName}} for {{assetName}}. Please review the request."
+		},
+		"AdminOrderAutoApproved": {
+			"title": "Order #{{orderId}} Was Auto Approved",
+			"text": "Order #{{orderId}} from {{userName}} for {{assetName}} was auto-approved."
+		},
+		"MemberOrderApproved": {
+			"title": "Order #{{orderId}} Approved",
+			"text": "Your order #{{orderId}} for {{assetName}} is approved! Reason: {{reason}}."
+		},
+		"MemberOrderRejected": {
+			"title": "Order #{{orderId}} Rejected",
+			"text": "Your order #{{orderId}} for {{assetName}} was rejected. Reason: {{reason}}."
+		},
+		"MemberOrderReturned": {
+			"title": "Order #{{orderId}} Returned",
+			"text": "Return confirmed order #{{orderId}} for {{assetName}}. Thank you for returning the asset on time!"
+		},
+		"MemberOrderOverdue": {
+			"title": "Order #{{orderId}} Overdue",
+			"text": "The order #{{orderId}} for {{assetName}} was due on {{dueDate}}. Please return it immediately."
+		}
+	}
 }

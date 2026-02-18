@@ -33,5 +33,6 @@
 	"return": "Return",
 	"reason": "Reason",
 	"includeInactive": "Include Inactive",
-	"includeDisabled": "Include Disabled"
+	"includeDisabled": "Include Disabled",
+	"loadMore":"Load More","loading":"Loading..."
 }
