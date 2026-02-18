@@ -9,8 +9,8 @@ model Notification {
 
     targetRole String? @db.VarChar(50)
 
-    clearedByID BigInt?
-    clearedBy   User?   @relation(name: "ClearedBy", fields: [clearedByID], references: [id])
+    clearedById BigInt?
+    clearedBy   User?   @relation(name: "ClearedBy", fields: [clearedById], references: [id])
 
     isRead Boolean   @default(false)
     readAt DateTime?

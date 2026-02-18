@@ -22,6 +22,7 @@ import NotificationCountApi from 'Api/Notification/NotificationCountApi'
 import NotificationFindManyApi, {
 	NotificationFindManySingleOutput,
 } from 'Api/Notification/NotificationFindManyApi'
+import NotificationReadAllApi from 'Api/Notification/NotificationReadAllApi'
 
 import MenuButton from './MenuButton'
 
@@ -53,7 +54,7 @@ const NotificationButton: FC = () => {
 				},
 			})
 
-			SetNotifications(prev => [...prev, ...data.list])
+			SetNotifications(prev => (pageToFetch === 0 ? [...data.list] : [...prev, ...data.list]))
 
 			SetPage(pageToFetch)
 
@@ -88,6 +89,28 @@ const NotificationButton: FC = () => {
 			void FetchNotifications(0)
 		}
 	}, [AnchorElement, FetchNotifications])
+
+	useEffect(() => {
+		const isOpen = !!AnchorElement
+
+		if (isOpen && UnreadCount > 0) {
+			const markRead = async () => {
+				const previousCount = UnreadCount
+
+				SetUnreadCount(0)
+
+				try {
+					await NotificationReadAllApi()
+				} catch (error) {
+					console.error('Failed to mark notifications as read', error)
+
+					SetUnreadCount(previousCount)
+				}
+			}
+
+			void markRead()
+		}
+	}, [AnchorElement, UnreadCount])
 
 	const OnClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
 		SetAnchorElement(event.currentTarget)

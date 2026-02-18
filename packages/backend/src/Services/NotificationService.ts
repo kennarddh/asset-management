@@ -255,6 +255,22 @@ class NotificationService extends Service {
 			})
 		})
 	}
+
+	async markAllRead(user: User) {
+		await this.unitOfWork.execute(async transaction => {
+			await transaction.getRepository(NotificationRepository).updateMany({
+				data: {
+					clearedById: user.id,
+					isRead: true,
+					readAt: new Date(),
+				},
+				filter: {
+					isRead: false,
+					OR: [{ userId: user.id }, { targetRole: user.role }],
+				},
+			})
+		})
+	}
 }
 
 export default NotificationService

@@ -34,6 +34,11 @@ export interface NotificationUpdateOptions {
 	data: Prisma.NotificationUpdateArgs['data']
 }
 
+export interface NotificationUpdateManyOptions {
+	filter: Prisma.NotificationWhereInput
+	data: Prisma.NotificationUpdateArgs['data']
+}
+
 export interface NotificationCreateOptions extends NotificationQueryOptions {
 	data: Prisma.NotificationCreateArgs['data']
 }
@@ -110,6 +115,19 @@ class NotificationRepository extends PrismaRepository {
 				data: options.data,
 				where: options.filter,
 				select: { id: true },
+			})
+		} catch (error) {
+			this.logger.error('Update.', error)
+
+			throw new DataAccessError()
+		}
+	}
+
+	async updateMany(options: NotificationUpdateManyOptions) {
+		try {
+			await this.prisma.notification.updateMany({
+				data: options.data,
+				where: options.filter,
 			})
 		} catch (error) {
 			this.logger.error('Update.', error)
