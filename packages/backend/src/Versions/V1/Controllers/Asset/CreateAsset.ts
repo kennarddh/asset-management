@@ -88,7 +88,7 @@ class CreateAsset extends Controller {
 			description: z.string().trim(),
 			maximumLendingDuration: z.coerce.number().int().min(1),
 			minimumLendingDuration: z.coerce.number().int().min(1),
-			requiresApproval: z.coerce.boolean(),
+			requiresApproval: z.stringbool(),
 			status: z.enum(AssetStatus),
 			categoryId: z.coerce.bigint().min(1n),
 			galleries: z.array(ZodUploadedFileType).min(1),

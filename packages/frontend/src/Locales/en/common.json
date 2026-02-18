@@ -32,5 +32,6 @@
 	"reject": "Reject",
 	"return": "Return",
 	"reason": "Reason",
-	"includeInactive": "Include Inactive"
+	"includeInactive": "Include Inactive",
+	"includeDisabled": "Include Disabled"
 }
