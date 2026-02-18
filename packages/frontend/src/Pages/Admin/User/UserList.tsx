@@ -61,6 +61,7 @@ const UserList: FC = () => {
 				headerName: t('admin_users:role'),
 				width: 150,
 				filterable: false,
+				sortable: false,
 			},
 			{
 				field: 'createdBy',
