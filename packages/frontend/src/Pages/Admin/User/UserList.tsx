@@ -48,7 +48,6 @@ const UserList: FC = () => {
 	const Columns = useMemo<GridColDef<UserFindManySingleOutput>[]>(
 		() => [
 			{ field: 'name', headerName: t('admin_users:name'), width: 300, filterable: false },
-
 			{
 				field: 'username',
 				headerName: t('admin_users:username'),
@@ -57,7 +56,20 @@ const UserList: FC = () => {
 				sortable: false,
 				flex: 1,
 			},
-
+			{
+				field: 'role',
+				headerName: t('admin_users:role'),
+				width: 150,
+				filterable: false,
+			},
+			{
+				field: 'createdBy',
+				headerName: t('admin_users:createdBy'),
+				width: 200,
+				filterable: false,
+				sortable: false,
+				valueGetter: (_, row) => row.createdBy?.name ?? t('admin_users:noCreatedBy'),
+			},
 			{
 				field: 'actions',
 				type: 'actions',

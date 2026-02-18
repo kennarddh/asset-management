@@ -92,6 +92,15 @@ const NewUser: FC = () => {
 				) : null}
 				<FormControl fullWidth>
 					<TextField
+						value={Username}
+						onChange={event => SetUsername(event.target.value)}
+						label={t('admin_users:username')}
+						variant='outlined'
+						required
+					/>
+				</FormControl>
+				<FormControl fullWidth>
+					<TextField
 						value={Name}
 						onChange={event => SetName(event.target.value)}
 						label={t('admin_users:name')}
@@ -101,26 +110,15 @@ const NewUser: FC = () => {
 				</FormControl>
 				<FormControl fullWidth>
 					<TextField
-						value={Username}
-						onChange={event => SetUsername(event.target.value)}
-						label={t('admin_users:username')}
-						variant='outlined'
-						required
-						autoComplete='username'
-					/>
-				</FormControl>
-				<FormControl fullWidth>
-					<TextField
 						value={Password}
 						onChange={event => SetPassword(event.target.value)}
 						label={t('admin_users:password')}
 						variant='outlined'
 						required
-						autoComplete='password'
+						autoComplete='new-password'
 						type={IsPasswordVisible ? 'text' : 'password'}
 						slotProps={{
 							input: {
-								autoComplete: 'new-password',
 								endAdornment: (
 									<InputAdornment position='end'>
 										<IconButton

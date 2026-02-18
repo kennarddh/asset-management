@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router'
 
 import { Box, TextField } from '@mui/material'
 
+import { UserRole } from '@asset-management/common'
 import { useTranslation } from 'react-i18next'
 
 import PageContainer from 'Components/Admin/PageContainer'
@@ -15,6 +16,8 @@ const UserDetail: FC = () => {
 
 	const [Name, SetName] = useState('')
 	const [Username, SetUsername] = useState('')
+	const [Role, SetRole] = useState<UserRole | null>(null)
+	const [CreatedBy, SetCreatedBy] = useState<{ id: string; name: string } | null>(null)
 
 	const Navigate = useNavigate()
 
@@ -29,6 +32,8 @@ const UserDetail: FC = () => {
 
 				SetName(user.name)
 				SetUsername(user.username)
+				SetRole(user.role)
+				SetCreatedBy(user.createdBy)
 			} catch {
 				await Navigate('../')
 			}
@@ -47,14 +52,24 @@ const UserDetail: FC = () => {
 				}}
 			>
 				<TextField
+					value={Username}
+					label={t('admin_users:username')}
+					slotProps={{ inputLabel: { shrink: true }, input: { readOnly: true } }}
+				/>
+				<TextField
 					value={Name}
 					label={t('admin_users:name')}
 					variant='outlined'
 					slotProps={{ inputLabel: { shrink: true }, input: { readOnly: true } }}
 				/>
 				<TextField
-					value={Username}
-					label={t('admin_users:username')}
+					value={Role}
+					label={t('admin_users:role')}
+					slotProps={{ inputLabel: { shrink: true }, input: { readOnly: true } }}
+				/>
+				<TextField
+					value={CreatedBy?.name ?? t('admin_users:noCreatedBy')}
+					label={t('admin_users:createdBy')}
 					slotProps={{ inputLabel: { shrink: true }, input: { readOnly: true } }}
 				/>
 			</Box>

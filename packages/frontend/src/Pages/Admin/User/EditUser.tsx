@@ -99,19 +99,19 @@ const EditUser: FC = () => {
 				) : null}
 				<FormControl fullWidth>
 					<TextField
+						value={Username}
+						label={t('admin_users:username')}
+						variant='outlined'
+						disabled
+					/>
+				</FormControl>
+				<FormControl fullWidth>
+					<TextField
 						value={Name}
 						onChange={event => SetName(event.target.value)}
 						label={t('admin_users:name')}
 						variant='outlined'
 						required
-					/>
-				</FormControl>
-				<FormControl fullWidth>
-					<TextField
-						value={Username}
-						label={t('admin_users:username')}
-						variant='outlined'
-						disabled
 					/>
 				</FormControl>
 				<Button

@@ -1,4 +1,4 @@
-import { UserSortField } from '@asset-management/common'
+import { UserRole, UserSortField } from '@asset-management/common'
 
 import CallApi from 'Api/CallApi'
 import { ApiFunction, FindManyData, FindManyOutput, FindManyResponse } from 'Api/Types'
@@ -7,6 +7,8 @@ type UserFindManyResponse = FindManyResponse<{
 	id: string
 	name: string
 	username: string
+	role: string
+	createdBy: { id: string; name: string } | null
 	createdAt: number
 	updatedAt: number
 }>
@@ -15,6 +17,8 @@ export interface UserFindManySingleOutput {
 	id: string
 	name: string
 	username: string
+	role: UserRole
+	createdBy: { id: string; name: string } | null
 	createdAt: Date
 	updatedAt: Date
 }
@@ -42,6 +46,14 @@ const UserFindManyApi: ApiFunction<UserFindManyOutput, UserFindManyData> = async
 			id: user.id,
 			name: user.name,
 			username: user.username,
+			role: user.role as UserRole,
+			createdBy:
+				user.createdBy === null
+					? null
+					: {
+							id: user.createdBy.id,
+							name: user.createdBy.name,
+						},
 			createdAt: new Date(user.createdAt),
 			updatedAt: new Date(user.updatedAt),
 		})),
