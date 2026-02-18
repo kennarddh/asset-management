@@ -40,7 +40,10 @@ class FindUserById extends Controller {
 					username: user.username,
 					name: user.name,
 					role: user.role,
-					createdBy: { id: user.createdBy.id.toString(), name: user.createdBy.name },
+					createdBy:
+						user.createdBy === null
+							? null
+							: { id: user.createdBy.id.toString(), name: user.createdBy.name },
 					createdAt: user.createdAt.getTime(),
 					updatedAt: user.updatedAt.getTime(),
 				},

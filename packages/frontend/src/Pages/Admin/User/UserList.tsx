@@ -116,7 +116,6 @@ const UserList: FC = () => {
 			columns={Columns}
 			sortFieldEnum={UserSortField}
 			onFilterReset={OnFilterReset}
-			cannotBeCreated
 			filterSlot={
 				<>
 					<TextField

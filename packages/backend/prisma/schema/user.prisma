@@ -6,7 +6,7 @@ model User {
     role     String @db.VarChar(50)
 
     createdById BigInt?
-    createdby   User?   @relation("CreatedByUser", fields: [createdById], references: [id])
+    createdBy   User?   @relation("CreatedByUser", fields: [createdById], references: [id])
 
     userSessions         UserSession[]
     orders               Order[]

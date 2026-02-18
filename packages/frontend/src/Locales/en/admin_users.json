@@ -2,6 +2,12 @@
 	"name": "Name",
 	"username": "Username",
 	"password": "Password",
+	"role": "Role",
+	"hidePassword": "Hide password",
+	"showPassword": "Show password",
+	"new": {
+		"title": "New User"
+	},
 	"edit": {
 		"title": "Edit User"
 	},
@@ -13,6 +19,13 @@
 	},
 	"errors": {
 		"notFound": "The user you are looking for does not exist.",
-		"usernameTaken": "The username is already taken."
+		"usernameTaken": "The username is already taken.",
+		"roleRequired": "Role is required."
+	},
+	"enums": {
+		"role": {
+			"Admin": "Admin",
+			"Member": "Member"
+		}
 	}
 }

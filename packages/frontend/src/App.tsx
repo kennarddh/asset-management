@@ -95,6 +95,10 @@ const router = createBrowserRouter([
 												lazy: () => import('Pages/Admin/User/UserList'),
 											},
 											{
+												path: 'new',
+												lazy: () => import('Pages/Admin/User/NewUser'),
+											},
+											{
 												path: ':id',
 												children: [
 													{

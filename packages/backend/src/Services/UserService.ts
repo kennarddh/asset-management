@@ -25,7 +25,7 @@ export interface User {
 	username: string
 	password: string
 	role: UserRole
-	createdBy: { id: bigint; name: string }
+	createdBy: { id: bigint; name: string } | null
 	createdAt: Date
 	updatedAt: Date
 }
@@ -73,7 +73,10 @@ class UserService extends Service {
 			username: data.username,
 			password: data.password,
 			role: data.role as UserRole,
-			createdBy: { id: data.createdBy.id, name: data.createdBy.name },
+			createdBy:
+				data.createdBy === null
+					? null
+					: { id: data.createdBy.id, name: data.createdBy.name },
 			createdAt: data.createdAt,
 			updatedAt: data.updatedAt,
 		}
@@ -118,7 +121,7 @@ class UserService extends Service {
 		return await this.unitOfWork.execute(async transaction => {
 			const result = await transaction
 				.getRepository(UserRepository)
-				.findUnique<{ createdBy: { id: bigint; name: string } }>({
+				.findUnique<{ createdBy: { id: bigint; name: string } | null }>({
 					filter: { id },
 					select: this.dataSelect,
 				})
@@ -132,7 +135,7 @@ class UserService extends Service {
 	async findByUsername(username: string) {
 		return await this.unitOfWork.execute(async transaction => {
 			const result = await transaction.getRepository(UserRepository).findUnique<{
-				createdBy: { id: bigint; name: string }
+				createdBy: { id: bigint; name: string } | null
 			}>({ filter: { username }, select: this.dataSelect })
 
 			if (result === null) return null
@@ -143,13 +146,7 @@ class UserService extends Service {
 
 	async findMany(options: UserFindManyOptions = {}) {
 		const repositoryOptions: UserQueryAllOptions = {
-			select: {
-				id: true,
-				username: true,
-				name: true,
-				createdAt: true,
-				updatedAt: true,
-			},
+			select: this.dataSelect,
 		}
 
 		if (options.sort !== undefined) {
@@ -176,7 +173,7 @@ class UserService extends Service {
 		return await this.unitOfWork.execute(async transaction =>
 			transaction
 				.getRepository(UserRepository)
-				.findMany<{ createdBy: { id: bigint; name: string } }>(repositoryOptions),
+				.findMany<{ createdBy: { id: bigint; name: string } | null }>(repositoryOptions),
 		)
 	}
 
@@ -210,6 +207,10 @@ class UserService extends Service {
 					username: user.username,
 					name: user.name,
 					role: user.role,
+					createdBy:
+						user.createdBy === null
+							? null
+							: { id: user.createdBy.id.toString(), name: user.createdBy.name },
 					createdAt: user.createdAt.getTime(),
 					updatedAt: user.updatedAt.getTime(),
 				})),

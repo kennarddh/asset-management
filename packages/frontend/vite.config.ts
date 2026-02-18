@@ -60,7 +60,7 @@ export default defineConfig(({ mode }) => {
 				: null,
 			VitePWA({
 				devOptions: {
-					enabled: mode === 'development',
+					enabled: false,
 					type: 'module',
 					navigateFallback: 'index.html',
 				},
