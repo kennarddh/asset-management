@@ -99,7 +99,7 @@ class UpdateAsset extends Controller {
 			description: z.string().trim().optional(),
 			maximumLendingDuration: z.coerce.number().int().min(1).optional(),
 			minimumLendingDuration: z.coerce.number().int().min(1),
-			requiresApproval: z.coerce.boolean().optional(),
+			requiresApproval: z.stringbool().optional(),
 			status: z.enum(AssetStatus).optional(),
 			categoryId: z.coerce.bigint().min(1n).optional(),
 			galleries: z

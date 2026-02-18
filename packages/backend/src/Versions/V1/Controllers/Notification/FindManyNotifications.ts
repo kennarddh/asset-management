@@ -46,7 +46,7 @@ class FindManyNotifications extends Controller {
 
 	public override get query() {
 		return z.object({
-			isRead: z.coerce.boolean().optional(),
+			isRead: z.stringbool().optional(),
 			pagination: ZodPagination.optional(),
 			sort: z
 				.object({
