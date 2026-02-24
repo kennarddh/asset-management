@@ -23,32 +23,32 @@
 	"author": "kennarddh",
 	"dependencies": {
 		"@asset-management/common": "^1.0.0",
-		"@aws-sdk/client-s3": "^3.975.0",
+		"@aws-sdk/client-s3": "^3.996.0",
 		"@celosiajs/core": "^0.0.1",
 		"@celosiajs/file-upload": "^0.0.1",
 		"@celosiajs/logging": "^0.0.1",
-		"@prisma/adapter-pg": "^7.0.1",
-		"@prisma/client": "^7.0.1",
+		"@prisma/adapter-pg": "^7.4.1",
+		"@prisma/client": "^7.4.1",
 		"argon2": "^0.44.0",
-		"bullmq": "^5.66.2",
-		"cors": "^2.8.5",
+		"bullmq": "^5.70.1",
+		"cors": "^2.8.6",
 		"file-type": "^21.3.0",
 		"helmet": "^8.1.0",
-		"ioredis": "^5.8.2",
-		"jsonwebtoken": "^9.0.2",
+		"ioredis": "^5.9.3",
+		"jsonwebtoken": "^9.0.3",
 		"mailersend": "^2.6.0",
 		"mergician": "^2.0.2",
-		"rate-limiter-flexible": "^9.0.0",
+		"rate-limiter-flexible": "^9.1.1",
 		"sharp": "^0.34.5",
-		"winston": "^3.18.3",
+		"winston": "^3.19.0",
 		"winston-daily-rotate-file": "^5.0.0",
-		"zod": "^3.25.1"
+		"zod": "^4.3.6"
 	},
 	"devDependencies": {
 		"@types/cors": "^2.8.19",
 		"@types/jsonwebtoken": "^9.0.10",
-		"dotenv": "^17.2.3",
-		"esbuild": "^0.27.0",
-		"prisma": "^7.0.1"
+		"dotenv": "^17.3.1",
+		"esbuild": "^0.27.3",
+		"prisma": "^7.4.1"
 	}
 }
